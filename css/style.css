@@ -1131,3 +1131,159 @@ a {
     }
 
 }
+
+/* =====================================================
+   SHOOTER SCORECARD
+===================================================== */
+
+.shooter-row {
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.shooter-row:hover {
+    background: #eef1e9;
+}
+
+.shooter-row::after {
+    content: "＋";
+    margin-left: auto;
+    font-size: 18px;
+    color: #777;
+}
+
+.shooter-details {
+    background: #f7f7f3;
+    border-bottom: 1px solid #d8d8d2;
+}
+
+.scorecard {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 30px;
+}
+
+.scorecard h3 {
+    margin: 0;
+    font-size: 25px;
+    color: #203f25;
+}
+
+.scorecard p {
+    margin-top: 5px;
+    color: #777;
+    font-weight: bold;
+}
+
+.scorecard h4 {
+    margin: 25px 0 10px;
+    color: #203f25;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.score-header,
+.score-line {
+    display: grid;
+
+    grid-template-columns:
+        1fr
+        100px
+        70px
+        100px;
+
+    gap: 15px;
+
+    align-items: center;
+
+    padding: 12px 15px;
+}
+
+.score-header {
+    background: #203f25;
+    color: white;
+
+    font-size: 11px;
+    font-weight: bold;
+}
+
+.score-line {
+    background: white;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.score-line.counting {
+    border-left: 4px solid #b68a3c;
+}
+
+.score-line.dropped {
+    color: #999;
+    background: #fafafa;
+}
+
+.score-line.championship {
+    border-left: 4px solid #203f25;
+    font-weight: bold;
+}
+
+.score-total {
+    display: grid;
+
+    grid-template-columns:
+        1fr
+        120px
+        120px;
+
+    gap: 15px;
+
+    align-items: center;
+
+    margin-top: 25px;
+
+    padding: 20px;
+
+    background: #203f25;
+
+    color: white;
+
+    font-weight: bold;
+}
+
+@media (max-width: 600px) {
+
+    .scorecard {
+        padding: 20px 12px;
+    }
+
+    .score-header,
+    .score-line {
+
+        grid-template-columns:
+            1fr
+            60px
+            50px
+            70px;
+
+        gap: 8px;
+
+        padding: 10px 8px;
+
+        font-size: 13px;
+    }
+
+    .score-total {
+
+        grid-template-columns:
+            1fr
+            70px
+            70px;
+
+        gap: 8px;
+
+        padding: 15px;
+
+        font-size: 13px;
+    }
+
+}
