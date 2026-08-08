@@ -279,13 +279,16 @@ a {
 
 
 /* MOBILE */
-
 @media (max-width: 750px) {
 
     .header-content {
         flex-direction: column;
         gap: 20px;
         text-align: center;
+    }
+
+    .site-logo {
+        width: 190px;
     }
 
     .main-nav {
