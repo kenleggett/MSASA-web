@@ -108,9 +108,9 @@ function openEventDetails(eventId) {
         "event-details-contact"
     ).textContent = event.contact;
 
-    document.getElementById(
-        "event-details-registration"
-    ).textContent = event.registration;
+   document.getElementById(
+    "event-details-details"
+).textContent = event.details;
 
     document.getElementById(
         "event-details-results"
