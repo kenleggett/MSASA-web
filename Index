@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Mississippi ASA | 3D Archery</title>
+
+<link rel="stylesheet" href="css/style.css">
+
+</head>
+
+
+<body>
+
+<header>
+
+<div class="logo">
+<h1>Mississippi ASA</h1>
+<p>Archery Shooters Association</p>
+</div>
+
+
+<nav>
+
+<a href="#">Home</a>
+<a href="#">Events</a>
+<a href="#">Standings</a>
+<a href="#">Classes</a>
+<a href="#">Rules</a>
+<a href="#">Contact</a>
+
+</nav>
+
+</header>
+
+
+
+<section class="hero">
+
+<h2>Welcome to Mississippi ASA</h2>
+
+<p>
+Promoting 3D archery, competition, and fellowship across Mississippi.
+</p>
+
+<a class="button" href="#">
+View 2026 Schedule
+</a>
+
+</section>
+
+
+
+
+<section class="cards">
+
+
+<div class="card">
+
+<h3>Upcoming Events</h3>
+
+<p>
+View the Mississippi ASA tournament schedule,
+club locations, and registration information.
+</p>
+
+</div>
+
+
+
+<div class="card">
+
+<h3>Shooter of the Year</h3>
+
+<p>
+Track standings, scores, and 12 counts throughout the season.
+</p>
+
+</div>
+
+
+
+
+<div class="card">
+
+<h3>Join the Fun</h3>
+
+<p>
+Find a local club and experience competitive 3D archery.
+</p>
+
+</div>
+
+
+</section>
+
+
+
+
+<section class="about">
+
+<h2>About Mississippi ASA</h2>
+
+<p>
+Mississippi ASA is dedicated to growing the sport of 3D archery
+through family-friendly competition and outdoor education.
+</p>
+
+</section>
+
+
+
+
+<footer>
+
+<p>
+© Mississippi Archery Shooters Association
+</p>
+
+</footer>
+
+
+</body>
+
+</html>
