@@ -1,274 +1,438 @@
-// -----------------------------------------------------
-// DISPLAY SHOOTER ROWS
-// -----------------------------------------------------
+// =====================================================
+// MISSISSIPPI ASA
+// 2026 SHOOTER OF THE YEAR
+// =====================================================
 
-standings.forEach(
-    (shooter, index) => {
+function isValidShooter(shooter) {
 
-        const row =
-            document.createElement("div");
+    if (!shooter) {
+        return false;
+    }
 
-        row.className =
-            "standing-row shooter-row";
+    if (!shooter.name || !shooter.class) {
+        return false;
+    }
 
-        row.dataset.shooter =
-            shooter.name;
+    const invalidClasses = [
+        "Total Entries",
+        "Column E",
+        "Column G",
+        "Column I",
+        "Column K",
+        "Column M",
+        "Column O"
+    ];
 
-        row.innerHTML = `
-
-            <strong>
-                ${index + 1}
-            </strong>
-
-            <span class="shooter-name">
-                ${shooter.name}
-            </span>
-
-            <span>
-                ${shooter.class}
-            </span>
-
-            <strong>
-                ${shooter.totalScore}
-            </strong>
-
-            <strong>
-                ${shooter.totalTwelves}
-            </strong>
-
-        `;
+    return !invalidClasses.some(
+        invalid =>
+            shooter.class
+                .toLowerCase()
+                .startsWith(
+                    invalid.toLowerCase()
+                )
+    );
+}
 
 
-        // -------------------------------------------------
-        // DETAIL ROW
-        // -------------------------------------------------
+// =====================================================
+// CALCULATE SHOOTER
+// =====================================================
 
-        const detail =
-            document.createElement("div");
+function calculateShooter(shooter) {
 
-        detail.className =
-            "shooter-details";
-
-        detail.style.display =
-            "none";
-
-
-        // Counting events
-        const countingEvents =
-            shooter.countingEvents || [];
-
-
-        // All qualifying events
-        const allEvents =
-            shooter.events || [];
-
-
-        // Find non-counting events
-        const nonCountingEvents =
-            allEvents.filter(
+    const qualifyingEvents =
+        (shooter.events || [])
+            .filter(
                 event =>
-                    !countingEvents.includes(event)
+                    typeof event.score === "number" &&
+                    event.score > 0
+            )
+            .sort(
+                (a, b) =>
+                    b.score - a.score
             );
 
 
-        let countingHTML = "";
+    // Best three qualifying scores
+    const bestThree =
+        qualifyingEvents.slice(0, 3);
 
 
-        countingEvents.forEach(
-            event => {
+    // State Championship score
+    const championshipScore =
+        shooter.championship &&
+        typeof shooter.championship.score === "number"
+            ? shooter.championship.score
+            : 0;
 
-                countingHTML += `
 
-                    <div class="score-line counting">
-
-                        <span>
-                            ${event.event}
-                        </span>
-
-                        <strong>
-                            ${event.score}
-                        </strong>
-
-                        <strong>
-                            ${event.twelves || 0}
-                        </strong>
-
-                        <span>
-                            COUNTS
-                        </span>
-
-                    </div>
-
-                `;
-
-            }
+    // Add best three qualifying scores
+    const qualifyingTotal =
+        bestThree.reduce(
+            (total, event) =>
+                total + event.score,
+            0
         );
 
 
-        let droppedHTML = "";
+    // Final Shooter of the Year score
+    const totalScore =
+        qualifyingTotal +
+        championshipScore;
 
 
-        nonCountingEvents.forEach(
-            event => {
-
-                droppedHTML += `
-
-                    <div class="score-line dropped">
-
-                        <span>
-                            ${event.event}
-                        </span>
-
-                        <span>
-                            ${event.score || "—"}
-                        </span>
-
-                        <span>
-                            ${event.twelves || 0}
-                        </span>
-
-                        <span>
-                            —
-                        </span>
-
-                    </div>
-
-                `;
-
-            }
+    // 12s from best three qualifying events
+    const qualifyingTwelves =
+        bestThree.reduce(
+            (total, event) =>
+                total + (event.twelves || 0),
+            0
         );
 
 
-        // Championship
-        const championship =
-            shooter.championship || {};
+    // Championship 12s
+    const championshipTwelves =
+        shooter.championship &&
+        typeof shooter.championship.twelves === "number"
+            ? shooter.championship.twelves
+            : 0;
 
 
-        detail.innerHTML = `
-
-            <div class="scorecard">
-
-                <h3>
-                    ${shooter.name}
-                </h3>
-
-                <p class="scorecard-class">
-                    ${shooter.class}
-                </p>
+    // Final 12 count
+    const totalTwelves =
+        qualifyingTwelves +
+        championshipTwelves;
 
 
-                <h4>
-                    Counting Scores
-                </h4>
-
-                <div class="score-header">
-
-                    <span>EVENT</span>
-                    <span>SCORE</span>
-                    <span>12s</span>
-                    <span></span>
-
-                </div>
-
-                ${countingHTML}
+    return {
+        ...shooter,
+        totalScore,
+        totalTwelves,
+        countingEvents: bestThree
+    };
+}
 
 
-                ${
-                    droppedHTML
-                        ? `
-                            <h4>
-                                Non-Counting Events
-                            </h4>
+// =====================================================
+// CALCULATE ALL STANDINGS
+// =====================================================
 
-                            ${droppedHTML}
-                        `
-                        : ""
+function calculateStandings() {
+
+    return shooters
+        .filter(isValidShooter)
+        .map(calculateShooter)
+        .sort(
+            (a, b) => {
+
+                if (
+                    b.totalScore !==
+                    a.totalScore
+                ) {
+
+                    return (
+                        b.totalScore -
+                        a.totalScore
+                    );
+
                 }
 
+                return (
+                    b.totalTwelves -
+                    a.totalTwelves
+                );
 
-                <h4>
-                    State Championship
-                </h4>
-
-                <div class="score-line championship">
-
-                    <span>
-                        State Championship
-                    </span>
-
-                    <strong>
-                        ${
-                            championship.score ||
-                            "—"
-                        }
-                    </strong>
-
-                    <strong>
-                        ${
-                            championship.twelves ||
-                            0
-                        }
-                    </strong>
-
-                    <span>
-                        COUNTS
-                    </span>
-
-                </div>
+            }
+        );
+}
 
 
-                <div class="score-total">
+// =====================================================
+// DISPLAY STANDINGS
+// =====================================================
 
-                    <span>
-                        SHOOTER OF THE YEAR
-                    </span>
+function displayStandings(
+    selectedClass = "all",
+    searchText = ""
+) {
 
-                    <strong>
-                        ${shooter.totalScore}
-                    </strong>
+    const table =
+        document.getElementById(
+            "standings-body"
+        );
 
-                    <strong>
-                        ${shooter.totalTwelves} 12s
-                    </strong>
 
-                </div>
+    if (!table) {
+        return;
+    }
+
+
+    let standings =
+        calculateStandings();
+
+
+    // Class filter
+    if (selectedClass !== "all") {
+
+        standings =
+            standings.filter(
+                shooter =>
+                    shooter.class ===
+                    selectedClass
+            );
+
+    }
+
+
+    // Shooter search
+    const search =
+        searchText
+            .trim()
+            .toLowerCase();
+
+
+    if (search !== "") {
+
+        standings =
+            standings.filter(
+                shooter =>
+                    shooter.name
+                        .toLowerCase()
+                        .includes(search)
+            );
+
+    }
+
+
+    // Clear old rows
+    table.innerHTML = "";
+
+
+    // No results
+    if (standings.length === 0) {
+
+        table.innerHTML = `
+
+            <div class="standing-row">
+
+                <strong>—</strong>
+
+                <span>
+                    No shooters found
+                </span>
+
+                <span>—</span>
+
+                <strong>—</strong>
+
+                <strong>—</strong>
 
             </div>
 
         `;
 
+        return;
+    }
 
-        // -------------------------------------------------
-        // CLICK TO EXPAND
-        // -------------------------------------------------
 
-        row.addEventListener(
-            "click",
+    // Display shooters
+    standings.forEach(
+        (shooter, index) => {
+
+            const row =
+                document.createElement(
+                    "div"
+                );
+
+
+            row.className =
+                "standing-row";
+
+
+            row.innerHTML = `
+
+                <strong>
+                    ${index + 1}
+                </strong>
+
+                <span>
+                    ${shooter.name}
+                </span>
+
+                <span>
+                    ${shooter.class}
+                </span>
+
+                <strong>
+                    ${shooter.totalScore}
+                </strong>
+
+                <strong>
+                    ${shooter.totalTwelves}
+                </strong>
+
+            `;
+
+
+            table.appendChild(row);
+
+        }
+    );
+}
+
+
+// =====================================================
+// BUILD CLASS DROPDOWN
+// =====================================================
+
+function buildClassDropdown() {
+
+    const dropdown =
+        document.getElementById(
+            "class-filter"
+        );
+
+
+    if (!dropdown) {
+        return;
+    }
+
+
+    // Clear existing options
+    dropdown.innerHTML = "";
+
+
+    // All Classes
+    const allOption =
+        document.createElement(
+            "option"
+        );
+
+
+    allOption.value = "all";
+
+    allOption.textContent =
+        "All Classes";
+
+
+    dropdown.appendChild(
+        allOption
+    );
+
+
+    // Get classes from actual shooter data
+    const classes =
+        [...new Set(
+
+            shooters
+                .filter(isValidShooter)
+                .map(
+                    shooter =>
+                        shooter.class
+                )
+
+        )].sort(
+            (a, b) =>
+                a.localeCompare(b)
+        );
+
+
+    // Add each class
+    classes.forEach(
+        className => {
+
+            const option =
+                document.createElement(
+                    "option"
+                );
+
+
+            option.value =
+                className;
+
+
+            option.textContent =
+                className;
+
+
+            dropdown.appendChild(
+                option
+            );
+
+        }
+    );
+}
+
+
+// =====================================================
+// CONNECT CONTROLS
+// =====================================================
+
+function connectControls() {
+
+    const dropdown =
+        document.getElementById(
+            "class-filter"
+        );
+
+
+    const searchBox =
+        document.getElementById(
+            "shooter-search"
+        );
+
+
+    // Class filter
+    if (dropdown) {
+
+        dropdown.addEventListener(
+            "change",
             function () {
 
-                const isOpen =
-                    detail.style.display !==
-                    "none";
+                displayStandings(
+                    dropdown.value,
 
-
-                detail.style.display =
-                    isOpen
-                        ? "none"
-                        : "block";
-
-
-                row.classList.toggle(
-                    "expanded",
-                    !isOpen
+                    searchBox
+                        ? searchBox.value
+                        : ""
                 );
 
             }
         );
 
+    }
 
-        table.appendChild(row);
 
-        table.appendChild(detail);
+    // Shooter search
+    if (searchBox) {
+
+        searchBox.addEventListener(
+            "input",
+            function () {
+
+                displayStandings(
+
+                    dropdown
+                        ? dropdown.value
+                        : "all",
+
+                    searchBox.value
+
+                );
+
+            }
+        );
 
     }
-);
+}
+
+
+// =====================================================
+// START PAGE
+// =====================================================
+
+buildClassDropdown();
+
+connectControls();
+
+displayStandings();
