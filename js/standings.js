@@ -5,22 +5,7 @@
 
 
 // -----------------------------------------------------
-// INVALID DATA ROWS
-// -----------------------------------------------------
-
-const INVALID_CLASSES = [
-    "Total Entries",
-    "Column E",
-    "Column G",
-    "Column I",
-    "Column K",
-    "Column M",
-    "Column O"
-];
-
-
-// -----------------------------------------------------
-// CHECK FOR VALID SHOOTER
+// VALID SHOOTER CHECK
 // -----------------------------------------------------
 
 function isValidShooter(shooter) {
@@ -33,11 +18,23 @@ function isValidShooter(shooter) {
         return false;
     }
 
-    return !INVALID_CLASSES.some(
+    const invalidClasses = [
+        "Total Entries",
+        "Column E",
+        "Column G",
+        "Column I",
+        "Column K",
+        "Column M",
+        "Column O"
+    ];
+
+    return !invalidClasses.some(
         invalid =>
             shooter.class
                 .toLowerCase()
-                .startsWith(invalid.toLowerCase())
+                .startsWith(
+                    invalid.toLowerCase()
+                )
     );
 }
 
@@ -55,16 +52,17 @@ function calculateShooter(shooter) {
                 event.score > 0
             )
             .sort(
-                (a, b) => b.score - a.score
+                (a, b) =>
+                    b.score - a.score
             );
 
 
-    // Highest three qualifying scores
+    // Best 3 qualifying scores
     const bestThree =
         qualifyingEvents.slice(0, 3);
 
 
-    // State Championship
+    // Championship
     const championshipScore =
         shooter.championship &&
         typeof shooter.championship.score === "number"
@@ -72,7 +70,7 @@ function calculateShooter(shooter) {
             : 0;
 
 
-    // Add the three best qualifying scores
+    // Three best qualifying scores
     const qualifyingTotal =
         bestThree.reduce(
             (total, event) =>
@@ -81,13 +79,14 @@ function calculateShooter(shooter) {
         );
 
 
-    // Final Shooter of the Year score
+    // Final SOY score
     const totalScore =
         qualifyingTotal +
         championshipScore;
 
 
-    // 12s from the three counting qualifying scores
+    // 12s from the three counting
+    // qualifying events
     const qualifyingTwelves =
         bestThree.reduce(
             (total, event) =>
@@ -104,7 +103,7 @@ function calculateShooter(shooter) {
             : 0;
 
 
-    // Final Shooter of the Year 12 count
+    // Final SOY 12 count
     const totalTwelves =
         qualifyingTwelves +
         championshipTwelves;
@@ -120,18 +119,23 @@ function calculateShooter(shooter) {
 
 
 // -----------------------------------------------------
-// CALCULATE ALL STANDINGS
+// CALCULATE STANDINGS
 // -----------------------------------------------------
 
 function calculateStandings() {
 
     return shooters
+
         .filter(isValidShooter)
+
         .map(calculateShooter)
+
         .sort((a, b) => {
 
-            // Highest score first
-            if (b.totalScore !== a.totalScore) {
+            if (
+                b.totalScore !==
+                a.totalScore
+            ) {
 
                 return (
                     b.totalScore -
@@ -140,7 +144,6 @@ function calculateStandings() {
             }
 
 
-            // Tie breaker = 12 count
             return (
                 b.totalTwelves -
                 a.totalTwelves
@@ -155,8 +158,8 @@ function calculateStandings() {
 // -----------------------------------------------------
 
 function displayStandings(
-    classFilterValue = "all",
-    searchValue = ""
+    selectedClass = "all",
+    searchText = ""
 ) {
 
     const table =
@@ -174,27 +177,21 @@ function displayStandings(
         calculateStandings();
 
 
-    // -------------------------------------------------
-    // CLASS FILTER
-    // -------------------------------------------------
-
-    if (classFilterValue !== "all") {
+    // Class filter
+    if (selectedClass !== "all") {
 
         standings =
             standings.filter(
                 shooter =>
                     shooter.class ===
-                    classFilterValue
+                    selectedClass
             );
     }
 
 
-    // -------------------------------------------------
-    // SEARCH FILTER
-    // -------------------------------------------------
-
+    // Shooter search
     const search =
-        searchValue
+        searchText
             .trim()
             .toLowerCase();
 
@@ -211,17 +208,10 @@ function displayStandings(
     }
 
 
-    // -------------------------------------------------
-    // CLEAR TABLE
-    // -------------------------------------------------
-
     table.innerHTML = "";
 
 
-    // -------------------------------------------------
-    // NO RESULTS
-    // -------------------------------------------------
-
+    // No results
     if (standings.length === 0) {
 
         table.innerHTML = `
@@ -248,10 +238,7 @@ function displayStandings(
     }
 
 
-    // -------------------------------------------------
-    // DISPLAY RESULTS
-    // -------------------------------------------------
-
+    // Display shooters
     standings.forEach(
         (shooter, index) => {
 
@@ -301,24 +288,22 @@ function displayStandings(
 // BUILD CLASS DROPDOWN
 // -----------------------------------------------------
 
-function buildClassFilter() {
+function buildClassDropdown() {
 
-    const classFilter =
+    const dropdown =
         document.getElementById(
             "class-filter"
         );
 
 
-    if (!classFilter) {
+    if (!dropdown) {
         return;
     }
 
 
-    // Clear existing options
-    classFilter.innerHTML = "";
+    dropdown.innerHTML = "";
 
 
-    // All Classes
     const allOption =
         document.createElement(
             "option"
@@ -326,19 +311,26 @@ function buildClassFilter() {
 
 
     allOption.value = "all";
-
     allOption.textContent =
         "All Classes";
 
 
-    classFilter.appendChild(
+    dropdown.appendChild(
         allOption
     );
 
 
-    // Get classes from data file
+    // Build the class list directly
+    // from the actual shooter data.
     const classes =
-        [...asaClasses].sort(
+        [...new Set(
+            shooters
+                .filter(isValidShooter)
+                .map(
+                    shooter =>
+                        shooter.class
+                )
+        )].sort(
             (a, b) =>
                 a.localeCompare(b)
         );
@@ -361,7 +353,7 @@ function buildClassFilter() {
                 className;
 
 
-            classFilter.appendChild(
+            dropdown.appendChild(
                 option
             );
 
@@ -371,34 +363,33 @@ function buildClassFilter() {
 
 
 // -----------------------------------------------------
-// CONNECT CONTROLS
+// CONNECT SEARCH AND FILTER
 // -----------------------------------------------------
 
 function connectControls() {
 
-    const classFilter =
+    const dropdown =
         document.getElementById(
             "class-filter"
         );
 
 
-    const shooterSearch =
+    const searchBox =
         document.getElementById(
             "shooter-search"
         );
 
 
-    // Class dropdown
-    if (classFilter) {
+    if (dropdown) {
 
-        classFilter.addEventListener(
+        dropdown.addEventListener(
             "change",
             function () {
 
                 displayStandings(
                     this.value,
-                    shooterSearch
-                        ? shooterSearch.value
+                    searchBox
+                        ? searchBox.value
                         : ""
                 );
 
@@ -407,16 +398,15 @@ function connectControls() {
     }
 
 
-    // Shooter search
-    if (shooterSearch) {
+    if (searchBox) {
 
-        shooterSearch.addEventListener(
+        searchBox.addEventListener(
             "input",
             function () {
 
                 displayStandings(
-                    classFilter
-                        ? classFilter.value
+                    dropdown
+                        ? dropdown.value
                         : "all",
 
                     this.value
@@ -429,10 +419,10 @@ function connectControls() {
 
 
 // -----------------------------------------------------
-// INITIALIZE PAGE
+// START PAGE
 // -----------------------------------------------------
 
-buildClassFilter();
+buildClassDropdown();
 
 connectControls();
 
