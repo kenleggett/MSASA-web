@@ -276,6 +276,274 @@ function displayStandings(
 
             table.appendChild(row);
 
+            // -------------------------------------------------
+// SHOOTER SCORECARD
+// -------------------------------------------------
+
+row.style.cursor = "pointer";
+
+row.addEventListener(
+    "click",
+    function () {
+
+        const existing =
+            document.getElementById(
+                "details-" +
+                index
+            );
+
+
+        // Close an already-open scorecard
+        if (existing) {
+
+            existing.remove();
+
+            return;
+
+        }
+
+
+        const details =
+            document.createElement(
+                "div"
+            );
+
+
+        details.id =
+            "details-" +
+            index;
+
+
+        details.className =
+            "shooter-details";
+
+
+        // ---------------------------------------------
+        // COUNTING EVENTS
+        // ---------------------------------------------
+
+        const countingEvents =
+            shooter.countingEvents || [];
+
+
+        let countingHTML = "";
+
+
+        countingEvents.forEach(
+            event => {
+
+                countingHTML += `
+
+                    <div class="score-line">
+
+                        <span>
+                            ${event.event}
+                        </span>
+
+                        <strong>
+                            ${event.score}
+                        </strong>
+
+                        <strong>
+                            ${event.twelves || 0}
+                        </strong>
+
+                        <span>
+                            COUNTS
+                        </span>
+
+                    </div>
+
+                `;
+
+            }
+        );
+
+
+        // ---------------------------------------------
+        // NON-COUNTING EVENTS
+        // ---------------------------------------------
+
+        const nonCountingEvents =
+            (shooter.events || [])
+                .filter(
+                    event =>
+                        !countingEvents.includes(
+                            event
+                        )
+                );
+
+
+        let droppedHTML = "";
+
+
+        nonCountingEvents.forEach(
+            event => {
+
+                droppedHTML += `
+
+                    <div class="score-line dropped">
+
+                        <span>
+                            ${event.event}
+                        </span>
+
+                        <span>
+                            ${
+                                event.score ||
+                                "—"
+                            }
+                        </span>
+
+                        <span>
+                            ${
+                                event.twelves ||
+                                0
+                            }
+                        </span>
+
+                        <span>
+                            —
+                        </span>
+
+                    </div>
+
+                `;
+
+            }
+        );
+
+
+        // ---------------------------------------------
+        // CHAMPIONSHIP
+        // ---------------------------------------------
+
+        const championship =
+            shooter.championship || {};
+
+
+        details.innerHTML = `
+
+            <div class="scorecard">
+
+                <h3>
+                    ${shooter.name}
+                </h3>
+
+                <p>
+                    ${shooter.class}
+                </p>
+
+
+                <h4>
+                    Counting Scores
+                </h4>
+
+
+                <div class="score-header">
+
+                    <span>
+                        EVENT
+                    </span>
+
+                    <span>
+                        SCORE
+                    </span>
+
+                    <span>
+                        12s
+                    </span>
+
+                    <span>
+                        STATUS
+                    </span>
+
+                </div>
+
+
+                ${countingHTML}
+
+
+                ${
+                    droppedHTML
+                        ? `
+
+                            <h4>
+                                Non-Counting Events
+                            </h4>
+
+                            ${droppedHTML}
+
+                        `
+                        : ""
+                }
+
+
+                <h4>
+                    State Championship
+                </h4>
+
+
+                <div class="score-line championship">
+
+                    <span>
+                        State Championship
+                    </span>
+
+                    <strong>
+                        ${
+                            championship.score ||
+                            "—"
+                        }
+                    </strong>
+
+                    <strong>
+                        ${
+                            championship.twelves ||
+                            0
+                        }
+                    </strong>
+
+                    <span>
+                        COUNTS
+                    </span>
+
+                </div>
+
+
+                <div class="score-total">
+
+                    <span>
+                        SHOOTER OF THE YEAR
+                    </span>
+
+                    <strong>
+                        ${shooter.totalScore}
+                    </strong>
+
+                    <strong>
+                        ${shooter.totalTwelves}
+                        12s
+                    </strong>
+
+                </div>
+
+            </div>
+
+        `;
+
+
+        // Put scorecard immediately
+        // below the shooter row
+
+        row.insertAdjacentElement(
+            "afterend",
+            details
+        );
+
+    }
+);
+
         }
     );
 }
