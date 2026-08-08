@@ -148,9 +148,13 @@
                 </div>
 
 
-                <span class="event-link">
-                    2026 Season
-                </span>
+             <button
+    type="button"
+    class="event-link event-details-button"
+    onclick="openEventDetails('waldos')"
+>
+    View Details →
+</button>
 
             </article>
 
@@ -186,9 +190,13 @@
                 </div>
 
 
-                <span class="event-link">
-                    2026 Season
-                </span>
+             <button
+    type="button"
+    class="event-link event-details-button"
+    onclick="openEventDetails('percyquin')"
+>
+    View Details →
+</button>
 
             </article>
 
@@ -224,9 +232,13 @@
                 </div>
 
 
-                <span class="event-link">
-                    2026 Season
-                </span>
+                <button
+    type="button"
+    class="event-link event-details-button"
+    onclick="openEventDetails('pearlriver')"
+>
+    View Details →
+</button>
 
             </article>
 
@@ -261,10 +273,13 @@
 
                 </div>
 
-
-                <span class="event-link">
-                    2026 Season
-                </span>
+<button
+    type="button"
+    class="event-link event-details-button"
+    onclick="openEventDetails('laurel')"
+>
+    View Details →
+</button>
 
             </article>
 
@@ -299,10 +314,13 @@
 
                 </div>
 
-
-                <span class="event-link">
-                    2026 Season
-                </span>
+<button
+    type="button"
+    class="event-link event-details-button"
+    onclick="openEventDetails('littleriver')"
+>
+    View Details →
+</button>
 
             </article>
 
@@ -412,7 +430,158 @@
     </div>
 
 </footer>
+<!-- =========================
+     EVENT DETAILS MODAL
+========================= -->
 
+<div
+    id="event-details-modal"
+    class="event-modal"
+    aria-hidden="true"
+>
+
+    <div class="event-modal-panel">
+
+        <button
+            type="button"
+            class="event-modal-close"
+            onclick="closeEventDetails()"
+            aria-label="Close event details"
+        >
+            ×
+        </button>
+
+
+        <p class="eyebrow">
+            EVENT DETAILS
+        </p>
+
+
+        <h2 id="event-details-name">
+            Event Name
+        </h2>
+
+
+        <div class="event-detail-grid">
+
+
+            <div class="event-detail-item">
+
+                <span>
+                    DATE
+                </span>
+
+                <strong id="event-details-date">
+                    —
+                </strong>
+
+            </div>
+
+
+            <div class="event-detail-item">
+
+                <span>
+                    EVENT TYPE
+                </span>
+
+                <strong id="event-details-type">
+                    —
+                </strong>
+
+            </div>
+
+
+            <div class="event-detail-item">
+
+                <span>
+                    LOCATION
+                </span>
+
+                <strong id="event-details-location">
+                    —
+                </strong>
+
+            </div>
+
+
+            <div class="event-detail-item">
+
+                <span>
+                    CONTACT
+                </span>
+
+                <strong id="event-details-contact">
+                    —
+                </strong>
+
+            </div>
+
+
+        </div>
+
+
+        <div class="event-detail-section">
+
+            <h3>
+                Registration
+            </h3>
+
+            <p id="event-details-registration">
+                —
+            </p>
+
+        </div>
+
+
+        <div class="event-detail-section">
+
+            <h3>
+                Results
+            </h3>
+
+            <p id="event-details-results">
+                —
+            </p>
+
+        </div>
+
+
+        <div class="event-weather-placeholder">
+
+            <span class="weather-icon">
+                ☀
+            </span>
+
+            <div>
+
+                <strong>
+                    Local Weather
+                </strong>
+
+                <p>
+                    Weather information will be available
+                    when event location details are published.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <button
+            type="button"
+            class="button button-outline"
+            onclick="closeEventDetails()"
+        >
+            Close
+        </button>
+
+    </div>
+
+</div>
+
+
+<script src="js/events.js"></script>
 
 </body>
 
