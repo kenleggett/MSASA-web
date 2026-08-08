@@ -13,7 +13,7 @@ const eventData = {
         contact: "Event organizer contact information.",
         details: "Specific event information will be posted here.",
         results: "Results will be posted after the event.",
-resultsUrl: "
+        resultsUrl: "
     },
 
     percyquin: {
@@ -24,7 +24,7 @@ resultsUrl: "
         contact: "Event organizer contact information.",
         details: "Specific event information will be posted here.",
         results: "Results will be posted after the event.",
-resultsUrl: ""
+        resultsUrl: ""
     },
 
     pearlriver: {
@@ -35,7 +35,7 @@ resultsUrl: ""
         contact: "Event organizer contact information.",
         details: "Specific event information will be posted here.",
         results: "Results will be posted after the event.",
-resultsUrl: ""
+        resultsUrl: ""
     },
 
     laurel: {
@@ -46,7 +46,7 @@ resultsUrl: ""
         contact: "Event organizer contact information.",
         details: "Specific event information will be posted here.",
         results: "Results will be posted after the event.",
-resultsUrl: ""
+        resultsUrl: ""
     },
 
     littleriver: {
@@ -57,7 +57,7 @@ resultsUrl: ""
         contact: "Event organizer contact information.",
         details: "Specific event information will be posted here.",
         results: "Results will be posted after the event.",
-resultsUrl: ""
+        resultsUrl: ""
     },
 
     statechampionship: {
@@ -68,7 +68,7 @@ resultsUrl: ""
         contact: "TBD",
         details: "Specific event information will be posted here.",
         results: "Results will be posted after the event.",
-resultsUrl: ""
+        resultsUrl: ""
     }
 
 };
@@ -118,9 +118,34 @@ function openEventDetails(eventId) {
     "event-details-details"
 ).textContent = event.details;
 
-    document.getElementById(
-        "event-details-results"
-    ).textContent = event.results;
+    const resultsElement = document.getElementById(
+    "event-details-results"
+);
+
+resultsElement.textContent = event.results;
+
+if (event.resultsUrl) {
+
+    const resultsLink = document.createElement("a");
+
+    resultsLink.href = event.resultsUrl;
+
+    resultsLink.target = "_blank";
+
+    resultsLink.rel = "noopener noreferrer";
+
+    resultsLink.textContent = "View Event Results →";
+
+    resultsLink.className = "event-results-link";
+
+    resultsElement.appendChild(
+        document.createElement("br")
+    );
+
+    resultsElement.appendChild(
+        resultsLink
+    );
+}
 
     modal.classList.add("active");
 
