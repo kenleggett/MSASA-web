@@ -3,19 +3,42 @@
 // 2026 SHOOTER OF THE YEAR
 // =====================================================
 
+const INVALID_CLASSES = [
+    "Total Entries",
+    "Column E",
+    "Column G",
+    "Column I",
+    "Column K",
+    "Column M",
+    "Column O"
+];
 
-// Calculate one shooter's standings information
+
+// Check whether this is a real shooter record
+function isValidShooter(shooter) {
+
+    if (!shooter || !shooter.name || !shooter.class) {
+        return false;
+    }
+
+    return !INVALID_CLASSES.some(
+        invalid =>
+            shooter.class
+                .toLowerCase()
+                .startsWith(invalid.toLowerCase())
+    );
+}
+
+
+// Calculate one shooter
 function calculateShooter(shooter) {
 
-    // Get qualifying events that have a score
     const qualifyingEvents = shooter.events
         .filter(event =>
             typeof event.score === "number" &&
             event.score > 0
         )
-        .sort((a, b) =>
-            b.score - a.score
-        );
+        .sort((a, b) => b.score - a.score);
 
 
     // Highest three qualifying scores
@@ -23,7 +46,7 @@ function calculateShooter(shooter) {
         qualifyingEvents.slice(0, 3);
 
 
-    // Championship score
+    // Championship
     const championshipScore =
         shooter.championship &&
         typeof shooter.championship.score === "number"
@@ -31,7 +54,6 @@ function calculateShooter(shooter) {
             : 0;
 
 
-    // Total of highest three qualifying scores
     const qualifyingTotal =
         bestThree.reduce(
             (total, event) =>
@@ -40,13 +62,11 @@ function calculateShooter(shooter) {
         );
 
 
-    // Shooter of the Year total
     const totalScore =
         qualifyingTotal +
         championshipScore;
 
 
-    // 12s from the three counting qualifying events
     const qualifyingTwelves =
         bestThree.reduce(
             (total, event) =>
@@ -55,10 +75,9 @@ function calculateShooter(shooter) {
         );
 
 
-    // Championship 12s
     const championshipTwelves =
         shooter.championship &&
-        shooter.championship.twelves
+        typeof shooter.championship.twelves === "number"
             ? shooter.championship.twelves
             : 0;
 
@@ -77,90 +96,59 @@ function calculateShooter(shooter) {
 }
 
 
-
 // =====================================================
-// CALCULATE ALL STANDINGS
+// CALCULATE STANDINGS
 // =====================================================
 
 function calculateStandings() {
 
     return shooters
+        .filter(isValidShooter)
         .map(calculateShooter)
-
         .sort((a, b) => {
 
-            // Highest score first
-            if (
-                b.totalScore !==
-                a.totalScore
-            ) {
-
-                return (
-                    b.totalScore -
-                    a.totalScore
-                );
-
+            if (b.totalScore !== a.totalScore) {
+                return b.totalScore - a.totalScore;
             }
 
-
-            // Tie breaker:
-            // highest total 12 count
-            return (
-                b.totalTwelves -
-                a.totalTwelves
-            );
-
+            return b.totalTwelves - a.totalTwelves;
         });
-
 }
-
 
 
 // =====================================================
 // DISPLAY STANDINGS
 // =====================================================
 
-function displayStandings(
-    filter = "all"
-) {
+function displayStandings(filter = "all") {
 
     const table =
-        document.getElementById(
-            "standings-body"
-        );
-
+        document.getElementById("standings-body");
 
     if (!table) {
         return;
     }
 
-
     table.innerHTML = "";
-
 
     let standings =
         calculateStandings();
 
 
-    // Filter by class
     if (filter !== "all") {
 
         standings =
             standings.filter(
                 shooter =>
-                    shooter.class
-                        .toLowerCase() ===
+                    shooter.class.toLowerCase() ===
                     filter.toLowerCase()
             );
-
     }
 
 
-    // No shooters
     if (standings.length === 0) {
 
         table.innerHTML = `
-
             <div class="standing-row">
 
                 <strong>—</strong>
@@ -176,59 +164,48 @@ function displayStandings(
                 <strong>—</strong>
 
             </div>
-
         `;
 
         return;
     }
 
 
-    // Create rows
-    standings.forEach(
-        (shooter, index) => {
+    standings.forEach((shooter, index) => {
 
-            const row =
-                document.createElement(
-                    "div"
-                );
+        const row =
+            document.createElement("div");
 
+        row.className =
+            "standing-row";
 
-            row.className =
-                "standing-row";
+        row.innerHTML = `
 
+            <strong>
+                ${index + 1}
+            </strong>
 
-            row.innerHTML = `
+            <span>
+                ${shooter.name}
+            </span>
 
-                <strong>
-                    ${index + 1}
-                </strong>
+            <span>
+                ${shooter.class}
+            </span>
 
-                <span>
-                    ${shooter.name}
-                </span>
+            <strong>
+                ${shooter.totalScore}
+            </strong>
 
-                <span>
-                    ${shooter.class}
-                </span>
+            <strong>
+                ${shooter.totalTwelves}
+            </strong>
 
-                <strong>
-                    ${shooter.totalScore}
-                </strong>
+        `;
 
-                <strong>
-                    ${shooter.totalTwelves}
-                </strong>
+        table.appendChild(row);
 
-            `;
-
-
-            table.appendChild(row);
-
-        }
-    );
-
+    });
 }
-
 
 
 // =====================================================
@@ -236,9 +213,7 @@ function displayStandings(
 // =====================================================
 
 const classFilter =
-    document.getElementById(
-        "class-filter"
-    );
+    document.getElementById("class-filter");
 
 
 if (classFilter) {
@@ -247,15 +222,11 @@ if (classFilter) {
         "change",
         function () {
 
-            displayStandings(
-                this.value
-            );
+            displayStandings(this.value);
 
         }
     );
-
 }
-
 
 
 // =====================================================
