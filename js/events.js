@@ -12,7 +12,8 @@ const eventData = {
         location: "Venue information available from event organizer.",
         contact: "Event organizer contact information.",
         details: "Specific event information will be posted here.",
-        results: "Results will be posted after the event."
+        results: "Results will be posted after the event.",
+resultsUrl: "
     },
 
     percyquin: {
@@ -22,7 +23,8 @@ const eventData = {
         location: "Venue information available from event organizer.",
         contact: "Event organizer contact information.",
         details: "Specific event information will be posted here.",
-        results: "Results will be posted after the event."
+        results: "Results will be posted after the event.",
+resultsUrl: ""
     },
 
     pearlriver: {
@@ -32,7 +34,8 @@ const eventData = {
         location: "Venue information available from event organizer.",
         contact: "Event organizer contact information.",
         details: "Specific event information will be posted here.",
-        results: "Results will be posted after the event."
+        results: "Results will be posted after the event.",
+resultsUrl: ""
     },
 
     laurel: {
@@ -42,7 +45,8 @@ const eventData = {
         location: "Venue information available from event organizer.",
         contact: "Event organizer contact information.",
         details: "Specific event information will be posted here.",
-        results: "Results will be posted after the event."
+        results: "Results will be posted after the event.",
+resultsUrl: ""
     },
 
     littleriver: {
@@ -52,7 +56,8 @@ const eventData = {
         location: "Venue information available from event organizer.",
         contact: "Event organizer contact information.",
         details: "Specific event information will be posted here.",
-        results: "Results will be posted after the event."
+        results: "Results will be posted after the event.",
+resultsUrl: ""
     },
 
     statechampionship: {
@@ -62,7 +67,8 @@ const eventData = {
         location: "TBD",
         contact: "TBD",
         details: "Specific event information will be posted here.",
-        results: "State Championship results will be posted after the event."
+        results: "Results will be posted after the event.",
+resultsUrl: ""
     }
 
 };
