@@ -1,71 +1,95 @@
 // =====================================================
 // MISSISSIPPI ASA
-// SHOOTER OF THE YEAR DATA
+// 2026 SHOOTER OF THE YEAR
 // =====================================================
 
-const shooters = [
-
-    // Example structure:
-    //
-    // {
-    //     name: "Shooter Name",
-    //     class: "Known",
-    //     scores: [
-    //         { score: 0, twelves: 0 },
-    //         { score: 0, twelves: 0 },
-    //         { score: 0, twelves: 0 },
-    //         { score: 0, twelves: 0 }
-    //     ]
-    // }
-
-];
-
-
-// =====================================================
-// CALCULATE SHOOTER TOTAL
-// =====================================================
+// The actual shooter data is stored in:
+// js/standings-data.js
 
 function calculateShooter(shooter) {
 
-    const validScores = shooter.scores
+    // Get the six qualifying event scores.
+    // Championship is NOT included here.
+    const qualifyingEvents = shooter.scores
         .filter(event => event.score > 0)
         .sort((a, b) => b.score - a.score);
 
-    const countingScores = validScores.slice(0, 4);
 
-    const totalScore = countingScores.reduce(
+    // Shooter of the Year counts the
+    // three highest qualifying scores.
+    const bestThree = qualifyingEvents.slice(0, 3);
+
+
+    // Add the championship separately.
+    const championshipScore =
+        shooter.championship?.score || 0;
+
+
+    // Calculate total score.
+    const qualifyingTotal = bestThree.reduce(
         (total, event) => total + event.score,
         0
     );
 
-    const totalTwelves = countingScores.reduce(
+
+    const totalScore =
+        qualifyingTotal + championshipScore;
+
+
+    // Calculate qualifying-event 12s.
+    const qualifyingTwelves = bestThree.reduce(
         (total, event) => total + event.twelves,
         0
     );
 
+
+    // Add championship 12s.
+    const championshipTwelves =
+        shooter.championship?.twelves || 0;
+
+
+    const totalTwelves =
+        qualifyingTwelves + championshipTwelves;
+
+
     return {
+
         ...shooter,
+
         totalScore,
-        totalTwelves
+
+        totalTwelves,
+
+        countingEvents: bestThree
+
     };
+
 }
 
 
 // =====================================================
-// SORT STANDINGS
+// CALCULATE ALL STANDINGS
 // =====================================================
 
 function calculateStandings() {
 
     return shooters
+
         .map(calculateShooter)
+
         .sort((a, b) => {
 
+            // Highest total score first.
             if (b.totalScore !== a.totalScore) {
+
                 return b.totalScore - a.totalScore;
+
             }
 
-            return b.totalTwelves - a.totalTwelves;
+            // If scores are tied,
+            // highest 12 count wins.
+            return b.totalTwelves -
+                   a.totalTwelves;
 
         });
 
@@ -78,77 +102,114 @@ function calculateStandings() {
 
 function displayStandings(filter = "all") {
 
-    const table = document.getElementById(
-        "standings-body"
-    );
+    const table =
+        document.getElementById(
+            "standings-body"
+        );
+
 
     if (!table) {
         return;
     }
 
+
     table.innerHTML = "";
 
-    let standings = calculateStandings();
 
+    let standings =
+        calculateStandings();
+
+
+    // Filter by class.
     if (filter !== "all") {
 
-        standings = standings.filter(
-            shooter =>
-                shooter.class.toLowerCase() === filter
-        );
+        standings =
+            standings.filter(
+
+                shooter =>
+
+                    shooter.class
+                        .toLowerCase()
+                        === filter.toLowerCase()
+
+            );
 
     }
 
 
+    // No shooters found.
     if (standings.length === 0) {
 
         table.innerHTML = `
+
             <div class="standing-row">
+
                 <strong>—</strong>
-                <span>Standings Coming Soon</span>
+
+                <span>
+                    No shooters found
+                </span>
+
                 <span>—</span>
+
                 <strong>—</strong>
+
                 <strong>—</strong>
+
             </div>
+
         `;
 
         return;
+
     }
 
 
-    standings.forEach((shooter, index) => {
+    // Display each shooter.
+    standings.forEach(
 
-        const row = document.createElement("div");
+        (shooter, index) => {
 
-        row.className = "standing-row";
+            const row =
+                document.createElement(
+                    "div"
+                );
 
-        row.innerHTML = `
 
-            <strong>
-                ${index + 1}
-            </strong>
+            row.className =
+                "standing-row";
 
-            <span>
-                ${shooter.name}
-            </span>
 
-            <span>
-                ${shooter.class}
-            </span>
+            row.innerHTML = `
 
-            <strong>
-                ${shooter.totalScore}
-            </strong>
+                <strong>
+                    ${index + 1}
+                </strong>
 
-            <strong>
-                ${shooter.totalTwelves}
-            </strong>
+                <span>
+                    ${shooter.name}
+                </span>
 
-        `;
+                <span>
+                    ${shooter.class}
+                </span>
 
-        table.appendChild(row);
+                <strong>
+                    ${shooter.totalScore}
+                </strong>
 
-    });
+                <strong>
+                    ${shooter.totalTwelves}
+                </strong>
+
+            `;
+
+
+            table.appendChild(row);
+
+        }
+
+    );
 
 }
 
@@ -158,12 +219,17 @@ function displayStandings(filter = "all") {
 // =====================================================
 
 const classFilter =
-    document.getElementById("class-filter");
+    document.getElementById(
+        "class-filter"
+    );
+
 
 if (classFilter) {
 
     classFilter.addEventListener(
+
         "change",
+
         function () {
 
             displayStandings(
@@ -171,13 +237,14 @@ if (classFilter) {
             );
 
         }
+
     );
 
 }
 
 
 // =====================================================
-// INITIAL DISPLAY
+// INITIAL LOAD
 // =====================================================
 
 displayStandings();
