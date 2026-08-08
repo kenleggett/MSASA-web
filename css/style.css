@@ -50,15 +50,15 @@ a {
     padding: 20px 0;
 }
 
-.brand h1 {
-    margin: 0;
-    font-size: 32px;
+.brand {
+    display: flex;
+    align-items: center;
 }
 
-.brand p {
-    margin: 2px 0 0;
-    font-size: 14px;
-    opacity: 0.85;
+.site-logo {
+    width: 230px;
+    height: auto;
+    display: block;
 }
 
 
