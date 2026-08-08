@@ -1711,3 +1711,25 @@ body.modal-open {
     }
 
 }
+/* =========================================================
+   EVENT RESULTS LINK
+========================================================= */
+
+.event-results-link {
+    display: inline-block;
+
+    margin-top: 12px;
+
+    color: #203f25;
+
+    font-weight: 700;
+
+    text-decoration: none;
+}
+
+
+.event-results-link:hover {
+    color: #b68a3c;
+
+    text-decoration: underline;
+}
