@@ -3,6 +3,11 @@
 // 2026 SHOOTER OF THE YEAR
 // =====================================================
 
+
+// -----------------------------------------------------
+// INVALID DATA ROWS
+// -----------------------------------------------------
+
 const INVALID_CLASSES = [
     "Total Entries",
     "Column E",
@@ -14,10 +19,17 @@ const INVALID_CLASSES = [
 ];
 
 
-// Check whether this is a real shooter record
+// -----------------------------------------------------
+// CHECK FOR VALID SHOOTER
+// -----------------------------------------------------
+
 function isValidShooter(shooter) {
 
-    if (!shooter || !shooter.name || !shooter.class) {
+    if (!shooter) {
+        return false;
+    }
+
+    if (!shooter.name || !shooter.class) {
         return false;
     }
 
@@ -30,15 +42,21 @@ function isValidShooter(shooter) {
 }
 
 
-// Calculate one shooter
+// -----------------------------------------------------
+// CALCULATE SHOOTER
+// -----------------------------------------------------
+
 function calculateShooter(shooter) {
 
-    const qualifyingEvents = shooter.events
-        .filter(event =>
-            typeof event.score === "number" &&
-            event.score > 0
-        )
-        .sort((a, b) => b.score - a.score);
+    const qualifyingEvents =
+        shooter.events
+            .filter(event =>
+                typeof event.score === "number" &&
+                event.score > 0
+            )
+            .sort(
+                (a, b) => b.score - a.score
+            );
 
 
     // Highest three qualifying scores
@@ -46,7 +64,7 @@ function calculateShooter(shooter) {
         qualifyingEvents.slice(0, 3);
 
 
-    // Championship
+    // State Championship
     const championshipScore =
         shooter.championship &&
         typeof shooter.championship.score === "number"
@@ -54,6 +72,7 @@ function calculateShooter(shooter) {
             : 0;
 
 
+    // Add the three best qualifying scores
     const qualifyingTotal =
         bestThree.reduce(
             (total, event) =>
@@ -62,11 +81,13 @@ function calculateShooter(shooter) {
         );
 
 
+    // Final Shooter of the Year score
     const totalScore =
         qualifyingTotal +
         championshipScore;
 
 
+    // 12s from the three counting qualifying scores
     const qualifyingTwelves =
         bestThree.reduce(
             (total, event) =>
@@ -75,6 +96,7 @@ function calculateShooter(shooter) {
         );
 
 
+    // Championship 12s
     const championshipTwelves =
         shooter.championship &&
         typeof shooter.championship.twelves === "number"
@@ -82,6 +104,7 @@ function calculateShooter(shooter) {
             : 0;
 
 
+    // Final Shooter of the Year 12 count
     const totalTwelves =
         qualifyingTwelves +
         championshipTwelves;
@@ -96,9 +119,9 @@ function calculateShooter(shooter) {
 }
 
 
-// =====================================================
-// CALCULATE STANDINGS
-// =====================================================
+// -----------------------------------------------------
+// CALCULATE ALL STANDINGS
+// -----------------------------------------------------
 
 function calculateStandings() {
 
@@ -107,68 +130,102 @@ function calculateStandings() {
         .map(calculateShooter)
         .sort((a, b) => {
 
+            // Highest score first
             if (b.totalScore !== a.totalScore) {
-                return b.totalScore - a.totalScore;
+
+                return (
+                    b.totalScore -
+                    a.totalScore
+                );
             }
 
-            return b.totalTwelves - a.totalTwelves;
+
+            // Tie breaker = 12 count
+            return (
+                b.totalTwelves -
+                a.totalTwelves
+            );
+
         });
 }
 
 
-// =====================================================
+// -----------------------------------------------------
 // DISPLAY STANDINGS
-// =====================================================
+// -----------------------------------------------------
 
 function displayStandings(
-    filter = "all",
-    search = ""
+    classFilterValue = "all",
+    searchValue = ""
 ) {
 
-
     const table =
-        document.getElementById("standings-body");
+        document.getElementById(
+            "standings-body"
+        );
+
 
     if (!table) {
         return;
     }
 
-    table.innerHTML = "";
 
     let standings =
         calculateStandings();
-if (filter !== "all") {
-
-    standings =
-        standings.filter(
-            shooter =>
-                shooter.class.toLowerCase() ===
-                filter.toLowerCase()
-        );
-}
 
 
-// Search shooter name
-if (search.trim() !== "") {
+    // -------------------------------------------------
+    // CLASS FILTER
+    // -------------------------------------------------
 
-    const searchText =
-        search.trim().toLowerCase();
+    if (classFilterValue !== "all") {
 
-    standings =
-        standings.filter(
-            shooter =>
-                shooter.name
-                    .toLowerCase()
-                    .includes(searchText)
-        );
-}
+        standings =
+            standings.filter(
+                shooter =>
+                    shooter.class ===
+                    classFilterValue
+            );
+    }
 
-   
 
+    // -------------------------------------------------
+    // SEARCH FILTER
+    // -------------------------------------------------
+
+    const search =
+        searchValue
+            .trim()
+            .toLowerCase();
+
+
+    if (search !== "") {
+
+        standings =
+            standings.filter(
+                shooter =>
+                    shooter.name
+                        .toLowerCase()
+                        .includes(search)
+            );
+    }
+
+
+    // -------------------------------------------------
+    // CLEAR TABLE
+    // -------------------------------------------------
+
+    table.innerHTML = "";
+
+
+    // -------------------------------------------------
+    // NO RESULTS
+    // -------------------------------------------------
 
     if (standings.length === 0) {
 
         table.innerHTML = `
+
             <div class="standing-row">
 
                 <strong>—</strong>
@@ -184,111 +241,128 @@ if (search.trim() !== "") {
                 <strong>—</strong>
 
             </div>
+
         `;
 
         return;
     }
 
 
-    standings.forEach((shooter, index) => {
+    // -------------------------------------------------
+    // DISPLAY RESULTS
+    // -------------------------------------------------
 
-        const row =
-            document.createElement("div");
+    standings.forEach(
+        (shooter, index) => {
 
-        row.className =
-            "standing-row";
+            const row =
+                document.createElement(
+                    "div"
+                );
 
-        row.innerHTML = `
 
-            <strong>
-                ${index + 1}
-            </strong>
+            row.className =
+                "standing-row";
 
-            <span>
-                ${shooter.name}
-            </span>
 
-            <span>
-                ${shooter.class}
-            </span>
+            row.innerHTML = `
 
-            <strong>
-                ${shooter.totalScore}
-            </strong>
+                <strong>
+                    ${index + 1}
+                </strong>
 
-            <strong>
-                ${shooter.totalTwelves}
-            </strong>
+                <span>
+                    ${shooter.name}
+                </span>
 
-        `;
+                <span>
+                    ${shooter.class}
+                </span>
 
-        table.appendChild(row);
+                <strong>
+                    ${shooter.totalScore}
+                </strong>
 
-    });
+                <strong>
+                    ${shooter.totalTwelves}
+                </strong>
+
+            `;
+
+
+            table.appendChild(row);
+
+        }
+    );
 }
 
-// =====================================================
-// CLASS FILTER
-// =====================================================
 
-const classFilter =
-    document.getElementById("class-filter");
-
-const shooterSearch =
-    document.getElementById("shooter-search");
-
+// -----------------------------------------------------
+// BUILD CLASS DROPDOWN
+// -----------------------------------------------------
 
 function buildClassFilter() {
+
+    const classFilter =
+        document.getElementById(
+            "class-filter"
+        );
+
 
     if (!classFilter) {
         return;
     }
 
-    // Remove the temporary options
+
+    // Clear existing options
     classFilter.innerHTML = "";
 
-    // All classes option
+
+    // All Classes
     const allOption =
-        document.createElement("option");
+        document.createElement(
+            "option"
+        );
+
 
     allOption.value = "all";
-    allOption.textContent = "All Classes";
 
-    classFilter.appendChild(allOption);
+    allOption.textContent =
+        "All Classes";
 
 
-    // Get actual classes from the data file
-    const classes = [...asaClasses].sort(
-        (a, b) => a.localeCompare(b)
+    classFilter.appendChild(
+        allOption
     );
 
 
-    classes.forEach(className => {
-
-        const option =
-            document.createElement("option");
-
-        option.value = className;
-
-        option.textContent = className;
-
-        classFilter.appendChild(option);
-
-    });
+    // Get classes from data file
+    const classes =
+        [...asaClasses].sort(
+            (a, b) =>
+                a.localeCompare(b)
+        );
 
 
-    // Filter when selection changes
-   if (classFilter) {
+    classes.forEach(
+        className => {
 
-    classFilter.addEventListener(
-        "change",
-        function () {
+            const option =
+                document.createElement(
+                    "option"
+                );
 
-            displayStandings(
-                this.value,
-                shooterSearch
-                    ? shooterSearch.value
-                    : ""
+
+            option.value =
+                className;
+
+
+            option.textContent =
+                className;
+
+
+            classFilter.appendChild(
+                option
             );
 
         }
@@ -296,33 +370,70 @@ function buildClassFilter() {
 }
 
 
-if (shooterSearch) {
+// -----------------------------------------------------
+// CONNECT CONTROLS
+// -----------------------------------------------------
 
-    shooterSearch.addEventListener(
-        "input",
-        function () {
+function connectControls() {
 
-            displayStandings(
-                classFilter
-                    ? classFilter.value
-                    : "all",
+    const classFilter =
+        document.getElementById(
+            "class-filter"
+        );
 
-                this.value
-            );
 
-        }
-    );
+    const shooterSearch =
+        document.getElementById(
+            "shooter-search"
+        );
+
+
+    // Class dropdown
+    if (classFilter) {
+
+        classFilter.addEventListener(
+            "change",
+            function () {
+
+                displayStandings(
+                    this.value,
+                    shooterSearch
+                        ? shooterSearch.value
+                        : ""
+                );
+
+            }
+        );
+    }
+
+
+    // Shooter search
+    if (shooterSearch) {
+
+        shooterSearch.addEventListener(
+            "input",
+            function () {
+
+                displayStandings(
+                    classFilter
+                        ? classFilter.value
+                        : "all",
+
+                    this.value
+                );
+
+            }
+        );
+    }
 }
-    
-    
- 
 
 
-// =====================================================
-// INITIALIZE
-// =====================================================
+// -----------------------------------------------------
+// INITIALIZE PAGE
+// -----------------------------------------------------
 
 buildClassFilter();
 
-displayStandings();
+connectControls();
 
+displayStandings();
