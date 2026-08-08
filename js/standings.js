@@ -298,8 +298,7 @@ function displayStandings(
                 );
 
 
-            row.className =
-                "standing-row";
+            row.className = "standing-row soy-result-row";
 
 
             const ranking =
