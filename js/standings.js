@@ -120,7 +120,11 @@ function calculateStandings() {
 // DISPLAY STANDINGS
 // =====================================================
 
-function displayStandings(filter = "all") {
+function displayStandings(
+    filter = "all",
+    search = ""
+) {
+
 
     const table =
         document.getElementById("standings-body");
@@ -133,17 +137,33 @@ function displayStandings(filter = "all") {
 
     let standings =
         calculateStandings();
+if (filter !== "all") {
+
+    standings =
+        standings.filter(
+            shooter =>
+                shooter.class.toLowerCase() ===
+                filter.toLowerCase()
+        );
+}
 
 
-    if (filter !== "all") {
+// Search shooter name
+if (search.trim() !== "") {
 
-        standings =
-            standings.filter(
-                shooter =>
-                    shooter.class.toLowerCase() ===
-                    filter.toLowerCase()
-            );
-    }
+    const searchText =
+        search.trim().toLowerCase();
+
+    standings =
+        standings.filter(
+            shooter =>
+                shooter.name
+                    .toLowerCase()
+                    .includes(searchText)
+        );
+}
+
+   
 
 
     if (standings.length === 0) {
@@ -214,6 +234,9 @@ function displayStandings(filter = "all") {
 const classFilter =
     document.getElementById("class-filter");
 
+const shooterSearch =
+    document.getElementById("shooter-search");
+
 
 function buildClassFilter() {
 
@@ -255,16 +278,44 @@ function buildClassFilter() {
 
 
     // Filter when selection changes
+   if (classFilter) {
+
     classFilter.addEventListener(
         "change",
         function () {
 
-            displayStandings(this.value);
+            displayStandings(
+                this.value,
+                shooterSearch
+                    ? shooterSearch.value
+                    : ""
+            );
 
         }
     );
-
 }
+
+
+if (shooterSearch) {
+
+    shooterSearch.addEventListener(
+        "input",
+        function () {
+
+            displayStandings(
+                classFilter
+                    ? classFilter.value
+                    : "all",
+
+                this.value
+            );
+
+        }
+    );
+}
+    
+    
+ 
 
 
 // =====================================================
