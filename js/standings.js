@@ -298,7 +298,19 @@ function displayStandings(
                 );
 
 
-            row.className = "standing-row soy-result-row";
+           row.className = "standing-row soy-result-row";
+
+if (ranking.rank === 1) {
+    row.classList.add("podium-first");
+}
+
+if (ranking.rank === 2) {
+    row.classList.add("podium-second");
+}
+
+if (ranking.rank === 3) {
+    row.classList.add("podium-third");
+}
 
 
             const ranking =
@@ -867,6 +879,18 @@ function displayEventStandings(eventName) {
 
             row.className =
                 "standing-row event-result-row";
+
+            if (index === 0) {
+    row.classList.add("podium-first");
+}
+
+if (index === 1) {
+    row.classList.add("podium-second");
+}
+
+if (index === 2) {
+    row.classList.add("podium-third");
+}
 
 
             row.innerHTML = `
