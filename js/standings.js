@@ -150,7 +150,6 @@ function calculateStandings() {
 // =====================================================
 // DISPLAY STANDINGS
 // =====================================================
-
 function displayStandings(
     selectedClass = "all",
     searchText = ""
@@ -167,15 +166,26 @@ function displayStandings(
     }
 
 
-    let standings =
+    // -------------------------------------------------
+    // GET COMPLETE STANDINGS FIRST
+    // -------------------------------------------------
+
+    const allStandings =
         calculateStandings();
 
 
-    // Class filter
+    // -------------------------------------------------
+    // DETERMINE THE RANKING GROUP
+    // -------------------------------------------------
+
+    let rankingStandings =
+        allStandings;
+
+
     if (selectedClass !== "all") {
 
-        standings =
-            standings.filter(
+        rankingStandings =
+            allStandings.filter(
                 shooter =>
                     shooter.class ===
                     selectedClass
@@ -184,7 +194,41 @@ function displayStandings(
     }
 
 
-    // Shooter search
+    // -------------------------------------------------
+    // CREATE RANK LOOKUP
+    // -------------------------------------------------
+
+    const rankLookup =
+        new Map();
+
+
+    rankingStandings.forEach(
+        (shooter, index) => {
+
+            rankLookup.set(
+                shooter.name,
+                {
+                    rank: index + 1,
+                    total: rankingStandings.length
+                }
+            );
+
+        }
+    );
+
+
+    // -------------------------------------------------
+    // APPLY CLASS FILTER
+    // -------------------------------------------------
+
+    let standings =
+        rankingStandings;
+
+
+    // -------------------------------------------------
+    // APPLY SHOOTER SEARCH
+    // -------------------------------------------------
+
     const search =
         searchText
             .trim()
@@ -204,11 +248,17 @@ function displayStandings(
     }
 
 
-    // Clear old rows
+    // -------------------------------------------------
+    // CLEAR CURRENT LIST
+    // -------------------------------------------------
+
     table.innerHTML = "";
 
 
-    // No results
+    // -------------------------------------------------
+    // NO RESULTS
+    // -------------------------------------------------
+
     if (standings.length === 0) {
 
         table.innerHTML = `
@@ -235,9 +285,12 @@ function displayStandings(
     }
 
 
-    // Display shooters
+    // -------------------------------------------------
+    // DISPLAY SHOOTERS
+    // -------------------------------------------------
+
     standings.forEach(
-        (shooter, index) => {
+        (shooter) => {
 
             const row =
                 document.createElement(
@@ -249,10 +302,16 @@ function displayStandings(
                 "standing-row";
 
 
+            const ranking =
+                rankLookup.get(
+                    shooter.name
+                );
+
+
             row.innerHTML = `
 
                 <strong>
-                    ${index + 1}
+                    ${ranking.rank}
                 </strong>
 
                 <span>
@@ -276,278 +335,278 @@ function displayStandings(
 
             table.appendChild(row);
 
+
             // -------------------------------------------------
-// SHOOTER SCORECARD
-// -------------------------------------------------
+            // SHOOTER SCORECARD
+            // -------------------------------------------------
 
-row.style.cursor = "pointer";
+            row.style.cursor =
+                "pointer";
 
-row.addEventListener(
-    "click",
-    function () {
 
-        const existing =
-            document.getElementById(
-                "details-" +
-                index
-            );
+            row.addEventListener(
+                "click",
+                function () {
 
+                    const existing =
+                        document.getElementById(
+                            "details-" +
+                            shooter.name
+                                .replace(
+                                    /\s+/g,
+                                    "-"
+                                )
+                        );
 
-        // Close an already-open scorecard
-        if (existing) {
 
-            existing.remove();
+                    if (existing) {
 
-            return;
+                        existing.remove();
 
-        }
+                        return;
 
+                    }
 
-        const details =
-            document.createElement(
-                "div"
-            );
 
+                    const details =
+                        document.createElement(
+                            "div"
+                        );
 
-        details.id =
-            "details-" +
-            index;
 
+                    details.id =
+                        "details-" +
+                        shooter.name
+                            .replace(
+                                /\s+/g,
+                                "-"
+                            );
 
-        details.className =
-            "shooter-details";
 
+                    details.className =
+                        "shooter-details";
 
-        // ---------------------------------------------
-        // COUNTING EVENTS
-        // ---------------------------------------------
 
-        const countingEvents =
-            shooter.countingEvents || [];
+                    const countingEvents =
+                        shooter.countingEvents ||
+                        [];
 
 
-        let countingHTML = "";
+                    let countingHTML =
+                        "";
 
 
-        countingEvents.forEach(
-            event => {
+                    countingEvents.forEach(
+                        event => {
 
-                countingHTML += `
+                            countingHTML += `
 
-                    <div class="score-line">
+                                <div class="score-line">
 
-                        <span>
-                            ${event.event}
-                        </span>
+                                    <span>
+                                        ${event.event}
+                                    </span>
 
-                        <strong>
-                            ${event.score}
-                        </strong>
+                                    <strong>
+                                        ${event.score}
+                                    </strong>
 
-                        <strong>
-                            ${event.twelves || 0}
-                        </strong>
+                                    <strong>
+                                        ${event.twelves || 0}
+                                    </strong>
 
-                        <span>
-                            COUNTS
-                        </span>
+                                    <span>
+                                        COUNTS
+                                    </span>
 
-                    </div>
+                                </div>
 
-                `;
+                            `;
 
-            }
-        );
+                        }
+                    );
 
 
-        // ---------------------------------------------
-        // NON-COUNTING EVENTS
-        // ---------------------------------------------
+                    const nonCountingEvents =
+                        (shooter.events || [])
+                            .filter(
+                                event =>
+                                    !countingEvents
+                                        .includes(
+                                            event
+                                        )
+                            );
 
-        const nonCountingEvents =
-            (shooter.events || [])
-                .filter(
-                    event =>
-                        !countingEvents.includes(
-                            event
-                        )
-                );
 
+                    let droppedHTML =
+                        "";
 
-        let droppedHTML = "";
 
+                    nonCountingEvents.forEach(
+                        event => {
 
-        nonCountingEvents.forEach(
-            event => {
+                            droppedHTML += `
 
-                droppedHTML += `
+                                <div class="score-line dropped">
 
-                    <div class="score-line dropped">
+                                    <span>
+                                        ${event.event}
+                                    </span>
 
-                        <span>
-                            ${event.event}
-                        </span>
+                                    <span>
+                                        ${
+                                            event.score ||
+                                            "—"
+                                        }
+                                    </span>
 
-                        <span>
-                            ${
-                                event.score ||
-                                "—"
-                            }
-                        </span>
+                                    <span>
+                                        ${
+                                            event.twelves ||
+                                            0
+                                        }
+                                    </span>
 
-                        <span>
-                            ${
-                                event.twelves ||
-                                0
-                            }
-                        </span>
+                                    <span>
+                                        —
+                                    </span>
 
-                        <span>
-                            —
-                        </span>
+                                </div>
 
-                    </div>
+                            `;
 
-                `;
+                        }
+                    );
 
-            }
-        );
 
+                    const championship =
+                        shooter.championship ||
+                        {};
 
-        // ---------------------------------------------
-        // CHAMPIONSHIP
-        // ---------------------------------------------
 
-        const championship =
-            shooter.championship || {};
+                    details.innerHTML = `
 
+                        <div class="scorecard">
 
-        details.innerHTML = `
+                            <h3>
+                                ${shooter.name}
+                            </h3>
 
-            <div class="scorecard">
+                            <p>
+                                ${shooter.class}
+                            </p>
 
-                <h3>
-                    ${shooter.name}
-                </h3>
-
-                <p>
-                    ${shooter.class}
-                </p>
-
-
-                <h4>
-                    Counting Scores
-                </h4>
-
-
-                <div class="score-header">
-
-                    <span>
-                        EVENT
-                    </span>
-
-                    <span>
-                        SCORE
-                    </span>
-
-                    <span>
-                        12s
-                    </span>
-
-                    <span>
-                        STATUS
-                    </span>
-
-                </div>
-
-
-                ${countingHTML}
-
-
-                ${
-                    droppedHTML
-                        ? `
 
                             <h4>
-                                Non-Counting Events
+                                Counting Scores
                             </h4>
 
-                            ${droppedHTML}
 
-                        `
-                        : ""
+                            <div class="score-header">
+
+                                <span>
+                                    EVENT
+                                </span>
+
+                                <span>
+                                    SCORE
+                                </span>
+
+                                <span>
+                                    12s
+                                </span>
+
+                                <span>
+                                    STATUS
+                                </span>
+
+                            </div>
+
+
+                            ${countingHTML}
+
+
+                            ${
+                                droppedHTML
+                                    ? `
+
+                                        <h4>
+                                            Non-Counting Events
+                                        </h4>
+
+                                        ${droppedHTML}
+
+                                    `
+                                    : ""
+                            }
+
+
+                            <h4>
+                                State Championship
+                            </h4>
+
+
+                            <div class="score-line championship">
+
+                                <span>
+                                    State Championship
+                                </span>
+
+                                <strong>
+                                    ${
+                                        championship.score ||
+                                        "—"
+                                    }
+                                </strong>
+
+                                <strong>
+                                    ${
+                                        championship.twelves ||
+                                        0
+                                    }
+                                </strong>
+
+                                <span>
+                                    COUNTS
+                                </span>
+
+                            </div>
+
+
+                            <div class="score-total">
+
+                                <span>
+                                    SHOOTER OF THE YEAR
+                                </span>
+
+                                <strong>
+                                    ${shooter.totalScore}
+                                </strong>
+
+                                <strong>
+                                    ${shooter.totalTwelves}
+                                    12s
+                                </strong>
+
+                            </div>
+
+
+                        </div>
+
+                    `;
+
+
+                    row.insertAdjacentElement(
+                        "afterend",
+                        details
+                    );
+
                 }
-
-
-                <h4>
-                    State Championship
-                </h4>
-
-
-                <div class="score-line championship">
-
-                    <span>
-                        State Championship
-                    </span>
-
-                    <strong>
-                        ${
-                            championship.score ||
-                            "—"
-                        }
-                    </strong>
-
-                    <strong>
-                        ${
-                            championship.twelves ||
-                            0
-                        }
-                    </strong>
-
-                    <span>
-                        COUNTS
-                    </span>
-
-                </div>
-
-
-                <div class="score-total">
-
-                    <span>
-                        SHOOTER OF THE YEAR
-                    </span>
-
-                    <strong>
-                        ${shooter.totalScore}
-                    </strong>
-
-                    <strong>
-                        ${shooter.totalTwelves}
-                        12s
-                    </strong>
-
-                </div>
-
-            </div>
-
-        `;
-
-
-        // Put scorecard immediately
-        // below the shooter row
-
-        row.insertAdjacentElement(
-            "afterend",
-            details
-        );
-
-    }
-);
+            );
 
         }
     );
 }
-
 
 // =====================================================
 // BUILD CLASS DROPDOWN
