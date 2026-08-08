@@ -609,6 +609,322 @@ function displayStandings(
 }
 
 // =====================================================
+// EVENT RESULTS
+// =====================================================
+
+function displayEventStandings(eventName) {
+
+    const table =
+        document.getElementById(
+            "standings-body"
+        );
+
+    const classFilter =
+        document.getElementById(
+            "class-filter"
+        );
+
+    const searchBox =
+        document.getElementById(
+            "shooter-search"
+        );
+
+
+    if (!table) {
+        return;
+    }
+
+
+    let results = [];
+
+
+    // -------------------------------------------------
+    // BUILD EVENT RESULTS
+    // -------------------------------------------------
+
+    shooters
+        .filter(isValidShooter)
+        .forEach(shooter => {
+
+            let result = null;
+
+
+            // State Championship
+            if (
+                eventName ===
+                "State Championship"
+            ) {
+
+                if (
+                    shooter.championship &&
+                    typeof shooter.championship.score ===
+                        "number" &&
+                    shooter.championship.score > 0
+                ) {
+
+                    result = {
+
+                        name:
+                            shooter.name,
+
+                        class:
+                            shooter.class,
+
+                        score:
+                            shooter.championship.score,
+
+                        twelves:
+                            shooter.championship.twelves ||
+                            0
+
+                    };
+
+                }
+
+            }
+
+
+            // Regular event
+            else {
+
+                const event =
+                    (shooter.events || [])
+                        .find(
+                            item =>
+                                item.event ===
+                                eventName
+                        );
+
+
+                if (
+                    event &&
+                    typeof event.score ===
+                        "number" &&
+                    event.score > 0
+                ) {
+
+                    result = {
+
+                        name:
+                            shooter.name,
+
+                        class:
+                            shooter.class,
+
+                        score:
+                            event.score,
+
+                        twelves:
+                            event.twelves ||
+                            0
+
+                    };
+
+                }
+
+            }
+
+
+            if (result) {
+
+                results.push(result);
+
+            }
+
+        });
+
+
+    // -------------------------------------------------
+    // CLASS FILTER
+    // -------------------------------------------------
+
+    const selectedClass =
+        classFilter
+            ? classFilter.value
+            : "all";
+
+
+    if (
+        selectedClass !==
+        "all"
+    ) {
+
+        results =
+            results.filter(
+                shooter =>
+                    shooter.class ===
+                    selectedClass
+            );
+
+    }
+
+
+    // -------------------------------------------------
+    // SEARCH FILTER
+    // -------------------------------------------------
+
+    const search =
+        searchBox
+            ? searchBox.value
+                .trim()
+                .toLowerCase()
+            : "";
+
+
+    if (search !== "") {
+
+        results =
+            results.filter(
+                shooter =>
+                    shooter.name
+                        .toLowerCase()
+                        .includes(search)
+            );
+
+    }
+
+
+    // -------------------------------------------------
+    // SORT RESULTS
+    // -------------------------------------------------
+
+    results.sort(
+        (a, b) => {
+
+            if (
+                b.score !==
+                a.score
+            ) {
+
+                return (
+                    b.score -
+                    a.score
+                );
+
+            }
+
+
+            return (
+                b.twelves -
+                a.twelves
+            );
+
+        }
+    );
+
+
+    // -------------------------------------------------
+    // CLEAR TABLE
+    // -------------------------------------------------
+
+    table.innerHTML = "";
+
+
+    // -------------------------------------------------
+    // NO RESULTS
+    // -------------------------------------------------
+
+    if (
+        results.length === 0
+    ) {
+
+        table.innerHTML = `
+
+            <div class="standing-row">
+
+                <strong>—</strong>
+
+                <span>
+                    No results found
+                </span>
+
+                <span>—</span>
+
+                <strong>—</strong>
+
+                <strong>—</strong>
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    // -------------------------------------------------
+    // DISPLAY RESULTS
+    // -------------------------------------------------
+
+    results.forEach(
+        (shooter, index) => {
+
+            const row =
+                document.createElement(
+                    "div"
+                );
+
+
+            row.className =
+                "standing-row event-result-row";
+
+
+            row.innerHTML = `
+
+                <strong>
+                    ${index + 1}
+                </strong>
+
+                <span>
+                    ${shooter.name}
+                </span>
+
+                <span>
+                    ${shooter.class}
+                </span>
+
+                <strong>
+                    ${shooter.score}
+                </strong>
+
+                <strong>
+                    ${shooter.twelves}
+                </strong>
+
+            `;
+
+
+            table.appendChild(
+                row
+            );
+
+        }
+    );
+
+
+    // -------------------------------------------------
+    // UPDATE PAGE TITLE
+    // -------------------------------------------------
+
+    const title =
+        document.querySelector(
+            ".page-hero h1"
+        );
+
+
+    if (title) {
+
+        title.textContent =
+            eventName +
+            " Results";
+
+    }
+
+}
+
+
+// =====================================================
 // BUILD CLASS DROPDOWN
 // =====================================================
 
@@ -702,6 +1018,11 @@ function connectControls() {
             "class-filter"
         );
 
+    const eventFilter =
+    document.getElementById(
+        "event-filter"
+    );
+
 
     const searchBox =
         document.getElementById(
@@ -716,8 +1037,48 @@ function connectControls() {
             "change",
             function () {
 
+             if (
+    eventFilter &&
+    eventFilter.value !==
+        "soy"
+) {
+
+    displayEventStandings(
+        eventFilter.value
+    );
+
+}
+
+else {
+
+    displayStandings(
+        dropdown.value,
+
+        searchBox
+            ? searchBox.value
+            : ""
+    );
+
+}
+
+            }
+        );
+// Event results selector
+if (eventFilter) {
+
+    eventFilter.addEventListener(
+        "change",
+        function () {
+
+            if (
+                this.value ===
+                "soy"
+            ) {
+
                 displayStandings(
-                    dropdown.value,
+                    dropdown
+                        ? dropdown.value
+                        : "all",
 
                     searchBox
                         ? searchBox.value
@@ -725,8 +1086,19 @@ function connectControls() {
                 );
 
             }
-        );
 
+            else {
+
+                displayEventStandings(
+                    this.value
+                );
+
+            }
+
+        }
+    );
+
+}
     }
 
 
@@ -737,15 +1109,29 @@ function connectControls() {
             "input",
             function () {
 
-                displayStandings(
+               if (
+    eventFilter &&
+    eventFilter.value !==
+        "soy"
+) {
 
-                    dropdown
-                        ? dropdown.value
-                        : "all",
+    displayEventStandings(
+        eventFilter.value
+    );
 
-                    searchBox.value
+}
 
-                );
+else {
+
+    displayStandings(
+        dropdown
+            ? dropdown.value
+            : "all",
+
+        searchBox.value
+    );
+
+}
 
             }
         );
