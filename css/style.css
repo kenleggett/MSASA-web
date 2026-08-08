@@ -216,7 +216,29 @@ a {
 .section-heading p {
     color: #555;
 }
+.event-type {
+    display: inline-block;
+    margin-bottom: 6px;
 
+    color: #b68a3c;
+
+    font-size: 12px;
+    font-weight: bold;
+
+    letter-spacing: 1px;
+}
+
+.featured-event {
+    border-left: 6px solid #b68a3c;
+}
+
+.featured-event .event-date {
+    background: #b68a3c;
+}
+
+.event-link:hover {
+    color: #b68a3c;
+}
 
 /* =========================================================
    QUICK LINK CARDS
