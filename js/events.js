@@ -1,6 +1,6 @@
 /* =========================================================
    MISSISSIPPI ASA
-   EVENT DETAILS
+   EVENT DETAILS + RESULTS
 ========================================================= */
 
 const eventData = {
@@ -12,8 +12,7 @@ const eventData = {
         location: "Venue information available from event organizer.",
         contact: "Event organizer contact information.",
         details: "Specific event information will be posted here.",
-        results: "Results will be posted after the event.",
-        resultsUrl: "
+        resultsEvent: "Waldo's"
     },
 
     percyquin: {
@@ -23,8 +22,7 @@ const eventData = {
         location: "Venue information available from event organizer.",
         contact: "Event organizer contact information.",
         details: "Specific event information will be posted here.",
-        results: "Results will be posted after the event.",
-        resultsUrl: ""
+        resultsEvent: "Percy Quinn"
     },
 
     pearlriver: {
@@ -34,8 +32,7 @@ const eventData = {
         location: "Venue information available from event organizer.",
         contact: "Event organizer contact information.",
         details: "Specific event information will be posted here.",
-        results: "Results will be posted after the event.",
-        resultsUrl: ""
+        resultsEvent: "Pearl River"
     },
 
     laurel: {
@@ -45,8 +42,7 @@ const eventData = {
         location: "Venue information available from event organizer.",
         contact: "Event organizer contact information.",
         details: "Specific event information will be posted here.",
-        results: "Results will be posted after the event.",
-        resultsUrl: ""
+        resultsEvent: "Laurel"
     },
 
     littleriver: {
@@ -56,8 +52,7 @@ const eventData = {
         location: "Venue information available from event organizer.",
         contact: "Event organizer contact information.",
         details: "Specific event information will be posted here.",
-        results: "Results will be posted after the event.",
-        resultsUrl: ""
+        resultsEvent: "Little River"
     },
 
     statechampionship: {
@@ -67,8 +62,7 @@ const eventData = {
         location: "TBD",
         contact: "TBD",
         details: "Specific event information will be posted here.",
-        results: "Results will be posted after the event.",
-        resultsUrl: ""
+        resultsEvent: "State Championship"
     }
 
 };
@@ -94,62 +88,87 @@ function openEventDetails(eventId) {
         return;
     }
 
+
     document.getElementById(
         "event-details-name"
     ).textContent = event.name;
+
 
     document.getElementById(
         "event-details-date"
     ).textContent = event.date;
 
+
     document.getElementById(
         "event-details-type"
     ).textContent = event.type;
+
 
     document.getElementById(
         "event-details-location"
     ).textContent = event.location;
 
+
     document.getElementById(
         "event-details-contact"
     ).textContent = event.contact;
 
-   document.getElementById(
-    "event-details-details"
-).textContent = event.details;
 
-    const resultsElement = document.getElementById(
-    "event-details-results"
-);
+    document.getElementById(
+        "event-details-details"
+    ).textContent = event.details;
 
-resultsElement.textContent = event.results;
 
-if (event.resultsUrl) {
+    /* -----------------------------------------------------
+       EVENT RESULTS LINK
+    ----------------------------------------------------- */
 
-    const resultsLink = document.createElement("a");
+    const resultsElement =
+        document.getElementById(
+            "event-details-results"
+        );
 
-    resultsLink.href = event.resultsUrl;
 
-    resultsLink.target = "_blank";
+    resultsElement.textContent =
+        "View Event Results →";
 
-    resultsLink.rel = "noopener noreferrer";
 
-    resultsLink.textContent = "View Event Results →";
+    const resultsLink =
+        document.createElement("a");
 
-    resultsLink.className = "event-results-link";
 
-    resultsElement.appendChild(
-        document.createElement("br")
-    );
+    resultsLink.href =
+        "standings.html?event=" +
+        encodeURIComponent(
+            event.resultsEvent
+        );
+
+
+    resultsLink.textContent =
+        "View Event Results →";
+
+
+    resultsLink.className =
+        "event-results-link";
+
+
+    resultsElement.innerHTML = "";
+
 
     resultsElement.appendChild(
         resultsLink
     );
-}
+
+
+    /* -----------------------------------------------------
+       OPEN MODAL
+    ----------------------------------------------------- */
 
     modal.classList.add("active");
 
-    document.body.classList.add("modal-open");
+    document.body.classList.add(
+        "modal-open"
+    );
 
 }
 
@@ -160,17 +179,25 @@ if (event.resultsUrl) {
 
 function closeEventDetails() {
 
-    const modal = document.getElementById(
-        "event-details-modal"
-    );
+    const modal =
+        document.getElementById(
+            "event-details-modal"
+        );
+
 
     if (!modal) {
         return;
     }
 
-    modal.classList.remove("active");
 
-    document.body.classList.remove("modal-open");
+    modal.classList.remove(
+        "active"
+    );
+
+
+    document.body.classList.remove(
+        "modal-open"
+    );
 
 }
 
@@ -188,7 +215,11 @@ document.addEventListener(
                 "event-details-modal"
             );
 
-        if (event.target === modal) {
+
+        if (
+            event.target ===
+            modal
+        ) {
 
             closeEventDetails();
 
@@ -206,7 +237,10 @@ document.addEventListener(
     "keydown",
     function (event) {
 
-        if (event.key === "Escape") {
+        if (
+            event.key ===
+            "Escape"
+        ) {
 
             closeEventDetails();
 
