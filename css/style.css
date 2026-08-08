@@ -1302,3 +1302,50 @@ a {
     }
 
 }
+
+/* =====================================================
+   EVENT RESULTS PODIUM
+===================================================== */
+
+.event-result-row {
+    transition:
+        transform 0.15s ease,
+        background-color 0.15s ease;
+}
+
+.event-result-row:hover {
+    transform: translateX(3px);
+}
+
+
+/* 1st place */
+
+.event-result-row:nth-child(1) {
+    background: #fff8df;
+    border-left: 5px solid #c9a227;
+}
+
+
+/* 2nd place */
+
+.event-result-row:nth-child(2) {
+    background: #f3f3f3;
+    border-left: 5px solid #9b9b9b;
+}
+
+
+/* 3rd place */
+
+.event-result-row:nth-child(3) {
+    background: #f8eee5;
+    border-left: 5px solid #a66a3f;
+}
+
+
+/* Make podium scores stand out */
+
+.event-result-row:nth-child(1) strong,
+.event-result-row:nth-child(2) strong,
+.event-result-row:nth-child(3) strong {
+    font-weight: 800;
+}
