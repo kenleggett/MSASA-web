@@ -1,10 +1,12 @@
-/* ================================
+/* =========================================================
    MISSISSIPPI ASA WEBSITE
    MAIN STYLESHEET
-================================ */
+========================================================= */
 
 
-/* RESET */
+/* =========================================================
+   RESET
+========================================================= */
 
 * {
     box-sizing: border-box;
@@ -22,8 +24,13 @@ body {
     line-height: 1.6;
 }
 
+img {
+    max-width: 100%;
+}
 
-/* GENERAL */
+a {
+    text-decoration: none;
+}
 
 .container {
     width: 90%;
@@ -31,12 +38,10 @@ body {
     margin: 0 auto;
 }
 
-a {
-    text-decoration: none;
-}
 
-
-/* HEADER */
+/* =========================================================
+   HEADER
+========================================================= */
 
 .site-header {
     background: #111a12;
@@ -57,19 +62,16 @@ a {
     align-items: center;
 }
 
-.brand {
-    display: flex;
-    align-items: center;
-}
-
 .site-logo {
-    display: block;
     width: 250px;
     height: auto;
+    display: block;
 }
 
 
-/* NAVIGATION */
+/* =========================================================
+   NAVIGATION
+========================================================= */
 
 .main-nav {
     display: flex;
@@ -86,89 +88,129 @@ a {
 }
 
 .main-nav a:hover {
-    opacity: 0.7;
+    color: #d5aa51;
 }
 
 
-/* HERO */
+/* =========================================================
+   HERO
+========================================================= */
 
 .hero {
-    background:
-        linear-gradient(
-            rgba(20, 35, 22, 0.70),
-            rgba(20, 35, 22, 0.70)
-        );
-
-    min-height: 500px;
+    min-height: 560px;
 
     display: flex;
     align-items: center;
+
+    background:
+        linear-gradient(
+            rgba(15, 25, 16, 0.82),
+            rgba(15, 25, 16, 0.82)
+        );
 
     color: white;
 }
 
 .hero-content {
-    padding: 80px 0;
+    padding: 90px 0;
 }
 
 .eyebrow {
+    margin: 0 0 12px;
+
     font-size: 13px;
     font-weight: bold;
+
     letter-spacing: 2px;
-    margin-bottom: 10px;
 }
 
-.hero h2 {
-    font-size: 56px;
-    line-height: 1.1;
-    max-width: 750px;
-    margin: 0 0 20px;
+.hero h1 {
+    max-width: 800px;
+
+    margin: 0 0 25px;
+
+    font-size: 64px;
+    line-height: 1.05;
 }
 
 .hero-text {
-    font-size: 22px;
     max-width: 650px;
-    margin-bottom: 30px;
+
+    margin: 0 0 35px;
+
+    font-size: 22px;
+}
+
+.hero-buttons {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
 }
 
 
-/* BUTTON */
+/* =========================================================
+   BUTTONS
+========================================================= */
 
 .button {
     display: inline-block;
 
+    padding: 14px 26px;
+
     background: #b68a3c;
     color: white;
-
-    padding: 14px 26px;
 
     border-radius: 5px;
 
     font-weight: bold;
+
+    transition: 0.2s ease;
 }
 
 .button:hover {
-    background: #966f2e;
+    background: #946d2c;
+    transform: translateY(-1px);
+}
+
+.button-outline {
+    background: transparent;
+
+    border: 2px solid white;
+}
+
+.button-outline:hover {
+    background: white;
+    color: #203f25;
 }
 
 
-/* SECTIONS */
+/* =========================================================
+   SECTION HEADINGS
+========================================================= */
 
 .quick-links,
-.events {
-    padding: 80px 0;
+.events,
+.standings,
+.classes,
+.contact {
+    padding: 85px 0;
 }
 
 .section-heading {
+    max-width: 720px;
+
+    margin: 0 auto 50px;
+
     text-align: center;
-    max-width: 700px;
-    margin: 0 auto 45px;
 }
 
 .section-heading h2 {
-    font-size: 38px;
-    color: #203f25;
     margin: 5px 0 15px;
+
+    color: #203f25;
+
+    font-size: 40px;
+    line-height: 1.2;
 }
 
 .section-heading p {
@@ -176,7 +218,9 @@ a {
 }
 
 
-/* CARDS */
+/* =========================================================
+   QUICK LINK CARDS
+========================================================= */
 
 .card-grid {
     display: grid;
@@ -195,18 +239,24 @@ a {
     border-radius: 8px;
 
     box-shadow:
-        0 5px 20px rgba(0, 0, 0, 0.08);
+        0 6px 20px rgba(0, 0, 0, 0.08);
+
+    border-top: 4px solid #b68a3c;
 }
 
-.card-icon {
+.card-number {
     color: #b68a3c;
-    font-weight: bold;
+
     font-size: 14px;
+    font-weight: bold;
 }
 
 .card h3 {
+    margin: 12px 0;
+
     color: #203f25;
-    font-size: 24px;
+
+    font-size: 25px;
 }
 
 .card p {
@@ -215,52 +265,226 @@ a {
 
 .card a {
     color: #203f25;
+
+    font-weight: bold;
+}
+
+.card a:hover {
+    color: #b68a3c;
+}
+
+
+/* =========================================================
+   EVENTS
+========================================================= */
+
+.events {
+    background: #e8e8e2;
+}
+
+.event-list {
+    max-width: 950px;
+
+    margin: auto;
+}
+
+.event-card {
+    display: flex;
+
+    align-items: center;
+
+    gap: 25px;
+
+    background: white;
+
+    padding: 25px;
+
+    border-radius: 8px;
+
+    box-shadow:
+        0 5px 15px rgba(0, 0, 0, 0.07);
+}
+
+.event-date {
+    min-width: 100px;
+
+    padding: 18px;
+
+    background: #203f25;
+
+    color: white;
+
+    text-align: center;
+
+    border-radius: 5px;
+}
+
+.event-date span {
+    display: block;
+
+    font-size: 13px;
+
+    opacity: 0.8;
+}
+
+.event-date strong {
+    display: block;
+
+    margin-top: 5px;
+
+    font-size: 22px;
+}
+
+.event-info {
+    flex: 1;
+}
+
+.event-info h3 {
+    margin: 0 0 5px;
+
+    color: #203f25;
+
+    font-size: 24px;
+}
+
+.event-info p {
+    margin: 0;
+
+    color: #555;
+}
+
+.event-link {
+    color: #203f25;
+
     font-weight: bold;
 }
 
 
-/* EVENTS */
+/* =========================================================
+   SHOOTER OF THE YEAR
+========================================================= */
 
-.events {
-    background: #e9e9e3;
+.standings {
+    background: white;
 }
 
-.event-placeholder {
-    background: white;
+.standings-preview {
+    max-width: 950px;
 
-    max-width: 850px;
-
-    margin: auto;
-
-    padding: 45px;
-
-    text-align: center;
+    margin: 0 auto 35px;
 
     border-radius: 8px;
+
+    overflow: hidden;
+
+    box-shadow:
+        0 5px 20px rgba(0, 0, 0, 0.08);
 }
 
-.event-placeholder h3 {
-    color: #203f25;
-    font-size: 28px;
+.standing-header,
+.standing-row {
+    display: grid;
+
+    grid-template-columns:
+        100px 1fr 180px 120px;
+
+    gap: 15px;
+
+    align-items: center;
+
+    padding: 18px 25px;
 }
 
-
-/* ABOUT */
-
-.about {
+.standing-header {
     background: #203f25;
+
     color: white;
 
+    font-size: 13px;
+
+    font-weight: bold;
+
+    letter-spacing: 1px;
+}
+
+.standing-row {
+    background: #f8f8f5;
+
+    color: #333;
+}
+
+.center-button {
+    text-align: center;
+}
+
+
+/* =========================================================
+   ASA CLASSES
+========================================================= */
+
+.classes {
+    background: #f0f0eb;
+}
+
+.class-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
+    gap: 20px;
+}
+
+.class-card {
+    background: white;
+
+    padding: 30px;
+
+    border-radius: 7px;
+
+    border-left: 5px solid #b68a3c;
+
+    box-shadow:
+        0 4px 15px rgba(0, 0, 0, 0.06);
+}
+
+.class-card h3 {
+    margin-top: 0;
+
+    color: #203f25;
+
+    font-size: 22px;
+}
+
+.class-card p {
+    margin-bottom: 0;
+
+    color: #666;
+}
+
+
+/* =========================================================
+   ABOUT
+========================================================= */
+
+.about {
     padding: 90px 0;
+
+    background: #203f25;
+
+    color: white;
 }
 
 .about-content {
-    text-align: center;
     max-width: 800px;
+
+    text-align: center;
 }
 
 .about h2 {
-    font-size: 40px;
+    margin: 5px 0 20px;
+
+    font-size: 42px;
 }
 
 .about p {
@@ -268,33 +492,112 @@ a {
 }
 
 
-/* FOOTER */
+/* =========================================================
+   CONTACT
+========================================================= */
 
-.site-footer {
-    background: #111;
-    color: white;
-    text-align: center;
-    padding: 40px 0;
+.contact {
+    background: white;
 }
 
-.site-footer h3 {
-    margin-bottom: 0;
+.contact-card {
+    max-width: 800px;
+
+    margin: auto;
+
+    padding: 45px;
+
+    text-align: center;
+
+    background: #f5f5f1;
+
+    border-radius: 8px;
+}
+
+.contact-card h3 {
+    color: #203f25;
+
+    font-size: 27px;
+}
+
+
+/* =========================================================
+   FOOTER
+========================================================= */
+
+.site-footer {
+    padding: 45px 0;
+
+    background: #111;
+
+    color: white;
+
+    text-align: center;
+}
+
+.footer-logo {
+    width: 180px;
+
+    margin-bottom: 10px;
+}
+
+.site-footer p {
+    margin: 5px 0;
 }
 
 .copyright {
-    margin-top: 25px;
+    margin-top: 25px !important;
+
     font-size: 13px;
-    opacity: 0.6;
+
+    opacity: 0.55;
 }
 
 
-/* MOBILE */
-@media (max-width: 750px) {
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (max-width: 900px) {
 
     .header-content {
         flex-direction: column;
-        gap: 20px;
+
         text-align: center;
+    }
+
+    .main-nav {
+        flex-wrap: wrap;
+
+        justify-content: center;
+
+        gap: 15px 20px;
+    }
+
+    .hero h1 {
+        font-size: 52px;
+    }
+
+    .card-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .class-grid {
+        grid-template-columns:
+            repeat(2, 1fr);
+    }
+
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 600px) {
+
+    .container {
+        width: 92%;
     }
 
     .site-logo {
@@ -302,29 +605,64 @@ a {
     }
 
     .main-nav {
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 12px 18px;
+        gap: 10px 15px;
+    }
+
+    .main-nav a {
+        font-size: 13px;
     }
 
     .hero {
-        min-height: 450px;
+        min-height: 500px;
     }
 
-    .hero h2 {
-        font-size: 40px;
+    .hero-content {
+        padding: 70px 0;
+    }
+
+    .hero h1 {
+        font-size: 42px;
     }
 
     .hero-text {
         font-size: 18px;
     }
 
-    .card-grid {
-        grid-template-columns: 1fr;
+    .hero-buttons {
+        flex-direction: column;
+
+        align-items: flex-start;
     }
 
     .section-heading h2 {
         font-size: 32px;
+    }
+
+    .event-card {
+        flex-direction: column;
+
+        align-items: flex-start;
+    }
+
+    .event-date {
+        width: 100%;
+    }
+
+    .standing-header,
+    .standing-row {
+        grid-template-columns:
+            50px 1fr 80px;
+
+        padding: 15px;
+    }
+
+    .standing-header span:nth-child(4),
+    .standing-row strong:last-child {
+        display: none;
+    }
+
+    .class-grid {
+        grid-template-columns: 1fr;
     }
 
     .about h2 {
