@@ -164,7 +164,17 @@ function displayStandings(
     if (!table) {
         return;
     }
+const title =
+    document.querySelector(
+        ".page-hero h1"
+    );
 
+if (title) {
+
+    title.textContent =
+        "Shooter of the Year";
+
+}
 
     // -------------------------------------------------
     // GET COMPLETE STANDINGS FIRST
@@ -298,25 +308,41 @@ function displayStandings(
                 );
 
 
-           row.className = "standing-row soy-result-row";
+     const ranking =
+    rankLookup.get(
+        shooter.name
+    );
+
+
+row.className =
+    "standing-row soy-result-row";
+
 
 if (ranking.rank === 1) {
-    row.classList.add("podium-first");
+
+    row.classList.add(
+        "podium-first"
+    );
+
 }
+
 
 if (ranking.rank === 2) {
-    row.classList.add("podium-second");
+
+    row.classList.add(
+        "podium-second"
+    );
+
 }
+
 
 if (ranking.rank === 3) {
-    row.classList.add("podium-third");
+
+    row.classList.add(
+        "podium-third"
+    );
+
 }
-
-
-            const ranking =
-                rankLookup.get(
-                    shooter.name
-                );
 
 
             row.innerHTML = `
