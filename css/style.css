@@ -1349,3 +1349,50 @@ a {
 .event-result-row:nth-child(3) strong {
     font-weight: 800;
 }
+
+/* =====================================================
+   SHOOTER OF THE YEAR PODIUM
+===================================================== */
+
+.soy-result-row {
+    transition:
+        transform 0.15s ease,
+        background-color 0.15s ease;
+}
+
+.soy-result-row:hover {
+    transform: translateX(3px);
+}
+
+
+/* 1st place */
+
+.soy-result-row:nth-child(1) {
+    background: #fff8df;
+    border-left: 5px solid #c9a227;
+}
+
+
+/* 2nd place */
+
+.soy-result-row:nth-child(2) {
+    background: #f3f3f3;
+    border-left: 5px solid #9b9b9b;
+}
+
+
+/* 3rd place */
+
+.soy-result-row:nth-child(3) {
+    background: #f8eee5;
+    border-left: 5px solid #a66a3f;
+}
+
+
+/* Highlight scores */
+
+.soy-result-row:nth-child(1) strong,
+.soy-result-row:nth-child(2) strong,
+.soy-result-row:nth-child(3) strong {
+    font-weight: 800;
+}
