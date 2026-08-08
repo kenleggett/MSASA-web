@@ -207,7 +207,6 @@ function displayStandings(filter = "all") {
     });
 }
 
-
 // =====================================================
 // CLASS FILTER
 // =====================================================
@@ -216,8 +215,46 @@ const classFilter =
     document.getElementById("class-filter");
 
 
-if (classFilter) {
+function buildClassFilter() {
 
+    if (!classFilter) {
+        return;
+    }
+
+    // Remove the temporary options
+    classFilter.innerHTML = "";
+
+    // All classes option
+    const allOption =
+        document.createElement("option");
+
+    allOption.value = "all";
+    allOption.textContent = "All Classes";
+
+    classFilter.appendChild(allOption);
+
+
+    // Get actual classes from the data file
+    const classes = [...asaClasses].sort(
+        (a, b) => a.localeCompare(b)
+    );
+
+
+    classes.forEach(className => {
+
+        const option =
+            document.createElement("option");
+
+        option.value = className;
+
+        option.textContent = className;
+
+        classFilter.appendChild(option);
+
+    });
+
+
+    // Filter when selection changes
     classFilter.addEventListener(
         "change",
         function () {
@@ -226,7 +263,17 @@ if (classFilter) {
 
         }
     );
+
 }
+
+
+// =====================================================
+// INITIALIZE
+// =====================================================
+
+buildClassFilter();
+
+displayStandings();
 
 
 // =====================================================
