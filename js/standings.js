@@ -1192,9 +1192,81 @@ else {
 // =====================================================
 // START PAGE
 // =====================================================
+// =====================================================
+// INITIALIZE STANDINGS VIEW
+// =====================================================
 
+function initializeStandingsView() {
+
+    const eventFilter =
+        document.getElementById(
+            "event-filter"
+        );
+
+
+    const params =
+        new URLSearchParams(
+            window.location.search
+        );
+
+
+    const requestedEvent =
+        params.get("event");
+
+
+    // -----------------------------------------------
+    // OPEN SPECIFIC EVENT FROM URL
+    // -----------------------------------------------
+
+    if (
+        requestedEvent &&
+        eventFilter
+    ) {
+
+        const matchingOption =
+            Array.from(
+                eventFilter.options
+            ).find(
+                option =>
+                    option.value ===
+                    requestedEvent
+            );
+
+
+        if (matchingOption) {
+
+            eventFilter.value =
+                requestedEvent;
+
+
+            displayEventStandings(
+                requestedEvent
+            );
+
+            return;
+
+        }
+
+    }
+
+
+    // -----------------------------------------------
+    // DEFAULT: SHOOTER OF THE YEAR
+    // -----------------------------------------------
+
+    if (eventFilter) {
+
+        eventFilter.value =
+            "soy";
+
+    }
+
+
+    displayStandings();
+
+}
 buildClassDropdown();
 
 connectControls();
 
-displayStandings();
+initializeStandingsView();
