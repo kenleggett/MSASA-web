@@ -94,10 +94,6 @@ async function addShooter() {
 
   try {
 
-    // -------------------------------------------------
-    // SEND TO API
-    // -------------------------------------------------
-
     const response =
       await fetch(
         "/api/add-shooter",
@@ -303,7 +299,7 @@ async function loadShooters() {
 
 
     // -------------------------------------------------
-    // SORT SHOOTERS
+    // SORT SHOOTERS ALPHABETICALLY
     // -------------------------------------------------
 
     const shooters =
@@ -357,6 +353,45 @@ async function loadShooters() {
     );
 
 
+    // -------------------------------------------------
+    // RENDER SHOOTER DIRECTORY
+    // -------------------------------------------------
+
+    renderShooterList(
+      shooters
+    );
+
+  }
+
+
+  catch (error) {
+
+    console.error(
+      "Load shooters error:",
+      error
+    );
+
+
+    dropdown.innerHTML =
+      `
+      <option value="">
+        Unable to load shooters
+      </option>
+      `;
+
+
+    list.innerHTML =
+      `
+      <p>
+        Unable to load shooters.
+      </p>
+      `;
+
+  }
+
+}
+
+
 // =======================================================
 // RENDER SHOOTER DIRECTORY
 // =======================================================
@@ -369,6 +404,11 @@ function renderShooterList(
     document.getElementById(
       "shooter-list"
     );
+
+
+  if (!list) {
+    return;
+  }
 
 
   const searchInput =
@@ -384,6 +424,10 @@ function renderShooterList(
           .toLowerCase()
       : "";
 
+
+  // ---------------------------------------------------
+  // FILTER BY NAME OR ASA NUMBER
+  // ---------------------------------------------------
 
   const filtered =
     shooters.filter(
@@ -410,6 +454,10 @@ function renderShooterList(
     );
 
 
+  // ---------------------------------------------------
+  // NO RESULTS
+  // ---------------------------------------------------
+
   if (
     filtered.length === 0
   ) {
@@ -425,6 +473,10 @@ function renderShooterList(
 
   }
 
+
+  // ---------------------------------------------------
+  // BUILD SHOOTER LIST
+  // ---------------------------------------------------
 
   list.innerHTML =
     filtered
@@ -458,7 +510,7 @@ function renderShooterList(
               )}"
             >
 
-              <div>
+              <div class="shooter-info">
 
                 <strong>
                   ${name}
@@ -483,9 +535,15 @@ function renderShooterList(
                   type="button"
                   onclick="editShooter(
                     ${Number(shooter.id)},
-                    ${JSON.stringify(shooter.name || "")},
-                    ${JSON.stringify(shooter.asa_number || "")},
-                    ${JSON.stringify(shooter.class || "")}
+                    ${JSON.stringify(
+                      shooter.name || ""
+                    )},
+                    ${JSON.stringify(
+                      shooter.asa_number || ""
+                    )},
+                    ${JSON.stringify(
+                      shooter.class || ""
+                    )}
                   )"
                 >
                   Edit
@@ -496,7 +554,9 @@ function renderShooterList(
                   type="button"
                   onclick="deactivateShooter(
                     ${Number(shooter.id)},
-                    ${JSON.stringify(shooter.name || "")}
+                    ${JSON.stringify(
+                      shooter.name || ""
+                    )}
                   )"
                 >
                   Deactivate
@@ -516,121 +576,6 @@ function renderShooterList(
 
 
 // =======================================================
-// RENDER SHOOTER DIRECTORY
-// =======================================================
-
-function renderShooterList(
-  shooters
-) {
-
-  const list =
-    document.getElementById(
-      "shooter-list"
-    );
-
-
-  const searchInput =
-    document.getElementById(
-      "shooter-search-admin"
-    );
-
-
-  const search =
-    searchInput
-      ? searchInput.value
-          .trim()
-          .toLowerCase()
-      : "";
-
-
-  const filtered =
-    shooters.filter(
-      shooter => {
-
-        const name =
-          String(
-            shooter.name || ""
-          ).toLowerCase();
-
-
-        const asa =
-          String(
-            shooter.asa_number || ""
-          ).toLowerCase();
-
-
-        return (
-          name.includes(search) ||
-          asa.includes(search)
-        );
-
-      }
-    );
-
-
-  if (
-    filtered.length === 0
-  ) {
-
-    list.innerHTML =
-      `
-      <p>
-        No matching shooters found.
-      </p>
-      `;
-
-    return;
-
-  }
-
-
-  list.innerHTML =
-    filtered
-      .map(
-        shooter => {
-
-          const name =
-            escapeHtml(
-              shooter.name || ""
-            );
-
-
-          const asa =
-            escapeHtml(
-              shooter.asa_number || ""
-            );
-
-
-          const className =
-            escapeHtml(
-              shooter.class || ""
-            );
-
-
-          return `
-            <div class="shooter-row">
-
-              <strong>
-                ${name}
-              </strong>
-
-              <span>
-                ${className}
-              </span>
-
-              <span>
-                ASA ${asa}
-              </span>
-
-            </div>
-          `;
-
-        }
-      )
-      .join("");
-
-}
-// =======================================================
 // EDIT SHOOTER
 // =======================================================
 
@@ -641,6 +586,10 @@ async function editShooter(
   currentClass
 ) {
 
+  // ---------------------------------------------------
+  // NAME
+  // ---------------------------------------------------
+
   const name =
     prompt(
       "Shooter name:",
@@ -648,8 +597,12 @@ async function editShooter(
     );
 
 
-  if (name === null) {
+  if (
+    name === null
+  ) {
+
     return;
+
   }
 
 
@@ -668,6 +621,10 @@ async function editShooter(
   }
 
 
+  // ---------------------------------------------------
+  // ASA NUMBER
+  // ---------------------------------------------------
+
   const asa =
     prompt(
       "ASA number:",
@@ -675,13 +632,19 @@ async function editShooter(
     );
 
 
-  if (asa === null) {
+  if (
+    asa === null
+  ) {
+
     return;
+
   }
 
 
   const cleanedAsa =
-    asa.trim().toUpperCase();
+    asa
+      .trim()
+      .toUpperCase();
 
 
   if (!cleanedAsa) {
@@ -695,6 +658,10 @@ async function editShooter(
   }
 
 
+  // ---------------------------------------------------
+  // CLASS
+  // ---------------------------------------------------
+
   const className =
     prompt(
       "Class:",
@@ -702,8 +669,12 @@ async function editShooter(
     );
 
 
-  if (className === null) {
+  if (
+    className === null
+  ) {
+
     return;
+
   }
 
 
@@ -721,6 +692,10 @@ async function editShooter(
 
   }
 
+
+  // ---------------------------------------------------
+  // SEND UPDATE
+  // ---------------------------------------------------
 
   try {
 
@@ -760,6 +735,10 @@ async function editShooter(
       await response.json();
 
 
+    // -------------------------------------------------
+    // ERROR
+    // -------------------------------------------------
+
     if (!result.ok) {
 
       alert(
@@ -771,6 +750,10 @@ async function editShooter(
 
     }
 
+
+    // -------------------------------------------------
+    // SUCCESS
+    // -------------------------------------------------
 
     alert(
       "Shooter updated successfully."
@@ -808,6 +791,10 @@ async function deactivateShooter(
   shooterName
 ) {
 
+  // ---------------------------------------------------
+  // CONFIRMATION
+  // ---------------------------------------------------
+
   const confirmed =
     confirm(
       `Deactivate ${shooterName}?\n\n` +
@@ -818,9 +805,15 @@ async function deactivateShooter(
 
 
   if (!confirmed) {
+
     return;
+
   }
 
+
+  // ---------------------------------------------------
+  // SEND DEACTIVATION REQUEST
+  // ---------------------------------------------------
 
   try {
 
@@ -851,6 +844,10 @@ async function deactivateShooter(
       await response.json();
 
 
+    // -------------------------------------------------
+    // ERROR
+    // -------------------------------------------------
+
     if (!result.ok) {
 
       alert(
@@ -862,6 +859,10 @@ async function deactivateShooter(
 
     }
 
+
+    // -------------------------------------------------
+    // SUCCESS
+    // -------------------------------------------------
 
     alert(
       `${shooterName} has been deactivated.`
@@ -888,6 +889,7 @@ async function deactivateShooter(
   }
 
 }
+
 
 // =======================================================
 // SAVE SCORE
@@ -965,7 +967,11 @@ async function saveScore() {
   }
 
 
-  if (!Number.isFinite(score)) {
+  if (
+    !Number.isFinite(
+      score
+    )
+  ) {
 
     status.textContent =
       "Please enter a valid score.";
@@ -976,7 +982,9 @@ async function saveScore() {
 
 
   if (
-    !Number.isFinite(twelves) ||
+    !Number.isFinite(
+      twelves
+    ) ||
     twelves < 0
   ) {
 
@@ -987,6 +995,10 @@ async function saveScore() {
 
   }
 
+
+  // ---------------------------------------------------
+  // SAVE
+  // ---------------------------------------------------
 
   try {
 
@@ -1023,6 +1035,10 @@ async function saveScore() {
       await response.json();
 
 
+    // -------------------------------------------------
+    // SUCCESS
+    // -------------------------------------------------
+
     if (result.ok) {
 
       status.textContent =
@@ -1042,15 +1058,18 @@ async function saveScore() {
 
       await loadScores();
 
-    }
-
-    else {
-
-      status.textContent =
-        result.error ||
-        "Unable to save score.";
+      return;
 
     }
+
+
+    // -------------------------------------------------
+    // ERROR
+    // -------------------------------------------------
+
+    status.textContent =
+      result.error ||
+      "Unable to save score.";
 
   }
 
@@ -1083,6 +1102,11 @@ async function loadScores() {
     );
 
 
+  if (!list) {
+    return;
+  }
+
+
   try {
 
     const response =
@@ -1097,6 +1121,10 @@ async function loadScores() {
     const result =
       await response.json();
 
+
+    // -------------------------------------------------
+    // NO VALID DATA
+    // -------------------------------------------------
 
     if (
       !result.ok ||
@@ -1125,12 +1153,17 @@ async function loadScores() {
     }
 
 
+    // -------------------------------------------------
+    // RENDER SCORES
+    // -------------------------------------------------
+
     list.innerHTML =
       result.scores
         .map(
           score => {
 
             return `
+
               <div class="score-row">
 
                 <strong>
@@ -1159,27 +1192,38 @@ async function loadScores() {
                 )}
                 12s
 
+
                 <button
                   type="button"
                   onclick="editScore(
-                    ${Number(score.id)},
-                    ${Number(score.score || 0)},
-                    ${Number(score.twelves || 0)}
+                    ${Number(
+                      score.id
+                    )},
+                    ${Number(
+                      score.score || 0
+                    )},
+                    ${Number(
+                      score.twelves || 0
+                    )}
                   )"
                 >
                   Edit
                 </button>
 
+
                 <button
                   type="button"
                   onclick="deleteScore(
-                    ${Number(score.id)}
+                    ${Number(
+                      score.id
+                    )}
                   )"
                 >
                   Delete
                 </button>
 
               </div>
+
             `;
 
           }
@@ -1252,11 +1296,15 @@ async function editScore(
 
 
   const numericScore =
-    Number(score);
+    Number(
+      score
+    );
 
 
   const numericTwelves =
-    Number(twelves);
+    Number(
+      twelves
+    );
 
 
   if (
@@ -1305,7 +1353,8 @@ async function editScore(
 
             })
 
-        }
+          }
+
       );
 
 
@@ -1362,7 +1411,9 @@ async function deleteScore(
 
 
   if (!confirmed) {
+
     return;
+
   }
 
 
@@ -1382,7 +1433,9 @@ async function deleteScore(
 
           body:
             JSON.stringify({
+
               id
+
             })
 
         }
@@ -1435,7 +1488,9 @@ function escapeHtml(
   value
 ) {
 
-  return String(value)
+  return String(
+    value
+  )
 
     .replace(
       /&/g,
@@ -1466,12 +1521,16 @@ function escapeHtml(
 
 
 // =======================================================
-// SEARCH SHOOTERS
+// INITIALIZE ADMIN DASHBOARD
 // =======================================================
 
 document.addEventListener(
   "DOMContentLoaded",
   () => {
+
+    // -------------------------------------------------
+    // SHOOTER SEARCH
+    // -------------------------------------------------
 
     const searchInput =
       document.getElementById(
@@ -1507,13 +1566,28 @@ document.addEventListener(
               )
             ) {
 
+              const shooters =
+                [...result.shooters]
+                  .sort(
+                    (a, b) =>
+                      String(
+                        a.name || ""
+                      ).localeCompare(
+                        String(
+                          b.name || ""
+                        )
+                      )
+                  );
+
+
               renderShooterList(
-                result.shooters
+                shooters
               );
 
             }
 
           }
+
 
           catch (error) {
 
