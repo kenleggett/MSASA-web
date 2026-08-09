@@ -5,13 +5,24 @@
 
 <meta charset="UTF-8">
 
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
+<meta
+    name="description"
+    content="Mississippi ASA tournament administration dashboard."
+>
 
 <title>
-MSASA Admin Dashboard
+Mississippi ASA Admin Dashboard
 </title>
 
-<link rel="stylesheet" href="css/style.css">
+<link
+    rel="stylesheet"
+    href="css/style.css?v=5"
+>
 
 </head>
 
@@ -19,312 +30,636 @@ MSASA Admin Dashboard
 <body>
 
 
-<header>
+<!-- =====================================================
+     HEADER
+===================================================== -->
 
-<h1>
-Mississippi ASA Admin Dashboard
-</h1>
+<header class="site-header">
+
+    <div class="header-container">
+
+        <h1>
+            Mississippi ASA
+            <span>Admin Dashboard</span>
+        </h1>
+
+    </div>
 
 </header>
 
 
 
-<main>
+<!-- =====================================================
+     MAIN
+===================================================== -->
+
+<main class="admin-main">
 
 
-
-<!-- ============================= -->
-<!-- ADD SHOOTER -->
-<!-- ============================= -->
+<!-- =====================================================
+     ADD SHOOTER
+===================================================== -->
 
 <section class="admin-card">
 
-<h2>
-Add Shooter
-</h2>
+    <div class="admin-card-header">
+
+        <p class="eyebrow">
+            SHOOTER MANAGEMENT
+        </p>
+
+        <h2>
+            Add Shooter
+        </h2>
+
+        <p>
+            Add a shooter to the 2026 Mississippi ASA
+            tournament database.
+        </p>
+
+    </div>
 
 
-<label for="shooter-name">
-Shooter Name
-</label>
+    <div class="admin-form">
 
 
-<input
-id="shooter-name"
-placeholder="Enter shooter name">
+        <!-- SHOOTER NAME -->
 
+        <div class="form-group">
 
+            <label for="shooter-name">
+                Shooter Name
+            </label>
 
-<label for="asa-number">
-ASA Number
-</label>
+            <input
+                id="shooter-name"
+                type="text"
+                placeholder="Enter shooter name"
+                autocomplete="name"
+                autocapitalize="words"
+            >
 
-
-<input
-id="asa-number"
-placeholder="ASA Number">
-
-
-
-<label for="class-name">
-Class
-</label>
-
-
-<select id="class-name">
-
-<option value="Semi-Pro Open">
-Semi-Pro Open
-</option>
-
-
-<option value="Pro">
-Pro
-</option>
-
-
-<option value="Known 40">
-Known 40
-</option>
-
-
-<option value="Senior Pins">
-Senior Pins
-</option>
-
-
-</select>
+        </div>
 
 
 
-<button
-type="button"
-onclick="addShooter()">
+        <!-- ASA NUMBER -->
 
-Add Shooter
+        <div class="form-group">
 
-</button>
+            <label for="asa-number">
+                ASA Number
+            </label>
+
+            <input
+                id="asa-number"
+                type="text"
+                inputmode="numeric"
+                placeholder="Enter ASA number"
+                autocomplete="off"
+            >
+
+            <small>
+                ASA number must be unique.
+            </small>
+
+        </div>
 
 
 
-<p id="shooter-status"></p>
+        <!-- CLASS -->
 
+        <div class="form-group">
+
+            <label for="class-name">
+                Class
+            </label>
+
+            <select id="class-name">
+
+                <option value="">
+                    Select Class
+                </option>
+
+
+                <optgroup label="Professional">
+
+                    <option value="Open Pro">
+                        Open Pro
+                    </option>
+
+                    <option value="Known Pro">
+                        Known Pro
+                    </option>
+
+                    <option value="Senior Pro">
+                        Senior Pro
+                    </option>
+
+                    <option value="Senior Known Pro">
+                        Senior Known Pro
+                    </option>
+
+                    <option value="Women's Pro">
+                        Women's Pro
+                    </option>
+
+                    <option value="Women's Known Pro">
+                        Women's Known Pro
+                    </option>
+
+                </optgroup>
+
+
+                <optgroup label="Semi-Pro">
+
+                    <option value="Semi-Pro">
+                        Semi-Pro
+                    </option>
+
+                    <option value="Known 50">
+                        Known 50
+                    </option>
+
+                    <option value="Senior Known 50">
+                        Senior Known 50
+                    </option>
+
+                </optgroup>
+
+
+                <optgroup label="45 Yard Classes">
+
+                    <option value="Men's Open 45">
+                        Men's Open 45
+                    </option>
+
+                    <option value="Men's Known 45">
+                        Men's Known 45
+                    </option>
+
+                    <option value="Men's Hunter 45">
+                        Men's Hunter 45
+                    </option>
+
+                    <option value="Senior Open">
+                        Senior Open
+                    </option>
+
+                    <option value="Senior Known 45">
+                        Senior Known 45
+                    </option>
+
+                    <option value="Senior Hunter 45">
+                        Senior Hunter 45
+                    </option>
+
+                    <option value="Women's Open 45">
+                        Women's Open 45
+                    </option>
+
+                    <option value="Women's Known 45">
+                        Women's Known 45
+                    </option>
+
+                </optgroup>
+
+
+                <optgroup label="40 Yard Classes">
+
+                    <option value="Men's Known 40">
+                        Men's Known 40
+                    </option>
+
+                    <option value="Men's Open 40">
+                        Men's Open 40
+                    </option>
+
+                    <option value="Men's Pins 40">
+                        Men's Pins 40
+                    </option>
+
+                    <option value="Super Senior Open">
+                        Super Senior Open
+                    </option>
+
+                    <option value="Super Senior Known">
+                        Super Senior Known
+                    </option>
+
+                    <option value="Senior Masters Open">
+                        Senior Masters Open
+                    </option>
+
+                    <option value="Senior Masters Known">
+                        Senior Masters Known
+                    </option>
+
+                    <option value="Senior Pins">
+                        Senior Pins
+                    </option>
+
+                    <option value="Super Senior Pins">
+                        Super Senior Pins
+                    </option>
+
+                    <option value="Women's Pins 40">
+                        Women's Pins 40
+                    </option>
+
+                    <option value="Women's Known 40">
+                        Women's Known 40
+                    </option>
+
+                    <option value="Women's Senior Known">
+                        Women's Senior Known
+                    </option>
+
+                    <option value="Women's Super Senior Known">
+                        Women's Super Senior Known
+                    </option>
+
+                    <option value="Young Adult Open Male">
+                        Young Adult Open Male
+                    </option>
+
+                    <option value="Young Adult Open Female">
+                        Young Adult Open Female
+                    </option>
+
+                    <option value="Young Adult Pins Male">
+                        Young Adult Pins Male
+                    </option>
+
+                    <option value="Young Adult Pins Female">
+                        Young Adult Pins Female
+                    </option>
+
+                    <option value="Crossbow 40">
+                        Crossbow 40
+                    </option>
+
+                </optgroup>
+
+
+                <optgroup label="30 Yard Classes">
+
+                    <option value="Women's Pins 30">
+                        Women's Pins 30
+                    </option>
+
+                    <option value="Senior Legends">
+                        Senior Legends
+                    </option>
+
+                    <option value="Men's Pins 30">
+                        Men's Pins 30
+                    </option>
+
+                    <option value="Barebow Recurve">
+                        Barebow Recurve
+                    </option>
+
+                    <option value="Olympic Recurve">
+                        Olympic Recurve
+                    </option>
+
+                </optgroup>
+
+
+                <optgroup label="Youth / Eagle">
+
+                    <option value="Youth Open Boys">
+                        Youth Open Boys
+                    </option>
+
+                    <option value="Youth Open Girls">
+                        Youth Open Girls
+                    </option>
+
+                    <option value="Youth Pins Boys">
+                        Youth Pins Boys
+                    </option>
+
+                    <option value="Youth Pins Girls">
+                        Youth Pins Girls
+                    </option>
+
+                    <option value="Youth Olympic Recurve">
+                        Youth Olympic Recurve
+                    </option>
+
+                    <option value="Youth Barebow Recurve">
+                        Youth Barebow Recurve
+                    </option>
+
+                    <option value="Eagle Open Boys">
+                        Eagle Open Boys
+                    </option>
+
+                    <option value="Eagle Open Girls">
+                        Eagle Open Girls
+                    </option>
+
+                    <option value="Eagle Pins Boys">
+                        Eagle Pins Boys
+                    </option>
+
+                    <option value="Eagle Pins Girls">
+                        Eagle Pins Girls
+                    </option>
+
+                    <option value="Eagle Recurve">
+                        Eagle Recurve
+                    </option>
+
+                    <option value="Junior Eagle Open">
+                        Junior Eagle Open
+                    </option>
+
+                </optgroup>
+
+            </select>
+
+        </div>
+
+
+
+        <!-- SAVE -->
+
+        <button
+            type="button"
+            class="admin-primary-button"
+            onclick="addShooter()"
+        >
+            Add Shooter
+        </button>
+
+
+        <p
+            id="shooter-status"
+            class="admin-status"
+            aria-live="polite"
+        ></p>
+
+
+    </div>
 
 </section>
 
 
 
-
-
-<!-- ============================= -->
-<!-- ENTER SCORE -->
-<!-- ============================= -->
+<!-- =====================================================
+     SHOOTER DIRECTORY
+===================================================== -->
 
 <section class="admin-card">
 
+    <div class="admin-card-header">
 
-<h2>
-Enter Score
-</h2>
+        <p class="eyebrow">
+            SHOOTER DIRECTORY
+        </p>
 
+        <h2>
+            Current Shooters
+        </h2>
 
-
-<label for="score-shooter">
-Shooter
-</label>
-
-
-<select id="score-shooter">
-
-<option value="">
-Loading shooters...
-</option>
+    </div>
 
 
-</select>
+    <div class="admin-form">
+
+        <div class="form-group">
+
+            <label for="shooter-search-admin">
+                Search Shooters
+            </label>
+
+            <input
+                id="shooter-search-admin"
+                type="search"
+                placeholder="Search by name or ASA number"
+                autocomplete="off"
+            >
+
+        </div>
 
 
+        <button
+            type="button"
+            class="admin-secondary-button"
+            onclick="loadShooters()"
+        >
+            Refresh Shooters
+        </button>
 
 
+        <div id="shooter-list">
 
-<label for="event">
-Event
-</label>
+            Loading shooters...
 
+        </div>
 
-<select id="event">
-
-
-<option value="1">
-Waldo's
-</option>
-
-
-<option value="2">
-Percy Quin
-</option>
-
-
-<option value="3">
-Pearl River
-</option>
-
-
-<option value="4">
-Laurel
-</option>
-
-
-<option value="5">
-Little River
-</option>
-
-
-<option value="6">
-State Championship
-</option>
-
-
-</select>
-
-
-
-
-
-<label for="score">
-Score
-</label>
-
-
-<input
-id="score"
-type="number"
-min="0"
-placeholder="Score">
-
-
-
-
-
-<label for="twelves">
-12 Count
-</label>
-
-
-<input
-id="twelves"
-type="number"
-min="0"
-placeholder="12 Count">
-
-
-
-
-
-<button
-type="button"
-onclick="saveScore()">
-
-Save Score
-
-</button>
-
-
-
-<p id="score-status"></p>
-
-
+    </div>
 
 </section>
 
 
 
-
-
-
-
-<!-- ============================= -->
-<!-- CURRENT SHOOTERS -->
-<!-- ============================= -->
-
+<!-- =====================================================
+     ENTER SCORE
+===================================================== -->
 
 <section class="admin-card">
 
+    <div class="admin-card-header">
 
-<h2>
-Current Shooters
-</h2>
+        <p class="eyebrow">
+            SCORE ENTRY
+        </p>
 
+        <h2>
+            Enter Score
+        </h2>
 
+        <p>
+            Add or update a shooter's score for an event.
+        </p>
 
-<button
-type="button"
-onclick="loadShooters()">
-
-Refresh Shooters
-
-</button>
-
-
-
-<div id="shooter-list">
-
-Loading...
-
-</div>
+    </div>
 
 
+    <div class="admin-form">
+
+
+        <!-- SHOOTER -->
+
+        <div class="form-group">
+
+            <label for="score-shooter">
+                Shooter
+            </label>
+
+            <select id="score-shooter">
+
+                <option value="">
+                    Loading shooters...
+                </option>
+
+            </select>
+
+        </div>
+
+
+
+        <!-- EVENT -->
+
+        <div class="form-group">
+
+            <label for="event">
+                Event
+            </label>
+
+            <select id="event">
+
+                <option value="">
+                    Select Event
+                </option>
+
+                <option value="1">
+                    Waldo's
+                </option>
+
+                <option value="2">
+                    Percy Quinn
+                </option>
+
+                <option value="3">
+                    Pearl River
+                </option>
+
+                <option value="4">
+                    Laurel
+                </option>
+
+                <option value="5">
+                    Little River
+                </option>
+
+                <option value="6">
+                    State Championship
+                </option>
+
+            </select>
+
+        </div>
+
+
+
+        <!-- SCORE -->
+
+        <div class="form-group">
+
+            <label for="score">
+                Score
+            </label>
+
+            <input
+                id="score"
+                type="number"
+                inputmode="numeric"
+                min="0"
+                step="1"
+                placeholder="Score"
+            >
+
+        </div>
+
+
+
+        <!-- TWELVES -->
+
+        <div class="form-group">
+
+            <label for="twelves">
+                12 Count
+            </label>
+
+            <input
+                id="twelves"
+                type="number"
+                inputmode="numeric"
+                min="0"
+                step="1"
+                placeholder="12 Count"
+            >
+
+        </div>
+
+
+
+        <button
+            type="button"
+            class="admin-primary-button"
+            onclick="saveScore()"
+        >
+            Save Score
+        </button>
+
+
+        <p
+            id="score-status"
+            class="admin-status"
+            aria-live="polite"
+        ></p>
+
+
+    </div>
 
 </section>
 
 
 
-
-
-
-
-<!-- ============================= -->
-<!-- SCORE MANAGEMENT NEW -->
-<!-- ============================= -->
-
+<!-- =====================================================
+     SCORE MANAGEMENT
+===================================================== -->
 
 <section class="admin-card">
 
+    <div class="admin-card-header">
 
-<h2>
-Score Management
-</h2>
+        <p class="eyebrow">
+            SCORE MANAGEMENT
+        </p>
 
+        <h2>
+            Score Management
+        </h2>
 
+        <p>
+            Edit or delete existing scores.
+        </p>
 
-<p>
-Edit or delete existing scores.
-</p>
-
-
-
-<div id="score-list">
-
-Loading scores...
-
-</div>
+    </div>
 
 
+    <div id="score-list">
+
+        Loading scores...
+
+    </div>
 
 </section>
-
-
-
-
 
 
 </main>
 
 
 
-
-
-<script src="js/admin.js"></script>
+<script
+    src="js/admin.js?v=5"
+></script>
 
 
 </body>
