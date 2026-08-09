@@ -82,7 +82,6 @@ async function loadStandings() {
 // =====================================================
 // BUILD CLASS DROPDOWN
 // =====================================================
-
 function buildClassDropdown() {
 
     const dropdown =
@@ -92,13 +91,63 @@ function buildClassDropdown() {
         return;
     }
 
-    const classes =
-        [...new Set(
-            standingsData
-                .map(shooter => shooter.class_name)
-                .filter(Boolean)
-        )]
-        .sort();
+    // 2026 ASA Federation classes
+    const classes = [
+        "Semi-Pro",
+        "Known 50",
+        "Senior Known 50",
+
+        "Men's Open 45",
+        "Known 45",
+        "Hunter 45",
+        "Senior Open",
+        "Senior Known",
+        "Senior Hunter 45",
+        "Women's Open 45",
+        "Women's Known 45",
+
+        "Open 40",
+        "Known 40",
+        "Men's Pins 40",
+        "Crossbow",
+
+        "Super Senior",
+        "Super Senior Known",
+        "Senior Masters",
+        "Senior Masters Known",
+        "Senior Pins",
+        "Super Senior Pins",
+
+        "Women's Known 40",
+        "Women's Pins 40",
+        "Women's Senior Known",
+        "Women's Super Senior Known",
+
+        "Young Adult Open Male",
+        "Young Adult Open Female",
+        "Young Adult Pins Male",
+        "Young Adult Pins Female",
+
+        "Women's Pins 30",
+        "Men's Pins 30",
+        "Senior Legends",
+        "Barebow Recurve",
+        "Olympic Recurve",
+
+        "Youth Open Boys",
+        "Youth Open Girls",
+        "Youth Pins Boys",
+        "Youth Pins Girls",
+        "Youth Olympic Recurve",
+        "Youth Barebow Recurve",
+
+        "Eagle Open Boys",
+        "Eagle Open Girls",
+        "Eagle Pins Boys",
+        "Eagle Pins Girls",
+        "Eagle Recurve",
+        "Jr Eagle Open"
+    ];
 
     dropdown.innerHTML = `
         <option value="all">
