@@ -324,12 +324,11 @@ function displayStandings(
         return;
     }
 
-
-    let results =
-        standingsData.filter(
-            shooter =>
-                shooter.eligible === true
-        );
+let results =
+    standingsData.filter(
+        shooter =>
+            shooter.name
+    );
 
 
     // -------------------------------------------------
