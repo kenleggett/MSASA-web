@@ -11,28 +11,28 @@ export async function onRequestGet({ env }) {
     // LOAD SHOOTERS + SCORES + EVENTS
     // ---------------------------------------------------
 
-    const { results } = await env.DB.prepare(`
-      SELECT
-        shooters.id AS shooter_id,
-        shooters.name,
-        shooters.class_name,
-        scores.score,
-        scores.twelves,
-        events.id AS event_id,
-        events.name AS event
+  const { results } = await env.DB.prepare(`
+  SELECT
+    shooters.id AS shooter_id,
+    shooters.name,
+    shooters.class_name,
+    scores.score,
+    scores.twelves,
+    events.id AS event_id,
+    events.name AS event
 
-      FROM scores
+  FROM shooters
 
-      JOIN shooters
-        ON scores.shooter_id = shooters.id
+  LEFT JOIN scores
+    ON scores.shooter_id = shooters.id
 
-      JOIN events
-        ON scores.event_id = events.id
+  LEFT JOIN events
+    ON scores.event_id = events.id
 
-      WHERE shooters.active = 1
+  WHERE shooters.active = 1
 
-      ORDER BY shooters.name
-    `).all();
+  ORDER BY shooters.name
+`).all();
 
 
     // ---------------------------------------------------
