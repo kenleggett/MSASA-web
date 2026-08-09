@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>MSASA Admin Login</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #111;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+    }
+
+    .login-container {
+      width: 100%;
+      max-width: 420px;
+      padding: 24px;
+    }
+
+    .login-card {
+      background: #fff;
+      color: #222;
+      border-radius: 14px;
+      padding: 32px;
+      box-shadow: 0 12px 40px rgba(0,0,0,.35);
+    }
+
+    .logo {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .logo img {
+      max-width: 220px;
+      max-height: 100px;
+      object-fit: contain;
+    }
+
+    h1 {
+      text-align: center;
+      margin: 10px 0 5px;
+      font-size: 26px;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #777;
+      margin-bottom: 28px;
+    }
+
+    label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 7px;
+    }
+
+    input {
+      width: 100%;
+      padding: 13px;
+      margin-bottom: 18px;
+      border: 1px solid #ccc;
+      border-radius: 7px;
+      font-size: 16px;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: #b21f24;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 7px;
+      background: #b21f24;
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #8f181c;
+    }
+
+    button:disabled {
+      opacity: .6;
+      cursor: wait;
+    }
+
+    .message {
+      margin-top: 18px;
+      padding: 12px;
+      border-radius: 7px;
+      display: none;
+      text-align: center;
+    }
+
+    .error {
+      background: #f8d7da;
+      color: #842029;
+    }
+
+    .success {
+      background: #d1e7dd;
+      color: #0f5132;
+    }
+
+    .back {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .back a {
+      color: #b21f24;
+      text-decoration: none;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="login-container">
+
+    <div class="login-card">
+
+      <div class="logo">
+        <img
+          src="/images/msasa-logo.png"
+          alt="Mississippi ASA">
+      </div>
+
+      <h1>MSASA Admin</h1>
+
+      <div class="subtitle">
+        Mississippi Archery Shooters Association
+      </div>
+
+      <form id="loginForm">
+
+        <label for="email">Email</label>
+
+        <input
+          type="email"
+          id="email"
+          required
+          autocomplete="username"
+          placeholder="Enter your email">
+
+        <label for="password">Password</label>
+
+        <input
+          type="password"
+          id="password"
+          required
+          autocomplete="current-password"
+          placeholder="Enter your password">
+
+        <button
+          type="submit"
+          id="loginButton">
+          Sign In
+        </button>
+
+      </form>
+
+      <div
+        id="message"
+        class="message">
+      </div>
+
+      <div class="back">
+        <a href="/">← Back to MSASA</a>
+      </div>
+
+    </div>
+
+  </div>
+
+<script>
+
+const form = document.getElementById("loginForm");
+const button = document.getElementById("loginButton");
+const message = document.getElementById("message");
+
+form.addEventListener("submit", async function(event) {
+
+  event.preventDefault();
+
+  message.style.display = "none";
+  message.className = "message";
+
+  button.disabled = true;
+  button.textContent = "Signing in...";
+
+  const email =
+    document.getElementById("email").value.trim();
+
+  const password =
+    document.getElementById("password").value;
+
+  try {
+
+    const response = await fetch("/api/login", {
+
+      method: "POST",
+
+      headers: {
+        "Content-Type": "application/json"
+      },
+
+      body: JSON.stringify({
+        email: email,
+        password: password
+      })
+
+    });
+
+    const data = await response.json();
+
+    if (!response.ok || !data.success) {
+
+      throw new Error(
+        data.message || "Login failed"
+      );
+
+    }
+
+    message.textContent =
+      "Login successful. Redirecting...";
+
+    message.classList.add("success");
+    message.style.display = "block";
+
+    /*
+      Temporary storage for our first test.
+      We will replace this with a proper
+      secure session system before production.
+    */
+
+    sessionStorage.setItem(
+      "msasa_user",
+      JSON.stringify(data.user)
+    );
+
+    setTimeout(function() {
+
+      window.location.href =
+        "/admin.html";
+
+    }, 700);
+
+  } catch (error) {
+
+    message.textContent =
+      error.message || "Unable to sign in.";
+
+    message.classList.add("error");
+    message.style.display = "block";
+
+  } finally {
+
+    button.disabled = false;
+    button.textContent = "Sign In";
+
+  }
+
+});
+
+</script>
+
+</body>
+</html>
