@@ -1,3 +1,13 @@
+// =======================================================
+// MSASA ADMIN DASHBOARD JAVASCRIPT
+// Shooter Management + Score Management
+// =======================================================
+
+
+// =======================================================
+// ADD SHOOTER
+// =======================================================
+
 async function addShooter() {
 
   const name =
@@ -60,6 +70,7 @@ async function addShooter() {
       "asa-number"
     ).value = "";
 
+
     await loadShooters();
 
   }
@@ -67,13 +78,18 @@ async function addShooter() {
   else {
 
     status.textContent =
-      result.error || "Unable to add shooter.";
+      result.error ||
+      "Unable to add shooter.";
 
   }
 
 }
 
 
+
+// =======================================================
+// LOAD SHOOTERS
+// =======================================================
 
 async function loadShooters() {
 
@@ -96,52 +112,68 @@ async function loadShooters() {
   dropdown.innerHTML = "";
 
 
-  if (!result.ok ||
-      !result.shooters ||
-      result.shooters.length === 0) {
+  if (
+    !result.ok ||
+    !result.shooters ||
+    result.shooters.length === 0
+  ) {
+
 
     dropdown.innerHTML =
       "<option value=''>No shooters found</option>";
 
+
     list.innerHTML =
       "<p>No shooters found.</p>";
+
 
     return;
 
   }
 
 
+
   result.shooters.forEach(
     shooter => {
+
 
       const option =
         document.createElement("option");
 
+
       option.value =
         shooter.id;
+
 
       option.textContent =
         shooter.name +
         " - " +
         shooter.class;
 
+
       dropdown.appendChild(option);
+
 
     }
   );
+
 
 
   list.innerHTML =
     result.shooters.map(
       shooter =>
 
-        `<p>
-          <strong>${shooter.name}</strong>
-          —
-          ${shooter.class}
-          —
-          ASA ${shooter.asa_number}
-        </p>`
+
+      `
+      <p>
+        <strong>${shooter.name}</strong>
+        —
+        ${shooter.class}
+        —
+        ASA ${shooter.asa_number}
+      </p>
+      `
+
 
     ).join("");
 
@@ -149,7 +181,12 @@ async function loadShooters() {
 
 
 
+// =======================================================
+// ADD SCORE
+// =======================================================
+
 async function saveScore() {
+
 
   const shooter_id =
     Number(
@@ -183,9 +220,12 @@ async function saveScore() {
     );
 
 
+
   if (!shooter_id) {
 
-    alert("Please select a shooter.");
+    alert(
+      "Please select a shooter."
+    );
 
     return;
 
@@ -194,11 +234,14 @@ async function saveScore() {
 
   if (!score) {
 
-    alert("Please enter a score.");
+    alert(
+      "Please enter a score."
+    );
 
     return;
 
   }
+
 
 
   const response =
@@ -206,13 +249,14 @@ async function saveScore() {
       "/api/add-score",
       {
 
-        method: "POST",
+        method:"POST",
 
-        headers: {
-          "Content-Type": "application/json"
+        headers:{
+          "Content-Type":"application/json"
         },
 
-        body: JSON.stringify({
+
+        body:JSON.stringify({
 
           shooter_id,
           event_id,
@@ -225,8 +269,10 @@ async function saveScore() {
     );
 
 
+
   const result =
     await response.json();
+
 
 
   const status =
@@ -235,96 +281,179 @@ async function saveScore() {
     );
 
 
+
   if (result.ok) {
 
+
     status.textContent =
+      result.message ||
       "Score saved successfully.";
+
+
 
     document.getElementById(
       "score"
     ).value = "";
 
+
+
     document.getElementById(
       "twelves"
     ).value = "";
 
+
+
+    await loadScores();
+
+
   }
 
+
   else {
+
 
     status.textContent =
       result.error ||
       "Unable to save score.";
 
+
   }
+
 
 }
 
 
 
-document.addEventListener(
-  async function loadScores() {
+// =======================================================
+// LOAD SCORE MANAGEMENT
+// =======================================================
+
+async function loadScores() {
+
 
   const response =
-    await fetch("/api/admin-scores");
+    await fetch(
+      "/api/admin-scores"
+    );
+
 
   const result =
     await response.json();
 
 
-  const table =
-    document.getElementById("score-list");
+
+  const list =
+    document.getElementById(
+      "score-list"
+    );
 
 
-  if (!result.ok || !result.scores) {
 
-    table.innerHTML =
+  if (
+    !result.ok ||
+    !result.scores
+  ) {
+
+
+    list.innerHTML =
       "<p>No scores found.</p>";
 
+
     return;
+
 
   }
 
 
-  table.innerHTML = result.scores.map(score =>
 
-    `
-    <div class="score-row">
 
-      <strong>${score.shooter}</strong>
-      |
-      ${score.event}
-      |
-      ${score.score}
-      |
-      ${score.twelves} 12s
+  list.innerHTML =
+    result.scores.map(
+      score =>
 
-      <button onclick="editScore(
+
+      `
+      <div class="score-row">
+
+        <strong>
+        ${score.shooter}
+        </strong>
+
+        |
+
+        ${score.event}
+
+        |
+
+        Score:
+        ${score.score}
+
+        |
+
+        ${score.twelves}
+        12s
+
+
+        <button
+        onclick="
+        editScore(
         ${score.id},
         ${score.score},
         ${score.twelves}
-      )">
+        )">
+
         Edit
-      </button>
+
+        </button>
 
 
-      <button onclick="deleteScore(${score.id})">
+
+        <button
+        onclick="
+        deleteScore(
+        ${score.id}
+        )">
+
         Delete
-      </button>
 
-    </div>
-    `
+        </button>
 
-  ).join("");
+
+      </div>
+      `
+
+
+    ).join("");
 
 }
-  async function editScore(id, currentScore, currentTwelves) {
+
+
+
+// =======================================================
+// EDIT SCORE
+// =======================================================
+
+async function editScore(
+  id,
+  currentScore,
+  currentTwelves
+) {
+
 
   const score =
     prompt(
       "Enter new score:",
       currentScore
     );
+
+
+
+  if (score === null) {
+
+    return;
+
+  }
+
 
 
   const twelves =
@@ -334,76 +463,110 @@ document.addEventListener(
     );
 
 
-  if (!score) {
+
+  if (twelves === null) {
+
     return;
+
   }
 
 
-  await fetch("/api/admin-scores",
-  {
 
-    method:"PUT",
+  await fetch(
+    "/api/admin-scores",
+    {
 
-    headers:{
-      "Content-Type":"application/json"
-    },
+      method:"PUT",
 
-    body:JSON.stringify({
+      headers:{
+        "Content-Type":"application/json"
+      },
 
-      id,
-      score,
-      twelves
 
-    })
+      body:JSON.stringify({
 
-  });
+        id,
+        score,
+        twelves
+
+      })
+
+    }
+  );
+
 
 
   await loadScores();
 
+
 }
+
+
+
+// =======================================================
+// DELETE SCORE
+// =======================================================
+
 async function deleteScore(id) {
 
 
-  const confirmDelete =
+  const confirmed =
     confirm(
       "Are you sure you want to delete this score?"
     );
 
 
-  if (!confirmDelete) {
+
+  if (!confirmed) {
+
     return;
+
   }
 
 
-  await fetch("/api/admin-scores",
-  {
 
-    method:"DELETE",
+  await fetch(
+    "/api/admin-scores",
+    {
 
-    headers:{
-      "Content-Type":"application/json"
-    },
+      method:"DELETE",
 
-    body:JSON.stringify({
+      headers:{
+        "Content-Type":"application/json"
+      },
 
-      id
 
-    })
+      body:JSON.stringify({
 
-  });
+        id
+
+      })
+
+    }
+  );
+
 
 
   await loadScores();
 
-}
- document.addEventListener(
-"DOMContentLoaded",
-() => {
-
-loadShooters();
-
-loadScores();
 
 }
+
+
+
+// =======================================================
+// INITIALIZE ADMIN PAGE
+// =======================================================
+
+document.addEventListener(
+  "DOMContentLoaded",
+  () => {
+
+
+    loadShooters();
+
+    loadScores();
+
+
+  }
 );
