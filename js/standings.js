@@ -2,7 +2,34 @@
 // MISSISSIPPI ASA
 // 2026 SHOOTER OF THE YEAR
 // =====================================================
+// =====================================================
+// LOAD SHOOTERS FROM CLOUDFLARE D1 DATABASE
+// =====================================================
 
+let shooters = [];
+
+
+async function loadShooters() {
+
+    const response =
+        await fetch("/api/shooters");
+
+
+    const data =
+        await response.json();
+
+
+    shooters =
+        data.shooters;
+
+
+    buildClassDropdown();
+
+    connectControls();
+
+    initializeStandingsView();
+
+}
 function isValidShooter(shooter) {
 
     if (!shooter) {
@@ -1265,8 +1292,4 @@ function initializeStandingsView() {
     displayStandings();
 
 }
-buildClassDropdown();
-
-connectControls();
-
-initializeStandingsView();
+loadShooters();
