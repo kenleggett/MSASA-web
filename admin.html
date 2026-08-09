@@ -5,45 +5,19 @@
 
 <meta charset="UTF-8">
 
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
 <title>
 MSASA Admin Dashboard
 </title>
 
-<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet"
+href="css/style.css">
 
 </head>
 
-
 <body>
-
-  <h2>Add Test Shooter</h2>
-
-<button onclick="testAddShooter()">
-Add Test Shooter
-</button>
-
-<script>
-async function testAddShooter() {
-
-  const response = await fetch("/api/add-shooter", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      name: "Test Archer",
-      asa_number: "TEST002",
-      class_name: "Known 40"
-    })
-  });
-
-  const result = await response.json();
-
-  alert(JSON.stringify(result));
-
-}
-</script>
-
 
 <header>
 
@@ -64,53 +38,59 @@ Add Shooter
 </h2>
 
 
-<label>
+<label for="shooter-name">
 Shooter Name
 </label>
 
-<input 
+<input
 id="shooter-name"
 placeholder="Enter shooter name">
 
 
-<label>
+<label for="asa-number">
 ASA Number
 </label>
 
-<input 
+<input
 id="asa-number"
 placeholder="ASA Number">
 
 
-<label>
+<label for="class-name">
 Class
 </label>
 
 <select id="class-name">
 
-<option>
+<option value="Semi-Pro Open">
 Semi-Pro Open
 </option>
 
-<option>
+<option value="Pro">
 Pro
 </option>
 
-<option>
+<option value="Known 40">
 Known 40
 </option>
 
-<option>
+<option value="Senior Pins">
 Senior Pins
 </option>
 
 </select>
 
 
-<button onclick="addShooter()">
+<button
+type="button"
+onclick="addShooter()">
+
 Add Shooter
+
 </button>
 
+
+<p id="shooter-status"></p>
 
 </section>
 
@@ -122,6 +102,23 @@ Add Shooter
 Enter Score
 </h2>
 
+
+<label for="score-shooter">
+Shooter
+</label>
+
+<select id="score-shooter">
+
+<option value="">
+Loading shooters...
+</option>
+
+</select>
+
+
+<label for="event">
+Event
+</label>
 
 <select id="event">
 
@@ -152,20 +149,64 @@ State Championship
 </select>
 
 
+<label for="score">
+Score
+</label>
+
 <input
 id="score"
+type="number"
+min="0"
 placeholder="Score">
 
 
+<label for="twelves">
+12 Count
+</label>
+
 <input
 id="twelves"
+type="number"
+min="0"
 placeholder="12 Count">
 
 
-<button onclick="saveScore()">
+<button
+type="button"
+onclick="saveScore()">
+
 Save Score
+
 </button>
 
+
+<p id="score-status"></p>
+
+</section>
+
+
+
+<section class="admin-card">
+
+<h2>
+Current Shooters
+</h2>
+
+
+<button
+type="button"
+onclick="loadShooters()">
+
+Refresh Shooters
+
+</button>
+
+
+<div id="shooter-list">
+
+Loading...
+
+</div>
 
 </section>
 
@@ -175,51 +216,6 @@ Save Score
 
 <script src="js/admin.js"></script>
 
-  async function saveScore(){
-
-const response = await fetch("/api/add-score",{
-
-method:"POST",
-
-headers:{
-"Content-Type":"application/json"
-},
-
-body:JSON.stringify({
-
-shooter_id:1,
-
-event_id:1,
-
-score:195,
-
-twelves:8
-
-})
-
-});
-
-
-const result = await response.json();
-
-alert(JSON.stringify(result));
-
-}
-
-<script>
-
-const menuToggle = document.getElementById("menuToggle");
-
-const mainNav = document.getElementById("mainNav");
-
-
-menuToggle.addEventListener("click", () => {
-
-    mainNav.classList.toggle("active");
-
-});
-
-</script>
 </body>
 
 </html>
