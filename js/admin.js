@@ -24,7 +24,7 @@ document.getElementById(
 
 const response =
 await fetch(
-"/api/admin/shooters",
+"/api/add-shooter",
 {
 method:"POST",
 
