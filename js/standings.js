@@ -470,9 +470,9 @@ let results =
 
         row.innerHTML = `
 
-            <strong>
-                ${shooter.rank}
-            </strong>
+          <strong>
+    ${shooter.rank || "—"}
+</strong>
 
             <span>
                 ${shooter.name}
