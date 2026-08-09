@@ -175,6 +175,37 @@ Save Score
 
 <script src="js/admin.js"></script>
 
+  async function saveScore(){
+
+const response = await fetch("/api/add-score",{
+
+method:"POST",
+
+headers:{
+"Content-Type":"application/json"
+},
+
+body:JSON.stringify({
+
+shooter_id:1,
+
+event_id:1,
+
+score:195,
+
+twelves:8
+
+})
+
+});
+
+
+const result = await response.json();
+
+alert(JSON.stringify(result));
+
+}
+
 
 </body>
 
