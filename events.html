@@ -5,15 +5,24 @@
 
     <meta charset="UTF-8">
 
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
-    <meta name="description"
-          content="Mississippi ASA 2026 3D archery events, tournament schedule, locations, and championship information.">
+    <meta
+        name="description"
+        content="Mississippi ASA 2026 3D archery events, tournament schedule, locations, and championship information."
+    >
 
-    <title>Events | Mississippi ASA</title>
+    <title>
+        Events | Mississippi ASA
+    </title>
 
-    <link rel="stylesheet" href="css/style.css">
+    <link
+        rel="stylesheet"
+        href="css/style.css"
+    >
 
 </head>
 
@@ -21,57 +30,76 @@
 <body>
 
 
-<!-- =========================
+<!-- =====================================================
      HEADER
-========================= -->
+===================================================== -->
 
 <header class="site-header">
 
     <div class="header-container">
 
         <div class="logo">
+
             <a href="index.html">
-                <img src="images/msasa-logo-transparent.png"
-                     alt="Mississippi ASA Archery Shooters Association">
+
+                <img
+                    src="images/msasa-logo-transparent.png"
+                    alt="Mississippi ASA Archery Shooters Association"
+                >
+
             </a>
+
         </div>
 
 
-        <button class="menu-toggle" id="menuToggle">
+        <button
+            class="menu-toggle"
+            id="menuToggle"
+            type="button"
+            aria-label="Open navigation menu"
+            aria-expanded="false"
+            aria-controls="mainNav"
+        >
             ☰
         </button>
 
 
-     <nav class="main-nav" id="mainNav">
+        <nav
+            class="main-nav"
+            id="mainNav"
+        >
 
-    <a href="index.html">
-        Home
-    </a>
+            <a href="index.html">
+                Home
+            </a>
 
-    <a href="events.html">
-        Events
-    </a>
+            <a href="events.html">
+                Events
+            </a>
 
-    <a href="standings.html">
-        Standings
-    </a>
+            <a href="standings.html">
+                Standings
+            </a>
 
-    <a href="index.html#about">
-        About
-    </a>
+            <a href="index.html#about">
+                About
+            </a>
 
-    <a href="index.html#contact">
-        Contact
-    </a>
+            <a href="index.html#contact">
+                Contact
+            </a>
 
-</nav>
+        </nav>
+
+    </div>
 
 </header>
 
 
-<!-- =========================
+
+<!-- =====================================================
      PAGE HERO
-========================= -->
+===================================================== -->
 
 <section class="hero">
 
@@ -96,9 +124,9 @@
 
 
 
-<!-- =========================
+<!-- =====================================================
      EVENTS
-========================= -->
+===================================================== -->
 
 <section class="events">
 
@@ -122,258 +150,24 @@
         </div>
 
 
-        <div class="event-list">
+        <!--
+            Event cards are loaded dynamically from:
 
+            /api/events
 
-            <!-- WALDO'S -->
+            Do not add individual event cards here.
+        -->
 
-            <article class="event-card">
+        <div
+            class="event-list"
+            aria-live="polite"
+        >
 
-                <div class="event-date">
+            <div class="event-loading">
 
-                    <span>FEB</span>
+                Loading Mississippi ASA events...
 
-                    <strong>28</strong>
-
-                </div>
-
-
-                <div class="event-info">
-
-                    <span class="event-type">
-                        ASA QUALIFIER
-                    </span>
-
-                    <h3>
-                        Waldo's Archery Club
-                    </h3>
-
-                    <p>
-                        Foxworth, Mississippi
-                    </p>
-
-                </div>
-
-
-             <button
-    type="button"
-    class="event-link event-details-button"
-    onclick="openEventDetails('waldos')"
->
-    View Details →
-</button>
-
-            </article>
-
-
-
-            <!-- PERCY QUIN -->
-
-            <article class="event-card">
-
-                <div class="event-date">
-
-                    <span>MAR</span>
-
-                    <strong>14</strong>
-
-                </div>
-
-
-                <div class="event-info">
-
-                    <span class="event-type">
-                        ASA QUALIFIER
-                    </span>
-
-                    <h3>
-                        Percy Quin Archery
-                    </h3>
-
-                    <p>
-                        McComb, Mississippi
-                    </p>
-
-                </div>
-
-
-             <button
-    type="button"
-    class="event-link event-details-button"
-    onclick="openEventDetails('percyquin')"
->
-    View Details →
-</button>
-
-            </article>
-
-
-
-            <!-- PEARL RIVER -->
-
-            <article class="event-card">
-
-                <div class="event-date">
-
-                    <span>APR</span>
-
-                    <strong>11</strong>
-
-                </div>
-
-
-                <div class="event-info">
-
-                    <span class="event-type">
-                        ASA QUALIFIER
-                    </span>
-
-                    <h3>
-                        Pearl River Archery
-                    </h3>
-
-                    <p>
-                        Carthage, Mississippi
-                    </p>
-
-                </div>
-
-
-                <button
-    type="button"
-    class="event-link event-details-button"
-    onclick="openEventDetails('pearlriver')"
->
-    View Details →
-</button>
-
-            </article>
-
-
-
-            <!-- LAUREL -->
-
-            <article class="event-card">
-
-                <div class="event-date">
-
-                    <span>MAY</span>
-
-                    <strong>16</strong>
-
-                </div>
-
-
-                <div class="event-info">
-
-                    <span class="event-type">
-                        ASA QUALIFIER
-                    </span>
-
-                    <h3>
-                        Laurel Bowhunters
-                    </h3>
-
-                    <p>
-                        Laurel, Mississippi
-                    </p>
-
-                </div>
-
-<button
-    type="button"
-    class="event-link event-details-button"
-    onclick="openEventDetails('laurel')"
->
-    View Details →
-</button>
-
-            </article>
-
-
-
-            <!-- LITTLE RIVER -->
-
-            <article class="event-card">
-
-                <div class="event-date">
-
-                    <span>JUN</span>
-
-                    <strong>6</strong>
-
-                </div>
-
-
-                <div class="event-info">
-
-                    <span class="event-type">
-                        ASA QUALIFIER
-                    </span>
-
-                    <h3>
-                        Little River Bowmen
-                    </h3>
-
-                    <p>
-                        Columbia, Mississippi
-                    </p>
-
-                </div>
-
-<button
-    type="button"
-    class="event-link event-details-button"
-    onclick="openEventDetails('littleriver')"
->
-    View Details →
-</button>
-
-            </article>
-
-
-
-            <!-- STATE CHAMPIONSHIP -->
-
-            <article class="event-card featured-event">
-
-                <div class="event-date">
-
-                    <span>JUL</span>
-
-                    <strong>11</strong>
-
-                </div>
-
-
-                <div class="event-info">
-
-                    <span class="event-type">
-                        STATE CHAMPIONSHIP
-                    </span>
-
-                    <h3>
-                        Mississippi ASA Federation Championship
-                    </h3>
-
-                    <p>
-                        Waldo's Archery Club •
-                        Foxworth, Mississippi
-                    </p>
-
-                </div>
-
-
-  <button
-    type="button"
-    class="event-link event-details-button"
-    onclick="openEventDetails('statechampionship')"
->
-    View Details →
-</button>
-
-            </article>
-
+            </div>
 
         </div>
 
@@ -383,9 +177,9 @@
 
 
 
-<!-- =========================
+<!-- =====================================================
      SHOOTER OF THE YEAR
-========================= -->
+===================================================== -->
 
 <section class="about">
 
@@ -406,7 +200,10 @@
 
         <br>
 
-        <a href="standings.html" class="button">
+        <a
+            href="standings.html"
+            class="button"
+        >
             View Shooter of the Year
         </a>
 
@@ -416,16 +213,16 @@
 
 
 
-<!-- =========================
+<!-- =====================================================
      FOOTER
-========================= -->
+===================================================== -->
 
 <footer class="site-footer">
 
     <div class="container">
 
-      <img
-    src="./images/msasa-logo-transparent.png"
+        <img
+            src="./images/msasa-logo-transparent.png"
             alt="Mississippi ASA"
             class="footer-logo"
         >
@@ -441,9 +238,12 @@
     </div>
 
 </footer>
-<!-- =========================
+
+
+
+<!-- =====================================================
      EVENT DETAILS MODAL
-========================= -->
+===================================================== -->
 
 <div
     id="event-details-modal"
@@ -476,6 +276,8 @@
         <div class="event-detail-grid">
 
 
+            <!-- DATE -->
+
             <div class="event-detail-item">
 
                 <span>
@@ -488,6 +290,9 @@
 
             </div>
 
+
+
+            <!-- EVENT TYPE -->
 
             <div class="event-detail-item">
 
@@ -502,6 +307,9 @@
             </div>
 
 
+
+            <!-- LOCATION -->
+
             <div class="event-detail-item">
 
                 <span>
@@ -515,6 +323,9 @@
             </div>
 
 
+
+            <!-- CONTACT -->
+
             <div class="event-detail-item">
 
                 <span>
@@ -527,22 +338,27 @@
 
             </div>
 
+        </div>
+
+
+
+        <!-- EVENT INFORMATION -->
+
+        <div class="event-detail-section">
+
+            <h3>
+                Event Information
+            </h3>
+
+            <p id="event-details-details">
+                —
+            </p>
 
         </div>
 
 
-       <div class="event-detail-section">
 
-    <h3>
-        Event Information
-    </h3>
-
-    <p id="event-details-details">
-        —
-    </p>
-
-</div>
-
+        <!-- RESULTS -->
 
         <div class="event-detail-section">
 
@@ -556,6 +372,9 @@
 
         </div>
 
+
+
+        <!-- WEATHER -->
 
         <div class="event-weather-placeholder">
 
@@ -579,6 +398,7 @@
         </div>
 
 
+
         <button
             type="button"
             class="button button-outline"
@@ -592,21 +412,46 @@
 </div>
 
 
+
+<!-- =====================================================
+     JAVASCRIPT
+===================================================== -->
+
 <script src="js/events.js?v=3"></script>
+
+
 <script>
 
-const menuToggle = document.getElementById("menuToggle");
+const menuToggle =
+    document.getElementById("menuToggle");
 
-const mainNav = document.getElementById("mainNav");
+const mainNav =
+    document.getElementById("mainNav");
 
 
-menuToggle.addEventListener("click", () => {
+if (menuToggle && mainNav) {
 
-    mainNav.classList.toggle("active");
+    menuToggle.addEventListener(
+        "click",
+        () => {
 
-});
+            const isOpen =
+                mainNav.classList.toggle("active");
+
+
+            menuToggle.setAttribute(
+                "aria-expanded",
+                isOpen ? "true" : "false"
+            );
+
+        }
+    );
+
+}
 
 </script>
+
+
 </body>
 
 </html>
