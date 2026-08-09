@@ -357,41 +357,160 @@ async function loadShooters() {
     );
 
 
-    // -------------------------------------------------
-    // RENDER SHOOTER DIRECTORY
-    // -------------------------------------------------
+// =======================================================
+// RENDER SHOOTER DIRECTORY
+// =======================================================
 
-    renderShooterList(
-      shooters
-    );
+function renderShooterList(
+  shooters
+) {
 
-  }
-
-
-  catch (error) {
-
-    console.error(
-      "Load shooters error:",
-      error
+  const list =
+    document.getElementById(
+      "shooter-list"
     );
 
 
-    dropdown.innerHTML =
-      `
-      <option value="">
-        Unable to load shooters
-      </option>
-      `;
+  const searchInput =
+    document.getElementById(
+      "shooter-search-admin"
+    );
 
+
+  const search =
+    searchInput
+      ? searchInput.value
+          .trim()
+          .toLowerCase()
+      : "";
+
+
+  const filtered =
+    shooters.filter(
+      shooter => {
+
+        const name =
+          String(
+            shooter.name || ""
+          ).toLowerCase();
+
+
+        const asa =
+          String(
+            shooter.asa_number || ""
+          ).toLowerCase();
+
+
+        return (
+          name.includes(search) ||
+          asa.includes(search)
+        );
+
+      }
+    );
+
+
+  if (
+    filtered.length === 0
+  ) {
 
     list.innerHTML =
       `
       <p>
-        Unable to load shooters.
+        No matching shooters found.
       </p>
       `;
 
+    return;
+
   }
+
+
+  list.innerHTML =
+    filtered
+      .map(
+        shooter => {
+
+          const name =
+            escapeHtml(
+              shooter.name || ""
+            );
+
+
+          const asa =
+            escapeHtml(
+              shooter.asa_number || ""
+            );
+
+
+          const className =
+            escapeHtml(
+              shooter.class || ""
+            );
+
+
+          return `
+
+            <div
+              class="shooter-row"
+              data-shooter-id="${Number(
+                shooter.id
+              )}"
+            >
+
+              <div>
+
+                <strong>
+                  ${name}
+                </strong>
+
+                <div>
+                  ${className}
+                </div>
+
+                <div>
+                  ASA ${asa}
+                </div>
+
+              </div>
+
+
+              <div
+                class="shooter-actions"
+              >
+
+                <button
+                  type="button"
+                  onclick="editShooter(
+                    ${Number(shooter.id)},
+                    ${JSON.stringify(shooter.name || "")},
+                    ${JSON.stringify(shooter.asa_number || "")},
+                    ${JSON.stringify(shooter.class || "")}
+                  )"
+                >
+                  Edit
+                </button>
+
+
+                <button
+                  type="button"
+                  onclick="deactivateShooter(
+                    ${Number(shooter.id)},
+                    ${JSON.stringify(shooter.name || "")}
+                  )"
+                >
+                  Deactivate
+                </button>
+
+              </div>
+
+            </div>
+
+          `;
+
+        }
+      )
+      .join("");
 
 }
 
@@ -511,7 +630,264 @@ function renderShooterList(
       .join("");
 
 }
+// =======================================================
+// EDIT SHOOTER
+// =======================================================
 
+async function editShooter(
+  shooter_id,
+  currentName,
+  currentAsa,
+  currentClass
+) {
+
+  const name =
+    prompt(
+      "Shooter name:",
+      currentName
+    );
+
+
+  if (name === null) {
+    return;
+  }
+
+
+  const cleanedName =
+    name.trim();
+
+
+  if (!cleanedName) {
+
+    alert(
+      "Shooter name cannot be blank."
+    );
+
+    return;
+
+  }
+
+
+  const asa =
+    prompt(
+      "ASA number:",
+      currentAsa
+    );
+
+
+  if (asa === null) {
+    return;
+  }
+
+
+  const cleanedAsa =
+    asa.trim().toUpperCase();
+
+
+  if (!cleanedAsa) {
+
+    alert(
+      "ASA number cannot be blank."
+    );
+
+    return;
+
+  }
+
+
+  const className =
+    prompt(
+      "Class:",
+      currentClass
+    );
+
+
+  if (className === null) {
+    return;
+  }
+
+
+  const cleanedClass =
+    className.trim();
+
+
+  if (!cleanedClass) {
+
+    alert(
+      "Class cannot be blank."
+    );
+
+    return;
+
+  }
+
+
+  try {
+
+    const response =
+      await fetch(
+        "/api/edit-shooter",
+        {
+
+          method: "POST",
+
+          headers: {
+            "Content-Type":
+              "application/json"
+          },
+
+          body:
+            JSON.stringify({
+
+              shooter_id,
+
+              name:
+                cleanedName,
+
+              asa_number:
+                cleanedAsa,
+
+              class_name:
+                cleanedClass
+
+            })
+
+        }
+      );
+
+
+    const result =
+      await response.json();
+
+
+    if (!result.ok) {
+
+      alert(
+        result.error ||
+        "Unable to update shooter."
+      );
+
+      return;
+
+    }
+
+
+    alert(
+      "Shooter updated successfully."
+    );
+
+
+    await loadShooters();
+
+  }
+
+
+  catch (error) {
+
+    console.error(
+      "Edit shooter error:",
+      error
+    );
+
+
+    alert(
+      "Unable to connect to the server."
+    );
+
+  }
+
+}
+
+
+// =======================================================
+// DEACTIVATE SHOOTER
+// =======================================================
+
+async function deactivateShooter(
+  shooter_id,
+  shooterName
+) {
+
+  const confirmed =
+    confirm(
+      `Deactivate ${shooterName}?\n\n` +
+      `This will remove the shooter from active ` +
+      `entry lists but will NOT delete their ` +
+      `historical scores.`
+    );
+
+
+  if (!confirmed) {
+    return;
+  }
+
+
+  try {
+
+    const response =
+      await fetch(
+        "/api/deactivate-shooter",
+        {
+
+          method: "POST",
+
+          headers: {
+            "Content-Type":
+              "application/json"
+          },
+
+          body:
+            JSON.stringify({
+
+              shooter_id
+
+            })
+
+        }
+      );
+
+
+    const result =
+      await response.json();
+
+
+    if (!result.ok) {
+
+      alert(
+        result.error ||
+        "Unable to deactivate shooter."
+      );
+
+      return;
+
+    }
+
+
+    alert(
+      `${shooterName} has been deactivated.`
+    );
+
+
+    await loadShooters();
+
+  }
+
+
+  catch (error) {
+
+    console.error(
+      "Deactivate shooter error:",
+      error
+    );
+
+
+    alert(
+      "Unable to connect to the server."
+    );
+
+  }
+
+}
 
 // =======================================================
 // SAVE SCORE
