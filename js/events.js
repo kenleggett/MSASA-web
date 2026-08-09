@@ -1,126 +1,496 @@
 /* =========================================================
    MISSISSIPPI ASA
-   EVENT DETAILS + RESULTS
-========================================================= */
+   DYNAMIC EVENTS + EVENT DETAILS
+   ========================================================= */
 
-const eventData = {
 
-    waldos: {
-        name: "Waldo's Archery Club",
-        date: "February 28, 2026",
-        type: "ASA Qualifier",
-        location: "Venue information available from event organizer.",
-        contact: "Event organizer contact information.",
-        details: "Specific event information will be posted here.",
-        resultsEvent: "Waldo's"
-    },
+/* =========================================================
+   GLOBAL EVENT DATA
+   ========================================================= */
 
-    percyquin: {
-        name: "Percy Quin Archery",
-        date: "March 14, 2026",
-        type: "ASA Qualifier",
-        location: "Venue information available from event organizer.",
-        contact: "Event organizer contact information.",
-        details: "Specific event information will be posted here.",
-        resultsEvent: "Percy Quinn"
-    },
+let events = [];
 
-    pearlriver: {
-        name: "Pearl River Archery",
-        date: "April 11, 2026",
-        type: "ASA Qualifier",
-        location: "Venue information available from event organizer.",
-        contact: "Event organizer contact information.",
-        details: "Specific event information will be posted here.",
-        resultsEvent: "Pearl River"
-    },
 
-    laurel: {
-        name: "Laurel Bowhunters",
-        date: "May 16, 2026",
-        type: "ASA Qualifier",
-        location: "Venue information available from event organizer.",
-        contact: "Event organizer contact information.",
-        details: "Specific event information will be posted here.",
-        resultsEvent: "Laurel"
-    },
+/* =========================================================
+   LOAD EVENTS FROM D1 DATABASE
+   ========================================================= */
 
-    littleriver: {
-        name: "Little River Bowmen",
-        date: "June 6, 2026",
-        type: "ASA Qualifier",
-        location: "Venue information available from event organizer.",
-        contact: "Event organizer contact information.",
-        details: "Specific event information will be posted here.",
-        resultsEvent: "Little River"
-    },
+async function loadEvents() {
 
-    statechampionship: {
-        name: "Mississippi ASA Federation Championship",
-        date: "July 11, 2026",
-        type: "State Championship",
-        location: "TBD",
-        contact: "TBD",
-        details: "Specific event information will be posted here.",
-        resultsEvent: "State Championship"
+    const eventList =
+        document.querySelector(".event-list");
+
+
+    if (!eventList) {
+        return;
     }
 
-};
+
+    try {
+
+        eventList.innerHTML = `
+            <div class="event-loading">
+                Loading Mississippi ASA events...
+            </div>
+        `;
+
+
+        const response =
+            await fetch("/api/events");
+
+
+        if (!response.ok) {
+            throw new Error(
+                "Unable to load events."
+            );
+        }
+
+
+        const data =
+            await response.json();
+
+
+        if (!data.ok) {
+            throw new Error(
+                data.error ||
+                "Unable to load events."
+            );
+        }
+
+
+        events =
+            Array.isArray(data.events)
+                ? data.events
+                : [];
+
+
+        renderEvents();
+
+
+    } catch (error) {
+
+        console.error(
+            "Events API error:",
+            error
+        );
+
+
+        eventList.innerHTML = `
+            <div class="event-loading">
+                <strong>
+                    Unable to load events.
+                </strong>
+
+                <p>
+                    Please try again later.
+                </p>
+            </div>
+        `;
+
+    }
+
+}
+
+
+/* =========================================================
+   FORMAT EVENT DATE
+   ========================================================= */
+
+function formatEventDate(dateValue) {
+
+    if (!dateValue) {
+
+        return {
+            month: "TBD",
+            day: "—"
+        };
+
+    }
+
+
+    const date =
+        new Date(dateValue);
+
+
+    if (Number.isNaN(date.getTime())) {
+
+        return {
+            month: "TBD",
+            day: "—"
+        };
+
+    }
+
+
+    return {
+
+        month:
+            date.toLocaleDateString(
+                "en-US",
+                {
+                    month: "short"
+                }
+            ).toUpperCase(),
+
+        day:
+            date.toLocaleDateString(
+                "en-US",
+                {
+                    day: "numeric"
+                }
+            )
+
+    };
+
+}
+
+
+/* =========================================================
+   FORMAT FULL DATE FOR MODAL
+   ========================================================= */
+
+function formatFullDate(dateValue) {
+
+    if (!dateValue) {
+        return "Date TBD";
+    }
+
+
+    const date =
+        new Date(dateValue);
+
+
+    if (Number.isNaN(date.getTime())) {
+        return dateValue;
+    }
+
+
+    return date.toLocaleDateString(
+        "en-US",
+        {
+            month: "long",
+            day: "numeric",
+            year: "numeric"
+        }
+    );
+
+}
+
+
+/* =========================================================
+   ESCAPE HTML
+   Prevents database text from being interpreted as HTML.
+   ========================================================= */
+
+function escapeHtml(value) {
+
+    if (value === null ||
+        value === undefined) {
+
+        return "";
+
+    }
+
+
+    return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+
+}
+
+
+/* =========================================================
+   BUILD EVENT CARDS
+   ========================================================= */
+
+function renderEvents() {
+
+    const eventList =
+        document.querySelector(".event-list");
+
+
+    if (!eventList) {
+        return;
+    }
+
+
+    if (!events.length) {
+
+        eventList.innerHTML = `
+            <div class="event-loading">
+                No events are currently scheduled.
+            </div>
+        `;
+
+        return;
+
+    }
+
+
+    eventList.innerHTML =
+        events.map(event => {
+
+            const date =
+                formatEventDate(
+                    event.event_date
+                );
+
+
+            const isChampionship =
+                String(
+                    event.event_type || ""
+                ).toLowerCase()
+                .includes("championship");
+
+
+            const location =
+                event.address ||
+                "Location TBD";
+
+
+            return `
+
+                <article
+                    class="event-card ${
+                        isChampionship
+                            ? "featured-event"
+                            : ""
+                    }"
+                >
+
+                    <div class="event-date">
+
+                        <span>
+                            ${escapeHtml(
+                                date.month
+                            )}
+                        </span>
+
+                        <strong>
+                            ${escapeHtml(
+                                date.day
+                            )}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="event-info">
+
+                        <span class="event-type">
+
+                            ${escapeHtml(
+                                event.event_type ||
+                                "ASA EVENT"
+                            )}
+
+                        </span>
+
+
+                        <h3>
+
+                            ${escapeHtml(
+                                event.name
+                            )}
+
+                        </h3>
+
+
+                        <p>
+
+                            ${escapeHtml(
+                                location
+                            )}
+
+                        </p>
+
+                    </div>
+
+
+                    <button
+
+                        type="button"
+
+                        class="event-link event-details-button"
+
+                        onclick="
+                            openEventDetails(
+                                ${Number(event.id)}
+                            )
+                        "
+
+                    >
+
+                        View Details →
+
+                    </button>
+
+                </article>
+
+            `;
+
+        }).join("");
+
+}
 
 
 /* =========================================================
    OPEN EVENT DETAILS
-========================================================= */
+   ========================================================= */
 
 function openEventDetails(eventId) {
 
-    const event = eventData[eventId];
+    const event =
+        events.find(
+            item =>
+                Number(item.id) ===
+                Number(eventId)
+        );
+
 
     if (!event) {
+
+        console.error(
+            "Event not found:",
+            eventId
+        );
+
         return;
+
     }
 
-    const modal = document.getElementById(
-        "event-details-modal"
-    );
+
+    const modal =
+        document.getElementById(
+            "event-details-modal"
+        );
+
 
     if (!modal) {
         return;
     }
 
 
-    document.getElementById(
-        "event-details-name"
-    ).textContent = event.name;
+    /* -----------------------------------------------------
+       EVENT NAME
+    ----------------------------------------------------- */
+
+    const nameElement =
+        document.getElementById(
+            "event-details-name"
+        );
 
 
-    document.getElementById(
-        "event-details-date"
-    ).textContent = event.date;
+    if (nameElement) {
 
+        nameElement.textContent =
+            event.name ||
+            "Mississippi ASA Event";
 
-    document.getElementById(
-        "event-details-type"
-    ).textContent = event.type;
-
-
-    document.getElementById(
-        "event-details-location"
-    ).textContent = event.location;
-
-
-    document.getElementById(
-        "event-details-contact"
-    ).textContent = event.contact;
-
-
-    document.getElementById(
-        "event-details-details"
-    ).textContent = event.details;
+    }
 
 
     /* -----------------------------------------------------
-       EVENT RESULTS LINK
+       DATE
+    ----------------------------------------------------- */
+
+    const dateElement =
+        document.getElementById(
+            "event-details-date"
+        );
+
+
+    if (dateElement) {
+
+        dateElement.textContent =
+            formatFullDate(
+                event.event_date
+            );
+
+    }
+
+
+    /* -----------------------------------------------------
+       EVENT TYPE
+    ----------------------------------------------------- */
+
+    const typeElement =
+        document.getElementById(
+            "event-details-type"
+        );
+
+
+    if (typeElement) {
+
+        typeElement.textContent =
+            event.event_type ||
+            "ASA Event";
+
+    }
+
+
+    /* -----------------------------------------------------
+       LOCATION
+    ----------------------------------------------------- */
+
+    const locationElement =
+        document.getElementById(
+            "event-details-location"
+        );
+
+
+    if (locationElement) {
+
+        locationElement.textContent =
+            event.address ||
+            "Location TBD";
+
+    }
+
+
+    /* -----------------------------------------------------
+       CONTACT
+    ----------------------------------------------------- */
+
+    const contactElement =
+        document.getElementById(
+            "event-details-contact"
+        );
+
+
+    if (contactElement) {
+
+        contactElement.textContent =
+            event.contact ||
+            "Contact information coming soon.";
+
+    }
+
+
+    /* -----------------------------------------------------
+       EVENT INFORMATION
+    ----------------------------------------------------- */
+
+    const detailsElement =
+        document.getElementById(
+            "event-details-details"
+        );
+
+
+    if (detailsElement) {
+
+        detailsElement.textContent =
+            event.details ||
+            "Event information will be posted soon.";
+
+    }
+
+
+    /* -----------------------------------------------------
+       RESULTS LINK
     ----------------------------------------------------- */
 
     const resultsElement =
@@ -129,42 +499,51 @@ function openEventDetails(eventId) {
         );
 
 
-    resultsElement.textContent =
-        "View Event Results →";
+    if (resultsElement) {
+
+        resultsElement.innerHTML = "";
 
 
-    const resultsLink =
-        document.createElement("a");
+        const resultsLink =
+            document.createElement("a");
 
 
-    resultsLink.href =
-        "standings.html?event=" +
-        encodeURIComponent(
-            event.resultsEvent
+        resultsLink.href =
+            "standings.html?event=" +
+            encodeURIComponent(
+                event.name
+            );
+
+
+        resultsLink.textContent =
+            "View Event Results →";
+
+
+        resultsLink.className =
+            "event-results-link";
+
+
+        resultsElement.appendChild(
+            resultsLink
         );
 
-
-    resultsLink.textContent =
-        "View Event Results →";
-
-
-    resultsLink.className =
-        "event-results-link";
-
-
-    resultsElement.innerHTML = "";
-
-
-    resultsElement.appendChild(
-        resultsLink
-    );
+    }
 
 
     /* -----------------------------------------------------
        OPEN MODAL
     ----------------------------------------------------- */
 
-    modal.classList.add("active");
+    modal.classList.add(
+        "active"
+    );
+
+
+    modal.setAttribute(
+        "aria-hidden",
+        "false"
+    );
+
 
     document.body.classList.add(
         "modal-open"
@@ -175,7 +554,7 @@ function openEventDetails(eventId) {
 
 /* =========================================================
    CLOSE EVENT DETAILS
-========================================================= */
+   ========================================================= */
 
 function closeEventDetails() {
 
@@ -195,6 +574,12 @@ function closeEventDetails() {
     );
 
 
+    modal.setAttribute(
+        "aria-hidden",
+        "true"
+    );
+
+
     document.body.classList.remove(
         "modal-open"
     );
@@ -203,12 +588,12 @@ function closeEventDetails() {
 
 
 /* =========================================================
-   CLOSE WHEN CLICKING OUTSIDE PANEL
-========================================================= */
+   CLOSE WHEN CLICKING OUTSIDE MODAL
+   ========================================================= */
 
 document.addEventListener(
     "click",
-    function (event) {
+    function(event) {
 
         const modal =
             document.getElementById(
@@ -217,8 +602,8 @@ document.addEventListener(
 
 
         if (
-            event.target ===
-            modal
+            modal &&
+            event.target === modal
         ) {
 
             closeEventDetails();
@@ -231,15 +616,14 @@ document.addEventListener(
 
 /* =========================================================
    CLOSE WITH ESCAPE KEY
-========================================================= */
+   ========================================================= */
 
 document.addEventListener(
     "keydown",
-    function (event) {
+    function(event) {
 
         if (
-            event.key ===
-            "Escape"
+            event.key === "Escape"
         ) {
 
             closeEventDetails();
@@ -247,4 +631,14 @@ document.addEventListener(
         }
 
     }
+);
+
+
+/* =========================================================
+   LOAD EVENTS WHEN PAGE IS READY
+   ========================================================= */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    loadEvents
 );
