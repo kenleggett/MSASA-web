@@ -263,6 +263,61 @@ async function saveScore() {
 
 
 document.addEventListener(
+  async function loadScores() {
+
+  const response =
+    await fetch("/api/admin-scores");
+
+  const result =
+    await response.json();
+
+
+  const table =
+    document.getElementById("score-list");
+
+
+  if (!result.ok || !result.scores) {
+
+    table.innerHTML =
+      "<p>No scores found.</p>";
+
+    return;
+
+  }
+
+
+  table.innerHTML = result.scores.map(score =>
+
+    `
+    <div class="score-row">
+
+      <strong>${score.shooter}</strong>
+      |
+      ${score.event}
+      |
+      ${score.score}
+      |
+      ${score.twelves} 12s
+
+      <button onclick="editScore(
+        ${score.id},
+        ${score.score},
+        ${score.twelves}
+      )">
+        Edit
+      </button>
+
+
+      <button onclick="deleteScore(${score.id})">
+        Delete
+      </button>
+
+    </div>
+    `
+
+  ).join("");
+
+}
   "DOMContentLoaded",
   () => {
 
