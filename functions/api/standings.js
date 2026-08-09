@@ -1,179 +1,327 @@
 // =======================================================
 // MISSISSIPPI ASA
-// SHOOTER OF THE YEAR STANDINGS API
+// 2026 SHOOTER OF THE YEAR STANDINGS API
 // =======================================================
 
 export async function onRequestGet({ env }) {
 
-  // Load all shooter scores with event information
-  const { results } = await env.DB.prepare(`
-    SELECT
-      shooters.id AS shooter_id,
-      shooters.name,
-      shooters.class_name,
-      scores.score,
-      scores.twelves,
-      events.name AS event
+  try {
 
-    FROM scores
+    // ---------------------------------------------------
+    // LOAD SHOOTERS + SCORES + EVENTS
+    // ---------------------------------------------------
 
-    JOIN shooters
-      ON scores.shooter_id = shooters.id
+    const { results } = await env.DB.prepare(`
+      SELECT
+        shooters.id AS shooter_id,
+        shooters.name,
+        shooters.class_name,
+        scores.score,
+        scores.twelves,
+        events.id AS event_id,
+        events.name AS event
 
-    JOIN events
-      ON scores.event_id = events.id
-  `).all();
+      FROM scores
 
+      JOIN shooters
+        ON scores.shooter_id = shooters.id
 
-  // Group scores by shooter
-  const shooterData = {};
+      JOIN events
+        ON scores.event_id = events.id
 
+      WHERE shooters.active = 1
 
-  results.forEach(score => {
-
-    if (!shooterData[score.shooter_id]) {
-
-      shooterData[score.shooter_id] = {
-
-        name: score.name,
-
-        class_name: score.class_name,
-
-        qualifiers: [],
-
-        championship: null
-
-      };
-
-    }
+      ORDER BY shooters.name
+    `).all();
 
 
-    // State Championship is mandatory
-    if (score.event === "State Championship") {
+    // ---------------------------------------------------
+    // GROUP SCORES BY SHOOTER
+    // ---------------------------------------------------
 
-      shooterData[score.shooter_id].championship = {
-
-        score: score.score,
-
-        twelves: score.twelves
-
-      };
+    const shooterData = {};
 
 
-    } else {
+    results.forEach(row => {
 
-      // All other shoots are qualifiers
-      shooterData[score.shooter_id].qualifiers.push({
+      if (!shooterData[row.shooter_id]) {
 
-        event: score.event,
+        shooterData[row.shooter_id] = {
 
-        score: score.score,
+          shooter_id: row.shooter_id,
 
-        twelves: score.twelves
+          name: row.name,
 
-      });
+          class_name: row.class_name,
 
-    }
+          qualifiers: [],
 
-  });
+          championship: null
 
+        };
 
-
-  // Calculate Shooter of the Year totals
-  const rankings = Object.values(shooterData).map(shooter => {
+      }
 
 
-    // Highest three qualifier scores
-    const topThree = shooter.qualifiers
+      // State Championship is mandatory
+      if (row.event === "State Championship") {
 
-      .sort((a,b) => b.score - a.score)
+        shooterData[row.shooter_id].championship = {
 
-      .slice(0,3);
+          event_id: row.event_id,
+
+          event: row.event,
+
+          score: Number(row.score),
+
+          twelves: Number(row.twelves)
+
+        };
+
+      } else {
+
+        // All other events are qualifying events
+        shooterData[row.shooter_id].qualifiers.push({
+
+          event_id: row.event_id,
+
+          event: row.event,
+
+          score: Number(row.score),
+
+          twelves: Number(row.twelves)
+
+        });
+
+      }
+
+    });
 
 
+    // ---------------------------------------------------
+    // CALCULATE EACH SHOOTER
+    // ---------------------------------------------------
 
-    const totalScore =
+    const standings = Object.values(shooterData).map(shooter => {
 
-      topThree.reduce(
 
+      // Sort highest qualifying scores first
+      const sortedQualifiers = [...shooter.qualifiers]
+        .sort((a, b) => {
+
+          if (b.score !== a.score) {
+            return b.score - a.score;
+          }
+
+          return b.twelves - a.twelves;
+
+        });
+
+
+      // Take the best three qualifying scores
+      const topThree = sortedQualifiers.slice(0, 3);
+
+
+      // A completed SOTY score requires:
+      // 3 qualifying scores + State Championship
+      const hasThreeQualifiers = topThree.length >= 3;
+
+      const hasChampionship = shooter.championship !== null;
+
+      const eligible = hasThreeQualifiers && hasChampionship;
+
+
+      // Calculate qualifying score
+      const qualifierScore = topThree.reduce(
         (total, shoot) => total + shoot.score,
-
         0
-
-      )
-
-      +
-
-      (shooter.championship?.score || 0);
+      );
 
 
-
-    const totalTwelves =
-
-      topThree.reduce(
-
+      // Calculate qualifying 12s
+      const qualifierTwelves = topThree.reduce(
         (total, shoot) => total + shoot.twelves,
-
         0
-
-      )
-
-      +
-
-      (shooter.championship?.twelves || 0);
+      );
 
 
-
-    return {
-
-      name: shooter.name,
-
-      class_name: shooter.class_name,
-
-      total_score: totalScore,
-
-      total_twelves: totalTwelves,
-
-      qualifier_scores: topThree,
-
-      championship: shooter.championship
-
-    };
+      // Championship score
+      const championshipScore =
+        shooter.championship?.score || 0;
 
 
-  });
+      // Championship 12s
+      const championshipTwelves =
+        shooter.championship?.twelves || 0;
 
 
-
-  // Rank shooters
-  rankings.sort((a,b)=>{
-
-
-    // Higher score wins
-
-    if (b.total_score !== a.total_score) {
-
-      return b.total_score - a.total_score;
-
-    }
+      // Final SOTY totals
+      const totalScore =
+        qualifierScore + championshipScore;
 
 
-    // Tie breaker = most 12 rings
-
-    return b.total_twelves - a.total_twelves;
-
-
-  });
+      const totalTwelves =
+        qualifierTwelves + championshipTwelves;
 
 
+      return {
 
-  return Response.json({
+        shooter_id: shooter.shooter_id,
 
-    ok: true,
+        name: shooter.name,
 
-    standings: rankings
+        class_name: shooter.class_name,
 
-  });
+        eligible: eligible,
 
+        qualification_status: eligible
+          ? "Complete"
+          : !hasThreeQualifiers && !hasChampionship
+            ? "Needs 3 qualifiers + State Championship"
+            : !hasThreeQualifiers
+              ? "Needs more qualifying scores"
+              : "Needs State Championship",
+
+
+        total_score: totalScore,
+
+        total_twelves: totalTwelves,
+
+
+        qualifier_score: qualifierScore,
+
+        qualifier_twelves: qualifierTwelves,
+
+
+        qualifier_count: shooter.qualifiers.length,
+
+
+        top_three: topThree,
+
+
+        championship: shooter.championship
+
+      };
+
+    });
+
+
+    // ---------------------------------------------------
+    // SORT ALL SHOOTERS
+    //
+    // Completed shooters first.
+    // Then score.
+    // Then 12-count.
+    // ---------------------------------------------------
+
+    standings.sort((a, b) => {
+
+      // Eligible shooters first
+      if (a.eligible !== b.eligible) {
+        return a.eligible ? -1 : 1;
+      }
+
+
+      // Higher total score wins
+      if (b.total_score !== a.total_score) {
+        return b.total_score - a.total_score;
+      }
+
+
+      // Higher 12 count breaks ties
+      if (b.total_twelves !== a.total_twelves) {
+        return b.total_twelves - a.total_twelves;
+      }
+
+
+      // Final alphabetical tie breaker
+      return a.name.localeCompare(b.name);
+
+    });
+
+
+    // ---------------------------------------------------
+    // RANK SHOOTERS WITHIN EACH CLASS
+    // ---------------------------------------------------
+
+    const classCounters = {};
+
+
+    standings.forEach(shooter => {
+
+      const className = shooter.class_name || "Unclassified";
+
+
+      if (!classCounters[className]) {
+        classCounters[className] = 0;
+      }
+
+
+      // Only completed shooters receive a SOTY rank
+      if (shooter.eligible) {
+
+        classCounters[className]++;
+
+        shooter.rank = classCounters[className];
+
+      } else {
+
+        shooter.rank = null;
+
+      }
+
+    });
+
+
+    // ---------------------------------------------------
+    // CREATE CLASS GROUPS
+    // ---------------------------------------------------
+
+    const classes = {};
+
+
+    standings.forEach(shooter => {
+
+      const className = shooter.class_name || "Unclassified";
+
+
+      if (!classes[className]) {
+        classes[className] = [];
+      }
+
+
+      classes[className].push(shooter);
+
+    });
+
+
+    // ---------------------------------------------------
+    // RETURN API RESPONSE
+    // ---------------------------------------------------
+
+    return Response.json({
+
+      ok: true,
+
+      season: 2026,
+
+      standings: standings,
+
+      classes: classes
+
+    });
+
+
+  } catch (error) {
+
+    return Response.json({
+
+      ok: false,
+
+      error: error.message
+
+    }, { status: 500 });
+
+  }
 
 }
