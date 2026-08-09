@@ -9,6 +9,122 @@ let shooterData = [];
 
 
 // =====================================================
+// PUBLIC CLASS NAMES
+// =====================================================
+//
+// IMPORTANT:
+// The database may contain "Semi-Pro Open".
+// The public website will display it as "Semi-Pro".
+//
+
+const ASA_CLASSES = [
+
+    "Semi-Pro",
+    "Known 50",
+    "Senior Known 50",
+
+    "Men's Open 45",
+    "Known 45",
+    "Hunter 45",
+    "Senior Open",
+    "Senior Known",
+    "Senior Hunter 45",
+
+    "Women's Open 45",
+    "Women's Known 45",
+
+    "Open 40",
+    "Known 40",
+    "Men's Pins 40",
+    "Crossbow",
+
+    "Super Senior",
+    "Super Senior Known",
+    "Senior Masters",
+    "Senior Masters Known",
+    "Senior Pins",
+    "Super Senior Pins",
+
+    "Women's Known 40",
+    "Women's Pins 40",
+    "Women's Senior Known",
+    "Women's Super Senior Known",
+
+    "Young Adult Open Male",
+    "Young Adult Open Female",
+    "Young Adult Pins Male",
+    "Young Adult Pins Female",
+
+    "Women's Pins 30",
+    "Men's Pins 30",
+    "Senior Legends",
+    "Barebow Recurve",
+    "Olympic Recurve",
+
+    "Youth Open Boys",
+    "Youth Open Girls",
+    "Youth Pins Boys",
+    "Youth Pins Girls",
+    "Youth Olympic Recurve",
+    "Youth Barebow Recurve",
+
+    "Eagle Open Boys",
+    "Eagle Open Girls",
+    "Eagle Pins Boys",
+    "Eagle Pins Girls",
+    "Eagle Recurve",
+    "Jr Eagle Open"
+
+];
+
+
+// =====================================================
+// DISPLAY CLASS NAME
+// =====================================================
+
+function displayClassName(className) {
+
+    if (className === "Semi-Pro Open") {
+        return "Semi-Pro";
+    }
+
+    return className || "Unclassified";
+
+}
+
+
+// =====================================================
+// CLASS MATCHING
+// =====================================================
+//
+// Allows the public "Semi-Pro" filter to match either:
+//     Semi-Pro
+//     Semi-Pro Open
+//
+// This lets us keep existing database records intact.
+//
+
+function classMatches(actualClass, selectedClass) {
+
+    if (selectedClass === "all") {
+        return true;
+    }
+
+    if (selectedClass === "Semi-Pro") {
+
+        return (
+            actualClass === "Semi-Pro" ||
+            actualClass === "Semi-Pro Open"
+        );
+
+    }
+
+    return actualClass === selectedClass;
+
+}
+
+
+// =====================================================
 // LOAD DATA
 // =====================================================
 
@@ -16,28 +132,47 @@ async function loadStandings() {
 
     try {
 
-        const [standingsResponse, shootersResponse] =
-            await Promise.all([
-                fetch("/api/standings"),
-                fetch("/api/shooters")
-            ]);
+        const [
+            standingsResponse,
+            shootersResponse
+        ] = await Promise.all([
+
+            fetch("/api/standings"),
+
+            fetch("/api/shooters")
+
+        ]);
+
 
         if (!standingsResponse.ok) {
-            throw new Error("Unable to load standings.");
+
+            throw new Error(
+                "Unable to load standings."
+            );
+
         }
 
+
         if (!shootersResponse.ok) {
-            throw new Error("Unable to load shooter data.");
+
+            throw new Error(
+                "Unable to load shooter data."
+            );
+
         }
+
 
         const standingsJson =
             await standingsResponse.json();
 
+
         const shootersJson =
             await shootersResponse.json();
 
+
         standingsData =
             standingsJson.standings || [];
+
 
         shooterData =
             shootersJson.shooters || [];
@@ -55,21 +190,33 @@ async function loadStandings() {
 
         console.error(error);
 
+
         const table =
-            document.getElementById("standings-body");
+            document.getElementById(
+                "standings-body"
+            );
+
 
         if (table) {
 
             table.innerHTML = `
+
                 <div class="standing-row">
+
                     <strong>!</strong>
+
                     <span>
                         Unable to load standings
                     </span>
+
                     <span>—</span>
+
                     <strong>—</strong>
+
                     <strong>—</strong>
+
                 </div>
+
             `;
 
         }
@@ -82,88 +229,48 @@ async function loadStandings() {
 // =====================================================
 // BUILD CLASS DROPDOWN
 // =====================================================
+
 function buildClassDropdown() {
 
     const dropdown =
-        document.getElementById("class-filter");
+        document.getElementById(
+            "class-filter"
+        );
+
 
     if (!dropdown) {
         return;
     }
 
-    // 2026 ASA Federation classes
-    const classes = [
-        "Semi-Pro",
-        "Known 50",
-        "Senior Known 50",
-
-        "Men's Open 45",
-        "Known 45",
-        "Hunter 45",
-        "Senior Open",
-        "Senior Known",
-        "Senior Hunter 45",
-        "Women's Open 45",
-        "Women's Known 45",
-
-        "Open 40",
-        "Known 40",
-        "Men's Pins 40",
-        "Crossbow",
-
-        "Super Senior",
-        "Super Senior Known",
-        "Senior Masters",
-        "Senior Masters Known",
-        "Senior Pins",
-        "Super Senior Pins",
-
-        "Women's Known 40",
-        "Women's Pins 40",
-        "Women's Senior Known",
-        "Women's Super Senior Known",
-
-        "Young Adult Open Male",
-        "Young Adult Open Female",
-        "Young Adult Pins Male",
-        "Young Adult Pins Female",
-
-        "Women's Pins 30",
-        "Men's Pins 30",
-        "Senior Legends",
-        "Barebow Recurve",
-        "Olympic Recurve",
-
-        "Youth Open Boys",
-        "Youth Open Girls",
-        "Youth Pins Boys",
-        "Youth Pins Girls",
-        "Youth Olympic Recurve",
-        "Youth Barebow Recurve",
-
-        "Eagle Open Boys",
-        "Eagle Open Girls",
-        "Eagle Pins Boys",
-        "Eagle Pins Girls",
-        "Eagle Recurve",
-        "Jr Eagle Open"
-    ];
 
     dropdown.innerHTML = `
+
         <option value="all">
             All Classes
         </option>
+
     `;
 
-    classes.forEach(className => {
+
+    ASA_CLASSES.forEach(className => {
 
         const option =
-            document.createElement("option");
+            document.createElement(
+                "option"
+            );
 
-        option.value = className;
-        option.textContent = className;
 
-        dropdown.appendChild(option);
+        option.value =
+            className;
+
+
+        option.textContent =
+            className;
+
+
+        dropdown.appendChild(
+            option
+        );
 
     });
 
@@ -181,10 +288,12 @@ function connectControls() {
             "shooter-search"
         );
 
+
     const classFilter =
         document.getElementById(
             "class-filter"
         );
+
 
     const eventFilter =
         document.getElementById(
@@ -235,11 +344,14 @@ function initializeStandingsView() {
             "event-filter"
         );
 
+
     if (eventFilter) {
 
-        eventFilter.value = "soy";
+        eventFilter.value =
+            "soy";
 
     }
+
 
     displayStandings();
 
@@ -257,10 +369,12 @@ function refreshStandings() {
             "event-filter"
         );
 
+
     const classFilter =
         document.getElementById(
             "class-filter"
         );
+
 
     const searchBox =
         document.getElementById(
@@ -273,10 +387,12 @@ function refreshStandings() {
             ? eventFilter.value
             : "soy";
 
+
     const selectedClass =
         classFilter
             ? classFilter.value
             : "all";
+
 
     const searchText =
         searchBox
@@ -320,15 +436,21 @@ function displayStandings(
             "standings-body"
         );
 
+
     if (!table) {
         return;
     }
 
-let results =
-    standingsData.filter(
-        shooter =>
-            shooter.name
-    );
+
+    // -------------------------------------------------
+    // ONLY COMPLETED / ELIGIBLE SOTY SHOOTERS
+    // -------------------------------------------------
+
+    let results =
+        standingsData.filter(
+            shooter =>
+                shooter.eligible === true
+        );
 
 
     // -------------------------------------------------
@@ -340,8 +462,10 @@ let results =
         results =
             results.filter(
                 shooter =>
-                    shooter.class_name ===
-                    selectedClass
+                    classMatches(
+                        shooter.class_name,
+                        selectedClass
+                    )
             );
 
     }
@@ -355,6 +479,7 @@ let results =
         searchText
             .trim()
             .toLowerCase();
+
 
     if (search !== "") {
 
@@ -375,15 +500,28 @@ let results =
 
     results.sort((a, b) => {
 
-        if (a.class_name !== b.class_name) {
+        // Class first
+        if (
+            a.class_name !==
+            b.class_name
+        ) {
 
-            return a.class_name.localeCompare(
-                b.class_name
+            return displayClassName(
+                a.class_name
+            ).localeCompare(
+                displayClassName(
+                    b.class_name
+                )
             );
 
         }
 
-        if (b.total_score !== a.total_score) {
+
+        // Higher score first
+        if (
+            b.total_score !==
+            a.total_score
+        ) {
 
             return (
                 b.total_score -
@@ -392,6 +530,8 @@ let results =
 
         }
 
+
+        // Higher 12 count
         return (
             b.total_twelves -
             a.total_twelves
@@ -403,9 +543,14 @@ let results =
     table.innerHTML = "";
 
 
+    // -------------------------------------------------
+    // NO RESULTS
+    // -------------------------------------------------
+
     if (results.length === 0) {
 
         table.innerHTML = `
+
             <div class="standing-row">
 
                 <strong>—</strong>
@@ -422,6 +567,7 @@ let results =
                 <strong>—</strong>
 
             </div>
+
         `;
 
         return;
@@ -430,13 +576,15 @@ let results =
 
 
     // -------------------------------------------------
-    // DISPLAY
+    // DISPLAY RESULTS
     // -------------------------------------------------
 
-    results.forEach((shooter) => {
+    results.forEach(shooter => {
 
         const row =
-            document.createElement("div");
+            document.createElement(
+                "div"
+            );
 
 
         row.className =
@@ -451,6 +599,7 @@ let results =
 
         }
 
+
         if (shooter.rank === 2) {
 
             row.classList.add(
@@ -458,6 +607,7 @@ let results =
             );
 
         }
+
 
         if (shooter.rank === 3) {
 
@@ -470,16 +620,18 @@ let results =
 
         row.innerHTML = `
 
-          <strong>
-    ${shooter.rank || "—"}
-</strong>
+            <strong>
+                ${shooter.rank || "—"}
+            </strong>
 
             <span>
                 ${shooter.name}
             </span>
 
             <span>
-                ${shooter.class_name}
+                ${displayClassName(
+                    shooter.class_name
+                )}
             </span>
 
             <strong>
@@ -493,14 +645,17 @@ let results =
         `;
 
 
-        table.appendChild(row);
+        table.appendChild(
+            row
+        );
 
 
         // -------------------------------------------------
         // CLICK FOR SCORECARD
         // -------------------------------------------------
 
-        row.style.cursor = "pointer";
+        row.style.cursor =
+            "pointer";
 
 
         row.addEventListener(
@@ -524,7 +679,9 @@ let results =
 
 
                 const details =
-                    document.createElement("div");
+                    document.createElement(
+                        "div"
+                    );
 
 
                 details.id =
@@ -540,36 +697,39 @@ let results =
                     shooter.top_three || [];
 
 
-                let countingHTML = "";
+                let countingHTML =
+                    "";
 
 
-                topThree.forEach(event => {
+                topThree.forEach(
+                    event => {
 
-                    countingHTML += `
+                        countingHTML += `
 
-                        <div class="score-line">
+                            <div class="score-line">
 
-                            <span>
-                                ${event.event}
-                            </span>
+                                <span>
+                                    ${event.event}
+                                </span>
 
-                            <strong>
-                                ${event.score}
-                            </strong>
+                                <strong>
+                                    ${event.score}
+                                </strong>
 
-                            <strong>
-                                ${event.twelves}
-                            </strong>
+                                <strong>
+                                    ${event.twelves}
+                                </strong>
 
-                            <span>
-                                COUNTS
-                            </span>
+                                <span>
+                                    COUNTS
+                                </span>
 
-                        </div>
+                            </div>
 
-                    `;
+                        `;
 
-                });
+                    }
+                );
 
 
                 const championship =
@@ -585,14 +745,19 @@ let results =
                         </h3>
 
                         <p>
-                            ${shooter.class_name}
+                            ${displayClassName(
+                                shooter.class_name
+                            )}
                         </p>
 
                         <p>
+
                             <strong>
                                 Qualification Status:
                             </strong>
+
                             ${shooter.qualification_status}
+
                         </p>
 
 
@@ -730,6 +895,7 @@ function displayEventStandings(
             "standings-body"
         );
 
+
     if (!table) {
         return;
     }
@@ -738,11 +904,16 @@ function displayEventStandings(
     let results = [];
 
 
-    shooterData
-        .forEach(shooter => {
+    shooterData.forEach(
+        shooter => {
 
-            let eventResult = null;
+            let eventResult =
+                null;
 
+
+            // -------------------------------------------------
+            // STATE CHAMPIONSHIP
+            // -------------------------------------------------
 
             if (
                 eventName ===
@@ -751,28 +922,40 @@ function displayEventStandings(
 
                 if (
                     shooter.championship &&
-                    typeof shooter.championship.score ===
+                    typeof shooter
+                        .championship
+                        .score ===
                         "number"
                 ) {
 
                     eventResult = {
 
-                        name: shooter.name,
+                        name:
+                            shooter.name,
 
                         class_name:
                             shooter.class,
 
                         score:
-                            shooter.championship.score,
+                            shooter
+                                .championship
+                                .score,
 
                         twelves:
-                            shooter.championship.twelves || 0
+                            shooter
+                                .championship
+                                .twelves || 0
 
                     };
 
                 }
 
             }
+
+
+            // -------------------------------------------------
+            // NORMAL QUALIFIER
+            // -------------------------------------------------
 
             else {
 
@@ -793,7 +976,8 @@ function displayEventStandings(
 
                     eventResult = {
 
-                        name: shooter.name,
+                        name:
+                            shooter.name,
 
                         class_name:
                             shooter.class,
@@ -819,7 +1003,8 @@ function displayEventStandings(
 
             }
 
-        });
+        }
+    );
 
 
     // -------------------------------------------------
@@ -831,8 +1016,10 @@ function displayEventStandings(
         results =
             results.filter(
                 shooter =>
-                    shooter.class_name ===
-                    selectedClass
+                    classMatches(
+                        shooter.class_name,
+                        selectedClass
+                    )
             );
 
     }
@@ -867,7 +1054,10 @@ function displayEventStandings(
 
     results.sort((a, b) => {
 
-        if (b.score !== a.score) {
+        if (
+            b.score !==
+            a.score
+        ) {
 
             return (
                 b.score -
@@ -875,6 +1065,7 @@ function displayEventStandings(
             );
 
         }
+
 
         return (
             b.twelves -
@@ -887,9 +1078,14 @@ function displayEventStandings(
     table.innerHTML = "";
 
 
+    // -------------------------------------------------
+    // NO RESULTS
+    // -------------------------------------------------
+
     if (results.length === 0) {
 
         table.innerHTML = `
+
             <div class="standing-row">
 
                 <strong>—</strong>
@@ -905,6 +1101,7 @@ function displayEventStandings(
                 <strong>—</strong>
 
             </div>
+
         `;
 
         return;
@@ -912,11 +1109,17 @@ function displayEventStandings(
     }
 
 
+    // -------------------------------------------------
+    // DISPLAY EVENT RESULTS
+    // -------------------------------------------------
+
     results.forEach(
         (shooter, index) => {
 
             const row =
-                document.createElement("div");
+                document.createElement(
+                    "div"
+                );
 
 
             row.className =
@@ -931,6 +1134,7 @@ function displayEventStandings(
 
             }
 
+
             if (index === 1) {
 
                 row.classList.add(
@@ -938,6 +1142,7 @@ function displayEventStandings(
                 );
 
             }
+
 
             if (index === 2) {
 
@@ -959,7 +1164,9 @@ function displayEventStandings(
                 </span>
 
                 <span>
-                    ${shooter.class_name}
+                    ${displayClassName(
+                        shooter.class_name
+                    )}
                 </span>
 
                 <strong>
@@ -973,7 +1180,9 @@ function displayEventStandings(
             `;
 
 
-            table.appendChild(row);
+            table.appendChild(
+                row
+            );
 
         }
     );
@@ -982,7 +1191,7 @@ function displayEventStandings(
 
 
 // =====================================================
-// START
+// START APPLICATION
 // =====================================================
 
 loadStandings();
