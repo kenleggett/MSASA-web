@@ -3,16 +3,26 @@
 
 <head>
 
-<meta charset="UTF-8">
+    <meta charset="UTF-8">
 
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
-<meta name="description"
-content="Mississippi ASA Shooter of the Year standings.">
+    <meta
+        name="description"
+        content="Mississippi ASA Shooter of the Year standings."
+    >
 
-<title>Shooter of the Year | Mississippi ASA</title>
+    <title>
+        Shooter of the Year | Mississippi ASA
+    </title>
 
-<link rel="stylesheet" href="/css/style.css?v=3">
+    <link
+        rel="stylesheet"
+        href="css/style.css?v=4"
+    >
 
 </head>
 
@@ -20,267 +30,349 @@ content="Mississippi ASA Shooter of the Year standings.">
 <body>
 
 
+<!-- =====================================================
+     HEADER
+===================================================== -->
+
 <header class="site-header">
 
-<div class="header-container">
+    <div class="header-container">
+
+        <div class="logo">
+
+            <a href="index.html">
+
+                <img
+                    src="images/msasa-logo-transparent.png"
+                    alt="Mississippi ASA Archery Shooters Association"
+                >
+
+            </a>
+
+        </div>
 
 
-<div class="logo">
-
-<a href="/index.html">
-
-<img src="/images/msasa-logo-transparent.png"
-alt="Mississippi ASA">
-
-</a>
-
-</div>
+        <button
+            class="menu-toggle"
+            id="menuToggle"
+            type="button"
+            aria-label="Open navigation"
+        >
+            ☰
+        </button>
 
 
-<button class="menu-toggle" id="menuToggle">
+        <nav
+            class="main-nav"
+            id="mainNav"
+        >
 
-☰
+            <a href="index.html">
+                Home
+            </a>
 
-</button>
+            <a href="events.html">
+                Events
+            </a>
 
+            <a href="standings.html">
+                Standings
+            </a>
 
-<nav id="mainNav">
+            <a href="index.html#about">
+                About
+            </a>
 
-<a href="/index.html">
-Home
-</a>
+            <a href="index.html#contact">
+                Contact
+            </a>
 
-<a href="/events.html">
-Events
-</a>
+        </nav>
 
-<a href="/standings.html">
-Standings
-</a>
-
-<a href="/index.html#about">
-About
-</a>
-
-<a href="/index.html#contact">
-Contact
-</a>
-
-</nav>
-
-
-</div>
+    </div>
 
 </header>
 
 
 
+<!-- =====================================================
+     PAGE HEADER
+===================================================== -->
+
+<main>
+
 <section class="hero">
 
+    <div class="hero-overlay"></div>
 
-<div class="container">
+    <div class="container hero-content">
 
-<p class="eyebrow">
-2026 SEASON
-</p>
+        <div class="hero-copy">
 
+            <p class="eyebrow">
+                2026 SEASON
+            </p>
 
-<h1>
-Shooter of the Year
-</h1>
+            <h1>
+                SHOOTER OF THE YEAR
+            </h1>
 
+            <p class="hero-text">
+                Mississippi ASA Shooter of the Year
+                standings.
+            </p>
 
-<p>
-Mississippi ASA Shooter of the Year standings.
-</p>
+        </div>
 
-
-</div>
-
+    </div>
 
 </section>
 
 
 
+<!-- =====================================================
+     STANDINGS
+===================================================== -->
 
-<section class="container">
+<section class="quick-links">
 
+    <div class="container">
 
-<div class="standings-controls">
 
+        <div class="section-heading">
 
-<div>
+            <p class="eyebrow">
+                2026 SEASON
+            </p>
 
-<label>
-Search Shooter
-</label>
+            <h2>
+                Shooter of the Year
+            </h2>
 
+            <p>
+                Follow Mississippi ASA standings
+                throughout the season.
+            </p>
 
-<input
-id="shooter-search"
-type="search"
-placeholder="Enter shooter name..."
->
+        </div>
 
-</div>
 
 
+        <!-- FILTERS -->
 
-<div>
+        <div class="standings-controls">
 
-<label>
-Class
-</label>
 
+            <div class="search-control">
 
-<select id="class-filter">
+                <label for="shooter-search">
+                    Search Shooter
+                </label>
 
-<option value="all">
-All Classes
-</option>
+                <input
+                    type="search"
+                    id="shooter-search"
+                    placeholder="Enter shooter name..."
+                    autocomplete="off"
+                >
 
-</select>
+            </div>
 
 
-</div>
 
+            <div class="class-control">
 
+                <label for="class-filter">
+                    Class
+                </label>
 
+                <select id="class-filter">
 
-<div>
+                    <option value="all">
+                        All Classes
+                    </option>
 
-<label>
-View Results
-</label>
+                </select>
 
+            </div>
 
-<select id="event-filter">
 
 
-<option value="soy">
-Shooter of the Year
-</option>
+            <div class="class-control">
 
+                <label for="event-filter">
+                    View Results
+                </label>
 
-<option value="Lost Arrow">
-Lost Arrow
-</option>
+                <select id="event-filter">
 
+                    <option value="soy">
+                        Shooter of the Year
+                    </option>
 
-<option value="Waldo's">
-Waldo's
-</option>
+                    <option value="Lost Arrow">
+                        Lost Arrow
+                    </option>
 
+                    <option value="Waldo's">
+                        Waldo's
+                    </option>
 
-<option value="Percy Quinn">
-Percy Quinn
-</option>
+                    <option value="Percy Quinn">
+                        Percy Quinn
+                    </option>
 
+                    <option value="Pearl River">
+                        Pearl River
+                    </option>
 
-<option value="Pearl River">
-Pearl River
-</option>
+                    <option value="Laurel">
+                        Laurel
+                    </option>
 
+                    <option value="Little River">
+                        Little River
+                    </option>
 
-<option value="Laurel">
-Laurel
-</option>
+                    <option value="State Championship">
+                        State Championship
+                    </option>
 
+                </select>
 
-<option value="Little River">
-Little River
-</option>
+            </div>
 
+        </div>
 
-<option value="State Championship">
-State Championship
-</option>
 
 
-</select>
+        <!-- STANDINGS TABLE -->
 
+        <div class="standings-table">
 
-</div>
+            <div class="standing-header">
 
+                <span>
+                    RANK
+                </span>
 
-</div>
+                <span>
+                    SHOOTER
+                </span>
 
+                <span>
+                    CLASS
+                </span>
 
+                <span>
+                    SCORE
+                </span>
 
+                <span>
+                    12s
+                </span>
 
+            </div>
 
-<div class="standings-table">
 
+            <div id="standings-body">
 
-<div class="standing-header">
+                Loading standings...
 
-<span>
-RANK
-</span>
+            </div>
 
-<span>
-SHOOTER
-</span>
+        </div>
 
-<span>
-CLASS
-</span>
 
-<span>
-SCORE
-</span>
-
-<span>
-12s
-</span>
-
-</div>
-
-
-
-<div id="standings-body">
-
-Loading standings...
-
-</div>
-
-
-</div>
-
-
+    </div>
 
 </section>
 
+</main>
 
 
 
+<!-- =====================================================
+     FOOTER
+===================================================== -->
 
 <footer class="site-footer">
 
-<div class="container">
+    <div class="container">
 
-<p>
-Mississippi Archery Shooters Association
-</p>
+        <img
+            src="images/msasa-logo-transparent.png"
+            alt="Mississippi ASA"
+            class="footer-logo"
+        >
 
+        <p>
+            Mississippi Archery Shooters Association
+        </p>
 
-<p class="copyright">
+        <p class="footer-tagline">
+            SHOOT LOCAL.
+        </p>
 
-© 2026 Mississippi ASA
+        <p class="copyright">
+            © 2026 Mississippi ASA.
+            All rights reserved.
+        </p>
 
-</p>
-
-
-</div>
+    </div>
 
 </footer>
 
 
 
+<!-- =====================================================
+     NAVIGATION SCRIPT
+===================================================== -->
 
-<script src="/js/main.js?v=3"></script>
+<script>
 
-<script src="/js/standings.js?v=3"></script>
+document.addEventListener(
+    "DOMContentLoaded",
+    () => {
+
+        const menuToggle =
+            document.getElementById(
+                "menuToggle"
+            );
+
+        const mainNav =
+            document.getElementById(
+                "mainNav"
+            );
+
+
+        if (
+            menuToggle &&
+            mainNav
+        ) {
+
+            menuToggle.addEventListener(
+                "click",
+                () => {
+
+                    mainNav.classList.toggle(
+                        "active"
+                    );
+
+                }
+            );
+
+        }
+
+    }
+);
+
+</script>
+
+
+<script
+    src="js/standings.js?v=4"
+></script>
 
 
 </body>
