@@ -1,6 +1,7 @@
 // =======================================================
-// MSASA ADMIN DASHBOARD JAVASCRIPT
-// Shooter Management + Score Management
+// MISSISSIPPI ASA
+// ADMIN DASHBOARD JAVASCRIPT
+// SHOOTER MANAGEMENT + SCORE MANAGEMENT
 // =======================================================
 
 
@@ -11,71 +12,176 @@
 async function addShooter() {
 
   const name =
-    document.getElementById("shooter-name").value.trim();
+    document
+      .getElementById("shooter-name")
+      .value
+      .trim();
+
 
   const asa_number =
-    document.getElementById("asa-number").value.trim();
+    document
+      .getElementById("asa-number")
+      .value
+      .trim()
+      .toUpperCase();
+
 
   const class_name =
-    document.getElementById("class-name").value;
+    document
+      .getElementById("class-name")
+      .value;
 
+
+  const status =
+    document.getElementById(
+      "shooter-status"
+    );
+
+
+  // ---------------------------------------------------
+  // VALIDATION
+  // ---------------------------------------------------
 
   if (!name) {
 
-    alert("Please enter the shooter's name.");
+    status.textContent =
+      "Please enter the shooter's name.";
 
     return;
 
   }
 
 
-  const response = await fetch(
-    "/api/add-shooter",
-    {
-
-      method: "POST",
-
-      headers: {
-        "Content-Type": "application/json"
-      },
-
-      body: JSON.stringify({
-        name,
-        asa_number,
-        class_name
-      })
-
-    }
-  );
-
-
-  const result =
-    await response.json();
-
-
-  const status =
-    document.getElementById("shooter-status");
-
-
-  if (result.ok) {
+  if (!asa_number) {
 
     status.textContent =
-      "Shooter added successfully.";
+      "Please enter the ASA number.";
 
-    document.getElementById(
-      "shooter-name"
-    ).value = "";
-
-    document.getElementById(
-      "asa-number"
-    ).value = "";
-
-
-    await loadShooters();
+    return;
 
   }
 
-  else {
+
+  if (!class_name) {
+
+    status.textContent =
+      "Please select a class.";
+
+    return;
+
+  }
+
+
+  // ---------------------------------------------------
+  // DISABLE BUTTON WHILE SAVING
+  // ---------------------------------------------------
+
+  const button =
+    document.querySelector(
+      'button[onclick="addShooter()"]'
+    );
+
+
+  if (button) {
+
+    button.disabled = true;
+
+    button.textContent =
+      "Adding...";
+
+  }
+
+
+  try {
+
+    // -------------------------------------------------
+    // SEND TO API
+    // -------------------------------------------------
+
+    const response =
+      await fetch(
+        "/api/add-shooter",
+        {
+
+          method: "POST",
+
+          headers: {
+            "Content-Type":
+              "application/json"
+          },
+
+          body:
+            JSON.stringify({
+
+              name,
+
+              asa_number,
+
+              class_name
+
+            })
+
+        }
+      );
+
+
+    const result =
+      await response.json();
+
+
+    // -------------------------------------------------
+    // SUCCESS
+    // -------------------------------------------------
+
+    if (result.ok) {
+
+      status.textContent =
+        "Shooter added successfully.";
+
+
+      document.getElementById(
+        "shooter-name"
+      ).value = "";
+
+
+      document.getElementById(
+        "asa-number"
+      ).value = "";
+
+
+      document.getElementById(
+        "class-name"
+      ).value = "";
+
+
+      await loadShooters();
+
+      return;
+
+    }
+
+
+    // -------------------------------------------------
+    // DUPLICATE ASA NUMBER
+    // -------------------------------------------------
+
+    if (
+      result.code ===
+      "DUPLICATE_ASA_NUMBER"
+    ) {
+
+      status.textContent =
+        result.error ||
+        "That ASA number is already assigned.";
+
+      return;
+
+    }
+
+
+    // -------------------------------------------------
+    // OTHER API ERROR
+    // -------------------------------------------------
 
     status.textContent =
       result.error ||
@@ -83,8 +189,35 @@ async function addShooter() {
 
   }
 
-}
 
+  catch (error) {
+
+    console.error(
+      "Add shooter error:",
+      error
+    );
+
+
+    status.textContent =
+      "Unable to connect to the server.";
+
+  }
+
+
+  finally {
+
+    if (button) {
+
+      button.disabled = false;
+
+      button.textContent =
+        "Add Shooter";
+
+    }
+
+  }
+
+}
 
 
 // =======================================================
@@ -93,186 +226,337 @@ async function addShooter() {
 
 async function loadShooters() {
 
-  const response =
-    await fetch("/api/shooters");
-
-
-  const result =
-    await response.json();
-
-
   const dropdown =
-    document.getElementById("score-shooter");
+    document.getElementById(
+      "score-shooter"
+    );
 
 
   const list =
-    document.getElementById("shooter-list");
+    document.getElementById(
+      "shooter-list"
+    );
 
 
-  dropdown.innerHTML = "";
+  try {
+
+    const response =
+      await fetch(
+        "/api/shooters",
+        {
+          cache: "no-store"
+        }
+      );
 
 
-  if (
-    !result.ok ||
-    !result.shooters ||
-    result.shooters.length === 0
-  ) {
+    if (!response.ok) {
 
-
-    dropdown.innerHTML =
-      "<option value=''>No shooters found</option>";
-
-
-    list.innerHTML =
-      "<p>No shooters found.</p>";
-
-
-    return;
-
-  }
-
-
-
-  result.shooters.forEach(
-    shooter => {
-
-
-      const option =
-        document.createElement("option");
-
-
-      option.value =
-        shooter.id;
-
-
-      option.textContent =
-        shooter.name +
-        " - " +
-        shooter.class;
-
-
-      dropdown.appendChild(option);
-
+      throw new Error(
+        `HTTP ${response.status}`
+      );
 
     }
-  );
 
 
-
-  list.innerHTML =
-    result.shooters.map(
-      shooter =>
+    const result =
+      await response.json();
 
 
+    // -------------------------------------------------
+    // CLEAR DROPDOWN
+    // -------------------------------------------------
+
+    dropdown.innerHTML = "";
+
+
+    // -------------------------------------------------
+    // NO SHOOTERS
+    // -------------------------------------------------
+
+    if (
+      !result.ok ||
+      !Array.isArray(
+        result.shooters
+      ) ||
+      result.shooters.length === 0
+    ) {
+
+      dropdown.innerHTML =
+        `
+        <option value="">
+          No shooters found
+        </option>
+        `;
+
+
+      list.innerHTML =
+        `
+        <p>
+          No shooters found.
+        </p>
+        `;
+
+
+      return;
+
+    }
+
+
+    // -------------------------------------------------
+    // SORT SHOOTERS
+    // -------------------------------------------------
+
+    const shooters =
+      [...result.shooters]
+        .sort(
+          (a, b) =>
+            String(
+              a.name || ""
+            ).localeCompare(
+              String(
+                b.name || ""
+              )
+            )
+        );
+
+
+    // -------------------------------------------------
+    // POPULATE SCORE DROPDOWN
+    // -------------------------------------------------
+
+    dropdown.innerHTML =
       `
-      <p>
-        <strong>${shooter.name}</strong>
-        —
-        ${shooter.class}
-        —
-        ASA ${shooter.asa_number}
-      </p>
-      `
+      <option value="">
+        Select Shooter
+      </option>
+      `;
 
 
-    ).join("");
+    shooters.forEach(
+      shooter => {
 
-}
-
-
-
-// =======================================================
-// ADD SCORE
-// =======================================================
-
-async function saveScore() {
+        const option =
+          document.createElement(
+            "option"
+          );
 
 
-  const shooter_id =
-    Number(
-      document.getElementById(
-        "score-shooter"
-      ).value
-    );
+        option.value =
+          shooter.id;
 
 
-  const event_id =
-    Number(
-      document.getElementById(
-        "event"
-      ).value
-    );
+        option.textContent =
+          `${shooter.name} — ${shooter.class} — ASA ${shooter.asa_number}`;
 
 
-  const score =
-    Number(
-      document.getElementById(
-        "score"
-      ).value
-    );
-
-
-  const twelves =
-    Number(
-      document.getElementById(
-        "twelves"
-      ).value
-    );
-
-
-
-  if (!shooter_id) {
-
-    alert(
-      "Please select a shooter."
-    );
-
-    return;
-
-  }
-
-
-  if (!score) {
-
-    alert(
-      "Please enter a score."
-    );
-
-    return;
-
-  }
-
-
-
-  const response =
-    await fetch(
-      "/api/add-score",
-      {
-
-        method:"POST",
-
-        headers:{
-          "Content-Type":"application/json"
-        },
-
-
-        body:JSON.stringify({
-
-          shooter_id,
-          event_id,
-          score,
-          twelves
-
-        })
+        dropdown.appendChild(
+          option
+        );
 
       }
     );
 
 
+    // -------------------------------------------------
+    // RENDER SHOOTER DIRECTORY
+    // -------------------------------------------------
 
-  const result =
-    await response.json();
+    renderShooterList(
+      shooters
+    );
 
+  }
+
+
+  catch (error) {
+
+    console.error(
+      "Load shooters error:",
+      error
+    );
+
+
+    dropdown.innerHTML =
+      `
+      <option value="">
+        Unable to load shooters
+      </option>
+      `;
+
+
+    list.innerHTML =
+      `
+      <p>
+        Unable to load shooters.
+      </p>
+      `;
+
+  }
+
+}
+
+
+// =======================================================
+// RENDER SHOOTER DIRECTORY
+// =======================================================
+
+function renderShooterList(
+  shooters
+) {
+
+  const list =
+    document.getElementById(
+      "shooter-list"
+    );
+
+
+  const searchInput =
+    document.getElementById(
+      "shooter-search-admin"
+    );
+
+
+  const search =
+    searchInput
+      ? searchInput.value
+          .trim()
+          .toLowerCase()
+      : "";
+
+
+  const filtered =
+    shooters.filter(
+      shooter => {
+
+        const name =
+          String(
+            shooter.name || ""
+          ).toLowerCase();
+
+
+        const asa =
+          String(
+            shooter.asa_number || ""
+          ).toLowerCase();
+
+
+        return (
+          name.includes(search) ||
+          asa.includes(search)
+        );
+
+      }
+    );
+
+
+  if (
+    filtered.length === 0
+  ) {
+
+    list.innerHTML =
+      `
+      <p>
+        No matching shooters found.
+      </p>
+      `;
+
+    return;
+
+  }
+
+
+  list.innerHTML =
+    filtered
+      .map(
+        shooter => {
+
+          const name =
+            escapeHtml(
+              shooter.name || ""
+            );
+
+
+          const asa =
+            escapeHtml(
+              shooter.asa_number || ""
+            );
+
+
+          const className =
+            escapeHtml(
+              shooter.class || ""
+            );
+
+
+          return `
+            <div class="shooter-row">
+
+              <strong>
+                ${name}
+              </strong>
+
+              <span>
+                ${className}
+              </span>
+
+              <span>
+                ASA ${asa}
+              </span>
+
+            </div>
+          `;
+
+        }
+      )
+      .join("");
+
+}
+
+
+// =======================================================
+// SAVE SCORE
+// =======================================================
+
+async function saveScore() {
+
+  const shooter_id =
+    Number(
+      document
+        .getElementById(
+          "score-shooter"
+        )
+        .value
+    );
+
+
+  const event_id =
+    Number(
+      document
+        .getElementById(
+          "event"
+        )
+        .value
+    );
+
+
+  const score =
+    Number(
+      document
+        .getElementById(
+          "score"
+        )
+        .value
+    );
+
+
+  const twelves =
+    Number(
+      document
+        .getElementById(
+          "twelves"
+        )
+        .value
+    );
 
 
   const status =
@@ -281,47 +565,134 @@ async function saveScore() {
     );
 
 
+  // ---------------------------------------------------
+  // VALIDATION
+  // ---------------------------------------------------
 
-  if (result.ok) {
-
+  if (!shooter_id) {
 
     status.textContent =
-      result.message ||
-      "Score saved successfully.";
+      "Please select a shooter.";
 
-
-
-    document.getElementById(
-      "score"
-    ).value = "";
-
-
-
-    document.getElementById(
-      "twelves"
-    ).value = "";
-
-
-
-    await loadScores();
-
+    return;
 
   }
 
 
-  else {
-
+  if (!event_id) {
 
     status.textContent =
-      result.error ||
-      "Unable to save score.";
+      "Please select an event.";
 
+    return;
 
   }
 
+
+  if (!Number.isFinite(score)) {
+
+    status.textContent =
+      "Please enter a valid score.";
+
+    return;
+
+  }
+
+
+  if (
+    !Number.isFinite(twelves) ||
+    twelves < 0
+  ) {
+
+    status.textContent =
+      "Please enter a valid 12 count.";
+
+    return;
+
+  }
+
+
+  try {
+
+    const response =
+      await fetch(
+        "/api/add-score",
+        {
+
+          method: "POST",
+
+          headers: {
+            "Content-Type":
+              "application/json"
+          },
+
+          body:
+            JSON.stringify({
+
+              shooter_id,
+
+              event_id,
+
+              score,
+
+              twelves
+
+            })
+
+        }
+      );
+
+
+    const result =
+      await response.json();
+
+
+    if (result.ok) {
+
+      status.textContent =
+        result.message ||
+        "Score saved successfully.";
+
+
+      document.getElementById(
+        "score"
+      ).value = "";
+
+
+      document.getElementById(
+        "twelves"
+      ).value = "";
+
+
+      await loadScores();
+
+    }
+
+    else {
+
+      status.textContent =
+        result.error ||
+        "Unable to save score.";
+
+    }
+
+  }
+
+
+  catch (error) {
+
+    console.error(
+      "Save score error:",
+      error
+    );
+
+
+    status.textContent =
+      "Unable to connect to the server.";
+
+  }
 
 }
-
 
 
 // =======================================================
@@ -330,103 +701,136 @@ async function saveScore() {
 
 async function loadScores() {
 
-
-  const response =
-    await fetch(
-      "/api/admin-scores"
-    );
-
-
-  const result =
-    await response.json();
-
-
-
   const list =
     document.getElementById(
       "score-list"
     );
 
 
+  try {
 
-  if (
-    !result.ok ||
-    !result.scores
-  ) {
+    const response =
+      await fetch(
+        "/api/admin-scores",
+        {
+          cache: "no-store"
+        }
+      );
+
+
+    const result =
+      await response.json();
+
+
+    if (
+      !result.ok ||
+      !Array.isArray(
+        result.scores
+      )
+    ) {
+
+      list.innerHTML =
+        "<p>No scores found.</p>";
+
+      return;
+
+    }
+
+
+    if (
+      result.scores.length === 0
+    ) {
+
+      list.innerHTML =
+        "<p>No scores found.</p>";
+
+      return;
+
+    }
 
 
     list.innerHTML =
-      "<p>No scores found.</p>";
+      result.scores
+        .map(
+          score => {
 
+            return `
+              <div class="score-row">
 
-    return;
+                <strong>
+                  ${escapeHtml(
+                    score.shooter
+                  )}
+                </strong>
 
+                |
+
+                ${escapeHtml(
+                  score.event
+                )}
+
+                |
+
+                Score:
+                ${Number(
+                  score.score || 0
+                )}
+
+                |
+
+                ${Number(
+                  score.twelves || 0
+                )}
+                12s
+
+                <button
+                  type="button"
+                  onclick="editScore(
+                    ${Number(score.id)},
+                    ${Number(score.score || 0)},
+                    ${Number(score.twelves || 0)}
+                  )"
+                >
+                  Edit
+                </button>
+
+                <button
+                  type="button"
+                  onclick="deleteScore(
+                    ${Number(score.id)}
+                  )"
+                >
+                  Delete
+                </button>
+
+              </div>
+            `;
+
+          }
+        )
+        .join("");
 
   }
 
 
+  catch (error) {
+
+    console.error(
+      "Load scores error:",
+      error
+    );
 
 
-  list.innerHTML =
-    result.scores.map(
-      score =>
-
-
+    list.innerHTML =
       `
-      <div class="score-row">
+      <p>
+        Unable to load scores.
+      </p>
+      `;
 
-        <strong>
-        ${score.shooter}
-        </strong>
-
-        |
-
-        ${score.event}
-
-        |
-
-        Score:
-        ${score.score}
-
-        |
-
-        ${score.twelves}
-        12s
-
-
-        <button
-        onclick="
-        editScore(
-        ${score.id},
-        ${score.score},
-        ${score.twelves}
-        )">
-
-        Edit
-
-        </button>
-
-
-
-        <button
-        onclick="
-        deleteScore(
-        ${score.id}
-        )">
-
-        Delete
-
-        </button>
-
-
-      </div>
-      `
-
-
-    ).join("");
+  }
 
 }
-
 
 
 // =======================================================
@@ -439,7 +843,6 @@ async function editScore(
   currentTwelves
 ) {
 
-
   const score =
     prompt(
       "Enter new score:",
@@ -447,13 +850,13 @@ async function editScore(
     );
 
 
-
-  if (score === null) {
+  if (
+    score === null
+  ) {
 
     return;
 
   }
-
 
 
   const twelves =
@@ -463,52 +866,118 @@ async function editScore(
     );
 
 
-
-  if (twelves === null) {
+  if (
+    twelves === null
+  ) {
 
     return;
 
   }
 
 
-
-  await fetch(
-    "/api/admin-scores",
-    {
-
-      method:"PUT",
-
-      headers:{
-        "Content-Type":"application/json"
-      },
+  const numericScore =
+    Number(score);
 
 
-      body:JSON.stringify({
+  const numericTwelves =
+    Number(twelves);
 
-        id,
-        score,
-        twelves
 
-      })
+  if (
+    !Number.isFinite(
+      numericScore
+    ) ||
+    !Number.isFinite(
+      numericTwelves
+    ) ||
+    numericTwelves < 0
+  ) {
+
+    alert(
+      "Please enter valid numbers."
+    );
+
+    return;
+
+  }
+
+
+  try {
+
+    const response =
+      await fetch(
+        "/api/admin-scores",
+        {
+
+          method: "PUT",
+
+          headers: {
+            "Content-Type":
+              "application/json"
+          },
+
+          body:
+            JSON.stringify({
+
+              id,
+
+              score:
+                numericScore,
+
+              twelves:
+                numericTwelves
+
+            })
+
+        }
+      );
+
+
+    const result =
+      await response.json();
+
+
+    if (!result.ok) {
+
+      alert(
+        result.error ||
+        "Unable to update score."
+      );
+
+      return;
 
     }
-  );
 
 
+    await loadScores();
 
-  await loadScores();
+  }
 
+
+  catch (error) {
+
+    console.error(
+      "Edit score error:",
+      error
+    );
+
+
+    alert(
+      "Unable to update score."
+    );
+
+  }
 
 }
-
 
 
 // =======================================================
 // DELETE SCORE
 // =======================================================
 
-async function deleteScore(id) {
-
+async function deleteScore(
+  id
+) {
 
   const confirmed =
     confirm(
@@ -516,57 +985,182 @@ async function deleteScore(id) {
     );
 
 
-
   if (!confirmed) {
-
     return;
+  }
+
+
+  try {
+
+    const response =
+      await fetch(
+        "/api/admin-scores",
+        {
+
+          method: "DELETE",
+
+          headers: {
+            "Content-Type":
+              "application/json"
+          },
+
+          body:
+            JSON.stringify({
+              id
+            })
+
+        }
+      );
+
+
+    const result =
+      await response.json();
+
+
+    if (!result.ok) {
+
+      alert(
+        result.error ||
+        "Unable to delete score."
+      );
+
+      return;
+
+    }
+
+
+    await loadScores();
 
   }
 
 
+  catch (error) {
 
-  await fetch(
-    "/api/admin-scores",
-    {
-
-      method:"DELETE",
-
-      headers:{
-        "Content-Type":"application/json"
-      },
+    console.error(
+      "Delete score error:",
+      error
+    );
 
 
-      body:JSON.stringify({
+    alert(
+      "Unable to delete score."
+    );
 
-        id
-
-      })
-
-    }
-  );
-
-
-
-  await loadScores();
-
+  }
 
 }
 
 
+// =======================================================
+// HTML ESCAPE
+// =======================================================
+
+function escapeHtml(
+  value
+) {
+
+  return String(value)
+
+    .replace(
+      /&/g,
+      "&amp;"
+    )
+
+    .replace(
+      /</g,
+      "&lt;"
+    )
+
+    .replace(
+      />/g,
+      "&gt;"
+    )
+
+    .replace(
+      /"/g,
+      "&quot;"
+    )
+
+    .replace(
+      /'/g,
+      "&#039;"
+    );
+
+}
+
 
 // =======================================================
-// INITIALIZE ADMIN PAGE
+// SEARCH SHOOTERS
 // =======================================================
 
 document.addEventListener(
   "DOMContentLoaded",
   () => {
 
+    const searchInput =
+      document.getElementById(
+        "shooter-search-admin"
+      );
+
+
+    if (searchInput) {
+
+      searchInput.addEventListener(
+        "input",
+        async () => {
+
+          try {
+
+            const response =
+              await fetch(
+                "/api/shooters",
+                {
+                  cache: "no-store"
+                }
+              );
+
+
+            const result =
+              await response.json();
+
+
+            if (
+              result.ok &&
+              Array.isArray(
+                result.shooters
+              )
+            ) {
+
+              renderShooterList(
+                result.shooters
+              );
+
+            }
+
+          }
+
+          catch (error) {
+
+            console.error(
+              "Shooter search error:",
+              error
+            );
+
+          }
+
+        }
+      );
+
+    }
+
+
+    // -------------------------------------------------
+    // INITIAL LOAD
+    // -------------------------------------------------
 
     loadShooters();
 
     loadScores();
-
 
   }
 );
