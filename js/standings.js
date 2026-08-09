@@ -13,21 +13,14 @@ let standings = [];
 async function loadStandings() {
 
   const body =
-    document.getElementById(
-      "standings-body"
-    );
-
+    document.getElementById("standings-body");
 
   try {
 
     const response =
-      await fetch(
-        "/api/standings",
-        {
-          cache: "no-store"
-        }
-      );
-
+      await fetch("/api/standings", {
+        cache: "no-store"
+      });
 
     if (!response.ok) {
 
@@ -37,10 +30,8 @@ async function loadStandings() {
 
     }
 
-
     const data =
       await response.json();
-
 
     if (!data.ok) {
 
@@ -51,12 +42,7 @@ async function loadStandings() {
 
     }
 
-
-    if (
-      !Array.isArray(
-        data.standings
-      )
-    ) {
+    if (!Array.isArray(data.standings)) {
 
       throw new Error(
         "Invalid standings data."
@@ -64,18 +50,13 @@ async function loadStandings() {
 
     }
 
-
-    standings =
-      data.standings;
-
+    standings = data.standings;
 
     populateClasses();
-
 
     renderStandings();
 
   }
-
 
   catch (error) {
 
@@ -83,7 +64,6 @@ async function loadStandings() {
       "Standings error:",
       error
     );
-
 
     if (body) {
 
@@ -121,77 +101,58 @@ async function loadStandings() {
 function populateClasses() {
 
   const select =
-    document.getElementById(
-      "class-filter"
-    );
-
+    document.getElementById("class-filter");
 
   if (!select) {
     return;
   }
 
+  const currentValue =
+    select.value || "all";
 
   select.innerHTML = `
-
     <option value="all">
       All Classes
     </option>
-
   `;
 
-
   const classes = [
-
     ...new Set(
-
       standings
-
-        .map(
-          shooter =>
-            shooter.class_name
-        )
-
+        .map(shooter => shooter.class_name)
         .filter(Boolean)
-
     )
-
   ];
 
-
   classes
-    .sort(
-      (a, b) =>
-        a.localeCompare(b)
+    .sort((a, b) => a.localeCompare(b))
+    .forEach(className => {
+
+      const option =
+        document.createElement("option");
+
+      option.value = className;
+      option.textContent = className;
+
+      select.appendChild(option);
+
+    });
+
+  if (
+    [...select.options].some(
+      option => option.value === currentValue
     )
-    .forEach(
-      className => {
+  ) {
 
-        const option =
-          document.createElement(
-            "option"
-          );
+    select.value = currentValue;
 
-
-        option.value =
-          className;
-
-
-        option.textContent =
-          className;
-
-
-        select.appendChild(
-          option
-        );
-
-      }
-    );
+  }
 
 }
 
 
 // =======================================================
-// GET SELECTED EVENT RESULT
+// GET EVENT RESULT
 // =======================================================
 
 function getEventResult(
@@ -199,14 +160,19 @@ function getEventResult(
   eventName
 ) {
 
-
-  // -----------------------------------------------
+  // ---------------------------------------------------
   // SHOOTER OF THE YEAR
-  // -----------------------------------------------
+  // ---------------------------------------------------
 
-  if (
-    eventName === "soy"
-  ) {
+  if (eventName === "soy") {
+
+    /*
+     * SOTY standings use the calculated values
+     * returned by the API.
+     *
+     * Eligibility is handled separately in
+     * renderStandings().
+     */
 
     return {
 
@@ -225,23 +191,17 @@ function getEventResult(
   }
 
 
-  // -----------------------------------------------
+  // ---------------------------------------------------
   // STATE CHAMPIONSHIP
-  // -----------------------------------------------
+  // ---------------------------------------------------
 
   if (
-    eventName ===
-    "State Championship"
+    eventName === "State Championship"
   ) {
 
-    if (
-      !shooter.championship
-    ) {
-
+    if (!shooter.championship) {
       return null;
-
     }
-
 
     return {
 
@@ -260,23 +220,19 @@ function getEventResult(
   }
 
 
-  // -----------------------------------------------
+  // ---------------------------------------------------
   // QUALIFYING EVENT
-  // -----------------------------------------------
+  // ---------------------------------------------------
 
   if (
-    Array.isArray(
-      shooter.qualifiers
-    )
+    Array.isArray(shooter.qualifiers)
   ) {
 
     const event =
       shooter.qualifiers.find(
         item =>
-          item.event ===
-          eventName
+          item.event === eventName
       );
-
 
     if (event) {
 
@@ -298,7 +254,6 @@ function getEventResult(
 
   }
 
-
   return null;
 
 }
@@ -315,29 +270,24 @@ function renderStandings() {
       "standings-body"
     );
 
-
   if (!body) {
     return;
   }
-
 
   const searchInput =
     document.getElementById(
       "shooter-search"
     );
 
-
   const classFilter =
     document.getElementById(
       "class-filter"
     );
 
-
   const eventFilter =
     document.getElementById(
       "event-filter"
     );
-
 
   const search =
     searchInput
@@ -346,12 +296,10 @@ function renderStandings() {
           .toLowerCase()
       : "";
 
-
   const selectedClass =
     classFilter
       ? classFilter.value
       : "all";
-
 
   const selectedEvent =
     eventFilter
@@ -370,13 +318,16 @@ function renderStandings() {
           shooter.name || ""
         );
 
-
       const className =
         String(
           shooter.class_name ||
           "Unclassified"
         );
 
+
+      // -------------------------------------------------
+      // SEARCH FILTER
+      // -------------------------------------------------
 
       if (
         search &&
@@ -390,6 +341,10 @@ function renderStandings() {
       }
 
 
+      // -------------------------------------------------
+      // CLASS FILTER
+      // -------------------------------------------------
+
       if (
         selectedClass !== "all" &&
         className !== selectedClass
@@ -399,6 +354,34 @@ function renderStandings() {
 
       }
 
+
+      // -------------------------------------------------
+      // SOTY ELIGIBILITY
+      // -------------------------------------------------
+
+      /*
+       * IMPORTANT:
+       *
+       * Only eligible shooters should appear in the
+       * official Shooter of the Year standings.
+       *
+       * Event-specific views continue to display
+       * shooters who have a result for that event.
+       */
+
+      if (
+        selectedEvent === "soy" &&
+        shooter.eligible !== true
+      ) {
+
+        return;
+
+      }
+
+
+      // -------------------------------------------------
+      // GET RESULT
+      // -------------------------------------------------
 
       const result =
         getEventResult(
@@ -432,13 +415,14 @@ function renderStandings() {
   );
 
 
-  // -----------------------------------------------
-  // RANK CURRENT VIEW
-  // -----------------------------------------------
+  // =====================================================
+  // RANK RESULTS
+  // =====================================================
 
   results.sort(
     (a, b) => {
 
+      // Highest score first
       if (
         b.score !== a.score
       ) {
@@ -451,6 +435,7 @@ function renderStandings() {
       }
 
 
+      // Highest 12 count breaks ties
       if (
         b.twelves !==
         a.twelves
@@ -464,6 +449,7 @@ function renderStandings() {
       }
 
 
+      // Alphabetical final tie breaker
       return a.name.localeCompare(
         b.name
       );
@@ -471,6 +457,10 @@ function renderStandings() {
     }
   );
 
+
+  // =====================================================
+  // NO RESULTS
+  // =====================================================
 
   if (
     results.length === 0
@@ -500,6 +490,10 @@ function renderStandings() {
 
   }
 
+
+  // =====================================================
+  // DISPLAY RESULTS
+  // =====================================================
 
   body.innerHTML = "";
 
@@ -605,12 +599,10 @@ document.addEventListener(
         "shooter-search"
       );
 
-
     const classFilter =
       document.getElementById(
         "class-filter"
       );
-
 
     const eventFilter =
       document.getElementById(
