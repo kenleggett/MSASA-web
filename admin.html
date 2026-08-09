@@ -16,6 +16,34 @@ MSASA Admin Dashboard
 
 <body>
 
+  <h2>Add Test Shooter</h2>
+
+<button onclick="testAddShooter()">
+Add Test Shooter
+</button>
+
+<script>
+async function testAddShooter() {
+
+  const response = await fetch("/api/add-shooter", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      name: "Test Archer",
+      asa_number: "TEST002",
+      class_name: "Known 40"
+    })
+  });
+
+  const result = await response.json();
+
+  alert(JSON.stringify(result));
+
+}
+</script>
+
 
 <header>
 
