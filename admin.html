@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<title>
+MSASA Admin Dashboard
+</title>
+
+<link rel="stylesheet" href="css/style.css">
+
+</head>
+
+
+<body>
+
+
+<header>
+
+<h1>
+Mississippi ASA Admin Dashboard
+</h1>
+
+</header>
+
+
+<main>
+
+
+<section class="admin-card">
+
+<h2>
+Add Shooter
+</h2>
+
+
+<label>
+Shooter Name
+</label>
+
+<input 
+id="shooter-name"
+placeholder="Enter shooter name">
+
+
+<label>
+ASA Number
+</label>
+
+<input 
+id="asa-number"
+placeholder="ASA Number">
+
+
+<label>
+Class
+</label>
+
+<select id="class-name">
+
+<option>
+Semi-Pro Open
+</option>
+
+<option>
+Pro
+</option>
+
+<option>
+Known 40
+</option>
+
+<option>
+Senior Pins
+</option>
+
+</select>
+
+
+<button onclick="addShooter()">
+Add Shooter
+</button>
+
+
+</section>
+
+
+
+<section class="admin-card">
+
+<h2>
+Enter Score
+</h2>
+
+
+<select id="event">
+
+<option value="1">
+Waldo's
+</option>
+
+<option value="2">
+Percy Quin
+</option>
+
+<option value="3">
+Pearl River
+</option>
+
+<option value="4">
+Laurel
+</option>
+
+<option value="5">
+Little River
+</option>
+
+<option value="6">
+State Championship
+</option>
+
+</select>
+
+
+<input
+id="score"
+placeholder="Score">
+
+
+<input
+id="twelves"
+placeholder="12 Count">
+
+
+<button onclick="saveScore()">
+Save Score
+</button>
+
+
+</section>
+
+
+</main>
+
+
+<script src="js/admin.js"></script>
+
+
+</body>
+
+</html>
