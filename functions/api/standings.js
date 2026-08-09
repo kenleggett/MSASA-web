@@ -42,60 +42,38 @@ export async function onRequestGet({ env }) {
     const shooterData = {};
 
 
-    results.forEach(row => {
-
-      if (!shooterData[row.shooter_id]) {
-
-        shooterData[row.shooter_id] = {
-
-          shooter_id: row.shooter_id,
-
-          name: row.name,
-
-          class_name: row.class_name,
-
-          qualifiers: [],
-
-          championship: null
-
-        };
-
-      }
+   // Ignore the empty LEFT JOIN row for shooters
+// who do not have any scores yet.
+if (!row.event_id) {
+  return;
+}
 
 
-      // State Championship is mandatory
-      if (row.event === "State Championship") {
+// State Championship is mandatory
+if (row.event === "State Championship") {
 
-        shooterData[row.shooter_id].championship = {
+  shooterData[row.shooter_id].championship = {
 
-          event_id: row.event_id,
+    event_id: row.event_id,
+    event: row.event,
+    score: Number(row.score),
+    twelves: Number(row.twelves)
 
-          event: row.event,
+  };
 
-          score: Number(row.score),
+} else {
 
-          twelves: Number(row.twelves)
+  // All other events are qualifying events
+  shooterData[row.shooter_id].qualifiers.push({
 
-        };
+    event_id: row.event_id,
+    event: row.event,
+    score: Number(row.score),
+    twelves: Number(row.twelves)
 
-      } else {
+  });
 
-        // All other events are qualifying events
-        shooterData[row.shooter_id].qualifiers.push({
-
-          event_id: row.event_id,
-
-          event: row.event,
-
-          score: Number(row.score),
-
-          twelves: Number(row.twelves)
-
-        });
-
-      }
-
-    });
+}
 
 
     // ---------------------------------------------------
