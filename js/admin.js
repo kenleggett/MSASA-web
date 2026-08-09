@@ -318,10 +318,92 @@ document.addEventListener(
   ).join("");
 
 }
-  "DOMContentLoaded",
-  () => {
+  async function editScore(id, currentScore, currentTwelves) {
 
-    loadShooters();
+  const score =
+    prompt(
+      "Enter new score:",
+      currentScore
+    );
 
+
+  const twelves =
+    prompt(
+      "Enter new 12 count:",
+      currentTwelves
+    );
+
+
+  if (!score) {
+    return;
   }
+
+
+  await fetch("/api/admin-scores",
+  {
+
+    method:"PUT",
+
+    headers:{
+      "Content-Type":"application/json"
+    },
+
+    body:JSON.stringify({
+
+      id,
+      score,
+      twelves
+
+    })
+
+  });
+
+
+  await loadScores();
+
+}
+async function deleteScore(id) {
+
+
+  const confirmDelete =
+    confirm(
+      "Are you sure you want to delete this score?"
+    );
+
+
+  if (!confirmDelete) {
+    return;
+  }
+
+
+  await fetch("/api/admin-scores",
+  {
+
+    method:"DELETE",
+
+    headers:{
+      "Content-Type":"application/json"
+    },
+
+    body:JSON.stringify({
+
+      id
+
+    })
+
+  });
+
+
+  await loadScores();
+
+}
+ document.addEventListener(
+"DOMContentLoaded",
+() => {
+
+loadShooters();
+
+loadScores();
+
+}
 );
