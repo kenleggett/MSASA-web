@@ -21,7 +21,7 @@ Mississippi ASA Admin Dashboard
 
 <link
     rel="stylesheet"
-    href="css/style.css?v=5"
+    href="css/style.css?v=6"
 >
 
 </head>
@@ -60,7 +60,7 @@ Mississippi ASA Admin Dashboard
      ADD SHOOTER
 ===================================================== -->
 
-<section class="admin-card">
+<section class="admin-card shooter-management-card">
 
     <div class="admin-card-header">
 
@@ -80,7 +80,7 @@ Mississippi ASA Admin Dashboard
     </div>
 
 
-    <div class="admin-form">
+    <div class="admin-form shooter-form">
 
 
         <!-- SHOOTER NAME -->
@@ -413,7 +413,7 @@ Mississippi ASA Admin Dashboard
      SHOOTER DIRECTORY
 ===================================================== -->
 
-<section class="admin-card">
+<section class="admin-card shooter-directory-card">
 
     <div class="admin-card-header">
 
@@ -425,37 +425,70 @@ Mississippi ASA Admin Dashboard
             Current Shooters
         </h2>
 
+        <p>
+            Search, update, or deactivate active shooters.
+        </p>
+
     </div>
 
 
     <div class="admin-form">
 
-        <div class="form-group">
+        <div class="form-group shooter-search-group">
 
             <label for="shooter-search-admin">
                 Search Shooters
             </label>
 
-            <input
-                id="shooter-search-admin"
-                type="search"
-                placeholder="Search by name or ASA number"
-                autocomplete="off"
-            >
+            <div class="shooter-search-field">
+
+                <input
+                    id="shooter-search-admin"
+                    type="search"
+                    placeholder="Search by name or ASA number"
+                    autocomplete="off"
+                    enterkeyhint="search"
+                >
+
+                <button
+                    id="shooter-search-clear"
+                    type="button"
+                    class="search-clear-button"
+                    aria-label="Clear shooter search"
+                    hidden
+                >
+                    Clear
+                </button>
+
+            </div>
 
         </div>
 
 
-        <button
-            type="button"
-            class="admin-secondary-button"
-            onclick="loadShooters()"
+        <div class="shooter-directory-actions">
+
+            <p
+                id="shooter-directory-summary"
+                class="shooter-directory-summary"
+                aria-live="polite"
+            ></p>
+
+            <button
+                type="button"
+                class="admin-secondary-button"
+                onclick="loadShooters()"
+            >
+                Refresh Shooters
+            </button>
+
+        </div>
+
+
+        <div
+            id="shooter-list"
+            class="shooter-list"
+            aria-live="polite"
         >
-            Refresh Shooters
-        </button>
-
-
-        <div id="shooter-list">
 
             Loading shooters...
 

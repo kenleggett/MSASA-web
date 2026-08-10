@@ -9,6 +9,8 @@
 // HELPER FUNCTIONS
 // =======================================================
 
+let currentShooters = [];
+
 function getShooterClass(shooter) {
 
   return String(
@@ -290,6 +292,9 @@ async function loadShooters() {
         );
 
 
+    currentShooters = shooters;
+
+
     // ---------------------------------------------------
     // POPULATE SCORE DROPDOWN
     // ---------------------------------------------------
@@ -449,6 +454,23 @@ function renderShooterList(
     );
 
 
+  const summary =
+    document.getElementById(
+      "shooter-directory-summary"
+    );
+
+
+  if (summary) {
+
+    const count = filtered.length;
+
+    summary.textContent = search
+      ? `${count} ${count === 1 ? "shooter" : "shooters"} found`
+      : `${count} active ${count === 1 ? "shooter" : "shooters"}`;
+
+  }
+
+
   if (
     filtered.length === 0
   ) {
@@ -496,6 +518,10 @@ function renderShooterList(
         );
 
 
+      info.className =
+        "shooter-info";
+
+
       const name =
         document.createElement(
           "strong"
@@ -504,6 +530,10 @@ function renderShooterList(
 
       name.textContent =
         shooter.name || "";
+
+
+      name.className =
+        "shooter-name";
 
 
       const classLine =
@@ -518,6 +548,10 @@ function renderShooterList(
         );
 
 
+      classLine.className =
+        "shooter-class";
+
+
       const asaLine =
         document.createElement(
           "div"
@@ -526,6 +560,10 @@ function renderShooterList(
 
       asaLine.textContent =
         `ASA ${shooter.asa_number || ""}`;
+
+
+      asaLine.className =
+        "shooter-asa";
 
 
       info.appendChild(
@@ -571,6 +609,16 @@ function renderShooterList(
         "Edit";
 
 
+      editButton.className =
+        "shooter-action-button shooter-edit-button";
+
+
+      editButton.setAttribute(
+        "aria-label",
+        `Edit ${shooter.name || "shooter"}`
+      );
+
+
       editButton.addEventListener(
         "click",
         () => {
@@ -600,6 +648,16 @@ function renderShooterList(
 
       deactivateButton.textContent =
         "Deactivate";
+
+
+      deactivateButton.className =
+        "shooter-action-button shooter-deactivate-button";
+
+
+      deactivateButton.setAttribute(
+        "aria-label",
+        `Deactivate ${shooter.name || "shooter"}`
+      );
 
 
       deactivateButton.addEventListener(
@@ -1526,7 +1584,7 @@ async function deleteScore(
 // SHOOTER SEARCH
 // =======================================================
 
-async function searchShooters() {
+function searchShooters() {
 
   const searchInput =
     document.getElementById(
@@ -1539,45 +1597,9 @@ async function searchShooters() {
   }
 
 
-  try {
-
-    const response =
-      await fetch(
-        "/api/shooters",
-        {
-          cache: "no-store"
-        }
-      );
-
-
-    const result =
-      await response.json();
-
-
-    if (
-      result.ok &&
-      Array.isArray(
-        result.shooters
-      )
-    ) {
-
-      renderShooterList(
-        result.shooters
-      );
-
-    }
-
-  }
-
-
-  catch (error) {
-
-    console.error(
-      "Shooter search error:",
-      error
-    );
-
-  }
+  renderShooterList(
+    currentShooters
+  );
 
 }
 
@@ -1600,7 +1622,51 @@ document.addEventListener(
 
       searchInput.addEventListener(
         "input",
-        searchShooters
+        () => {
+
+          const clearButton =
+            document.getElementById(
+              "shooter-search-clear"
+            );
+
+
+          if (clearButton) {
+
+            clearButton.hidden =
+              searchInput.value.length === 0;
+
+          }
+
+
+          searchShooters();
+
+        }
+      );
+
+    }
+
+
+    const clearButton =
+      document.getElementById(
+        "shooter-search-clear"
+      );
+
+
+    if (clearButton && searchInput) {
+
+      clearButton.addEventListener(
+        "click",
+        () => {
+
+          searchInput.value = "";
+
+          clearButton.hidden = true;
+
+          searchInput.focus();
+
+          searchShooters();
+
+        }
       );
 
     }

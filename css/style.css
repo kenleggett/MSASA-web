@@ -32,6 +32,336 @@ a {
     text-decoration: none;
 }
 
+
+/* =========================================================
+   ADMIN: SHOOTER MANAGEMENT
+========================================================= */
+
+.shooter-management-card,
+.shooter-directory-card {
+    width: min(92%, 960px);
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 28px;
+    overflow: hidden;
+    background: #ffffff;
+    border: 1px solid #deded7;
+    border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(17, 26, 18, 0.08);
+}
+
+.shooter-management-card .admin-card-header,
+.shooter-directory-card .admin-card-header {
+    padding: 28px 32px 24px;
+    background: linear-gradient(135deg, #203f25, #162d1a);
+    color: #ffffff;
+    border-bottom: 4px solid #b68a3c;
+}
+
+.shooter-management-card .admin-card-header .eyebrow,
+.shooter-directory-card .admin-card-header .eyebrow {
+    margin-bottom: 6px;
+    color: #e1bd78;
+}
+
+.shooter-management-card .admin-card-header h2,
+.shooter-directory-card .admin-card-header h2 {
+    margin: 0;
+    font-size: clamp(1.65rem, 3vw, 2rem);
+    line-height: 1.2;
+}
+
+.shooter-management-card .admin-card-header p:not(.eyebrow),
+.shooter-directory-card .admin-card-header p:not(.eyebrow) {
+    max-width: 630px;
+    margin: 8px 0 0;
+    color: rgba(255, 255, 255, 0.86);
+}
+
+.shooter-management-card .admin-form,
+.shooter-directory-card .admin-form {
+    padding: 30px 32px 32px;
+}
+
+.shooter-form {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+}
+
+.shooter-form .form-group:nth-child(3),
+.shooter-form .admin-primary-button,
+.shooter-form .admin-status {
+    grid-column: 1 / -1;
+}
+
+.shooter-management-card .form-group,
+.shooter-directory-card .form-group {
+    min-width: 0;
+}
+
+.shooter-management-card .form-group label,
+.shooter-directory-card .form-group label {
+    display: block;
+    margin-bottom: 7px;
+    color: #203f25;
+    font-size: 0.9rem;
+    font-weight: 700;
+}
+
+.shooter-management-card .form-group input,
+.shooter-management-card .form-group select,
+.shooter-directory-card .form-group input,
+.shooter-directory-card .form-group select {
+    width: 100%;
+    min-height: 48px;
+    padding: 11px 13px;
+    border: 1px solid #bfc3b9;
+    border-radius: 6px;
+    background: #ffffff;
+    color: #202820;
+    font: inherit;
+}
+
+.shooter-management-card .form-group input:focus,
+.shooter-management-card .form-group select:focus,
+.shooter-directory-card .form-group input:focus,
+.shooter-directory-card .form-group select:focus {
+    outline: none;
+    border-color: #b68a3c;
+    box-shadow: 0 0 0 3px rgba(182, 138, 60, 0.2);
+}
+
+.shooter-management-card .form-group small,
+.shooter-directory-card .form-group small {
+    display: block;
+    margin-top: 6px;
+    color: #656b63;
+}
+
+.shooter-management-card .admin-primary-button,
+.shooter-directory-card .admin-secondary-button,
+.shooter-directory-card .shooter-action-button,
+.shooter-directory-card .search-clear-button {
+    min-height: 46px;
+    border-radius: 6px;
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+.shooter-management-card .admin-primary-button {
+    width: fit-content;
+    padding: 12px 22px;
+    border: 1px solid #b68a3c;
+    background: #b68a3c;
+    color: #ffffff;
+}
+
+.shooter-management-card .admin-primary-button:hover,
+.shooter-management-card .admin-primary-button:focus-visible {
+    background: #946d2c;
+    border-color: #946d2c;
+}
+
+.shooter-management-card .admin-primary-button:disabled {
+    cursor: wait;
+    opacity: 0.7;
+}
+
+.shooter-directory-card .admin-secondary-button {
+    padding: 11px 18px;
+    border: 1px solid #203f25;
+    background: #ffffff;
+    color: #203f25;
+}
+
+.shooter-directory-card .admin-secondary-button:hover,
+.shooter-directory-card .admin-secondary-button:focus-visible {
+    background: #eef1e9;
+}
+
+.shooter-management-card .admin-primary-button:focus-visible,
+.shooter-directory-card .admin-secondary-button:focus-visible,
+.shooter-directory-card .shooter-action-button:focus-visible,
+.shooter-directory-card .search-clear-button:focus-visible {
+    outline: 3px solid rgba(182, 138, 60, 0.45);
+    outline-offset: 2px;
+}
+
+.shooter-management-card .admin-status {
+    min-height: 1.5em;
+    margin: 0;
+    color: #203f25;
+    font-weight: 700;
+}
+
+.shooter-directory-card .shooter-directory-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin: 20px 0;
+}
+
+.shooter-directory-card .shooter-directory-summary {
+    margin: 0;
+    color: #596057;
+    font-size: 0.9rem;
+    font-weight: 700;
+}
+
+.shooter-directory-card .shooter-search-field {
+    position: relative;
+}
+
+.shooter-directory-card .shooter-search-field input {
+    padding-right: 78px;
+}
+
+.shooter-directory-card .search-clear-button {
+    position: absolute;
+    top: 50%;
+    right: 6px;
+    min-height: 34px;
+    padding: 4px 10px;
+    border: 0;
+    background: #eef1e9;
+    color: #203f25;
+    transform: translateY(-50%);
+    font-size: 0.8rem;
+}
+
+.shooter-directory-card .search-clear-button:hover {
+    background: #dfe5d9;
+}
+
+.shooter-directory-card .shooter-list {
+    display: grid;
+    gap: 10px;
+}
+
+.shooter-directory-card .shooter-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 18px;
+    border: 1px solid #deded7;
+    border-left: 4px solid #b68a3c;
+    border-radius: 7px;
+    background: #ffffff;
+    cursor: default;
+}
+
+.shooter-directory-card .shooter-row:hover {
+    background: #f8f9f5;
+}
+
+.shooter-directory-card .shooter-info {
+    min-width: 0;
+}
+
+.shooter-directory-card .shooter-name {
+    display: block;
+    color: #203f25;
+    font-size: 1.05rem;
+}
+
+.shooter-directory-card .shooter-class,
+.shooter-directory-card .shooter-asa {
+    margin-top: 2px;
+    color: #5c645a;
+    font-size: 0.9rem;
+}
+
+.shooter-directory-card .shooter-asa {
+    color: #84622a;
+    font-weight: 700;
+}
+
+.shooter-directory-card .shooter-actions {
+    display: flex;
+    flex: 0 0 auto;
+    gap: 9px;
+}
+
+.shooter-directory-card .shooter-action-button {
+    min-width: 88px;
+    padding: 10px 14px;
+    border: 1px solid #203f25;
+    background: #ffffff;
+    color: #203f25;
+}
+
+.shooter-directory-card .shooter-edit-button:hover {
+    background: #eef1e9;
+}
+
+.shooter-directory-card .shooter-deactivate-button {
+    border-color: #8b3c2f;
+    color: #8b3c2f;
+}
+
+.shooter-directory-card .shooter-deactivate-button:hover {
+    background: #fff3f1;
+}
+
+@media (max-width: 700px) {
+    .shooter-management-card,
+    .shooter-directory-card {
+        width: min(94%, 960px);
+    }
+
+    .shooter-management-card .admin-card-header,
+    .shooter-directory-card .admin-card-header,
+    .shooter-management-card .admin-form,
+    .shooter-directory-card .admin-form {
+        padding: 23px 20px;
+    }
+
+    .shooter-form {
+        grid-template-columns: 1fr;
+        gap: 17px;
+    }
+
+    .shooter-form .form-group:nth-child(3),
+    .shooter-form .admin-primary-button,
+    .shooter-form .admin-status {
+        grid-column: auto;
+    }
+
+    .shooter-management-card .admin-primary-button {
+        width: 100%;
+    }
+
+    .shooter-directory-card .shooter-directory-actions {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .shooter-directory-card .admin-secondary-button {
+        width: 100%;
+    }
+
+    .shooter-directory-card .shooter-row {
+        align-items: stretch;
+        flex-direction: column;
+        gap: 15px;
+        padding: 16px;
+    }
+
+    .shooter-directory-card .shooter-actions {
+        width: 100%;
+    }
+
+    .shooter-directory-card .shooter-action-button {
+        flex: 1;
+        min-height: 48px;
+    }
+}
+
 .container {
     width: 90%;
     max-width: 1200px;
