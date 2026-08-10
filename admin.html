@@ -21,7 +21,7 @@ Mississippi ASA Admin Dashboard
 
 <link
     rel="stylesheet"
-    href="css/style.css?v=6"
+    href="css/style.css?v=7"
 >
 
 </head>
@@ -504,7 +504,7 @@ Mississippi ASA Admin Dashboard
      ENTER SCORE
 ===================================================== -->
 
-<section class="admin-card">
+<section class="admin-card score-entry-card">
 
     <div class="admin-card-header">
 
@@ -523,7 +523,7 @@ Mississippi ASA Admin Dashboard
     </div>
 
 
-    <div class="admin-form">
+    <div class="admin-form score-entry-form">
 
 
         <!-- SHOOTER -->
@@ -658,7 +658,7 @@ Mississippi ASA Admin Dashboard
      SCORE MANAGEMENT
 ===================================================== -->
 
-<section class="admin-card">
+<section class="admin-card score-management-card">
 
     <div class="admin-card-header">
 
@@ -677,7 +677,11 @@ Mississippi ASA Admin Dashboard
     </div>
 
 
-    <div id="score-list">
+    <div
+        id="score-list"
+        class="score-list"
+        aria-live="polite"
+    >
 
         Loading scores...
 

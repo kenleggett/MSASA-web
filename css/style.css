@@ -362,6 +362,276 @@ a {
     }
 }
 
+
+/* =========================================================
+   ADMIN: SCORE ENTRY AND MANAGEMENT
+========================================================= */
+
+.score-entry-card,
+.score-management-card {
+    width: min(92%, 960px);
+    margin-right: auto;
+    margin-bottom: 28px;
+    margin-left: auto;
+    overflow: hidden;
+    background: #ffffff;
+    border: 1px solid #deded7;
+    border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(17, 26, 18, 0.08);
+}
+
+.score-entry-card .admin-card-header,
+.score-management-card .admin-card-header {
+    padding: 28px 32px 24px;
+    background: linear-gradient(135deg, #203f25, #162d1a);
+    color: #ffffff;
+    border-bottom: 4px solid #b68a3c;
+}
+
+.score-entry-card .admin-card-header .eyebrow,
+.score-management-card .admin-card-header .eyebrow {
+    margin-bottom: 6px;
+    color: #e1bd78;
+}
+
+.score-entry-card .admin-card-header h2,
+.score-management-card .admin-card-header h2 {
+    margin: 0;
+    font-size: clamp(1.65rem, 3vw, 2rem);
+    line-height: 1.2;
+}
+
+.score-entry-card .admin-card-header p:not(.eyebrow),
+.score-management-card .admin-card-header p:not(.eyebrow) {
+    max-width: 630px;
+    margin: 8px 0 0;
+    color: rgba(255, 255, 255, 0.86);
+}
+
+.score-entry-card .admin-form {
+    padding: 30px 32px 32px;
+}
+
+.score-entry-form {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+}
+
+.score-entry-card .form-group {
+    min-width: 0;
+}
+
+.score-entry-card .form-group label {
+    display: block;
+    margin-bottom: 7px;
+    color: #203f25;
+    font-size: 0.9rem;
+    font-weight: 700;
+}
+
+.score-entry-card .form-group input,
+.score-entry-card .form-group select {
+    width: 100%;
+    min-height: 48px;
+    padding: 11px 13px;
+    border: 1px solid #bfc3b9;
+    border-radius: 6px;
+    background: #ffffff;
+    color: #202820;
+    font: inherit;
+}
+
+.score-entry-card .form-group input:focus,
+.score-entry-card .form-group select:focus {
+    outline: none;
+    border-color: #b68a3c;
+    box-shadow: 0 0 0 3px rgba(182, 138, 60, 0.2);
+}
+
+.score-entry-card .admin-primary-button {
+    width: fit-content;
+    min-height: 46px;
+    padding: 12px 22px;
+    border: 1px solid #b68a3c;
+    border-radius: 6px;
+    background: #b68a3c;
+    color: #ffffff;
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.score-entry-card .admin-primary-button:hover,
+.score-entry-card .admin-primary-button:focus-visible {
+    border-color: #946d2c;
+    background: #946d2c;
+}
+
+.score-entry-card .admin-primary-button:focus-visible,
+.score-management-card .score-action-button:focus-visible {
+    outline: 3px solid rgba(182, 138, 60, 0.45);
+    outline-offset: 2px;
+}
+
+.score-entry-card .admin-status {
+    min-height: 1.5em;
+    margin: 0;
+    color: #203f25;
+    font-weight: 700;
+}
+
+.score-management-card .score-list {
+    display: grid;
+    gap: 12px;
+    padding: 30px 32px 32px;
+}
+
+.score-management-card .score-list > p {
+    margin: 0;
+    padding: 18px;
+    border: 1px solid #deded7;
+    border-radius: 7px;
+    color: #596057;
+    text-align: center;
+}
+
+.score-management-card .score-management-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 18px;
+    border: 1px solid #deded7;
+    border-left: 4px solid #b68a3c;
+    border-radius: 7px;
+    background: #ffffff;
+}
+
+.score-management-card .score-details {
+    min-width: 0;
+}
+
+.score-management-card .score-shooter-name,
+.score-management-card .score-event-name {
+    display: block;
+}
+
+.score-management-card .score-shooter-name {
+    color: #203f25;
+    font-size: 1.05rem;
+}
+
+.score-management-card .score-event-name {
+    margin-top: 2px;
+    color: #5c645a;
+    font-size: 0.9rem;
+}
+
+.score-management-card .score-metrics {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.score-management-card .score-metrics > span {
+    min-width: 78px;
+    padding: 6px 10px;
+    border-radius: 5px;
+    background: #eef1e9;
+    color: #203f25;
+}
+
+.score-management-card .score-metrics small,
+.score-management-card .score-metrics strong {
+    display: block;
+}
+
+.score-management-card .score-metrics small {
+    color: #596057;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+.score-management-card .score-metrics strong {
+    font-size: 1.05rem;
+}
+
+.score-management-card .score-actions {
+    display: flex;
+    flex: 0 0 auto;
+    gap: 9px;
+}
+
+.score-management-card .score-action-button {
+    min-width: 88px;
+    min-height: 46px;
+    padding: 10px 14px;
+    border: 1px solid #203f25;
+    border-radius: 6px;
+    background: #ffffff;
+    color: #203f25;
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.score-management-card .score-edit-button:hover {
+    background: #eef1e9;
+}
+
+.score-management-card .score-delete-button {
+    border-color: #8b3c2f;
+    color: #8b3c2f;
+}
+
+.score-management-card .score-delete-button:hover {
+    background: #fff3f1;
+}
+
+@media (max-width: 700px) {
+    .score-entry-card,
+    .score-management-card {
+        width: min(94%, 960px);
+    }
+
+    .score-entry-card .admin-card-header,
+    .score-management-card .admin-card-header,
+    .score-entry-card .admin-form,
+    .score-management-card .score-list {
+        padding: 23px 20px;
+    }
+
+    .score-entry-form {
+        grid-template-columns: 1fr;
+        gap: 17px;
+    }
+
+    .score-entry-card .admin-primary-button {
+        width: 100%;
+    }
+
+    .score-management-card .score-management-row {
+        align-items: stretch;
+        flex-direction: column;
+        gap: 15px;
+        padding: 16px;
+    }
+
+    .score-management-card .score-actions {
+        width: 100%;
+    }
+
+    .score-management-card .score-action-button {
+        flex: 1;
+        min-height: 48px;
+    }
+}
+
 .container {
     width: 90%;
     max-width: 1200px;

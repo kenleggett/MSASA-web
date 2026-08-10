@@ -1226,43 +1226,119 @@ async function loadScores() {
           );
 
 
-        row.className =
-          "score-row";
+      row.className =
+        "score-row score-management-row";
 
 
-        const text =
-          document.createElement(
-            "span"
-          );
+      const details =
+        document.createElement(
+          "div"
+        );
 
 
-        text.innerHTML = `
+      details.className =
+        "score-details";
 
-          <strong>
-            ${escapeHtml(
-              score.shooter
-            )}
-          </strong>
 
-          |
-          ${escapeHtml(
-            score.event
-          )}
+      const shooter =
+        document.createElement(
+          "strong"
+        );
 
-          |
-          Score:
-          ${Number(
-            score.score || 0
-          )}
 
-          |
+      shooter.className =
+        "score-shooter-name";
 
-          ${Number(
-            score.twelves || 0
-          )}
-          12s
 
-        `;
+      shooter.textContent =
+        score.shooter || "";
+
+
+      const event =
+        document.createElement(
+          "span"
+        );
+
+
+      event.className =
+        "score-event-name";
+
+
+      event.textContent =
+        score.event || "";
+
+
+      const metrics =
+        document.createElement(
+          "div"
+        );
+
+
+      metrics.className =
+        "score-metrics";
+
+
+      const scoreMetric =
+        document.createElement(
+          "span"
+        );
+
+
+      scoreMetric.innerHTML = `
+
+        <small>Score</small>
+        <strong>${Number(score.score || 0)}</strong>
+
+      `;
+
+
+      const twelvesMetric =
+        document.createElement(
+          "span"
+        );
+
+
+      twelvesMetric.innerHTML = `
+
+        <small>12 Count</small>
+        <strong>${Number(score.twelves || 0)}</strong>
+
+      `;
+
+
+      metrics.appendChild(
+        scoreMetric
+      );
+
+
+      metrics.appendChild(
+        twelvesMetric
+      );
+
+
+      details.appendChild(
+        shooter
+      );
+
+
+      details.appendChild(
+        event
+      );
+
+
+      details.appendChild(
+        metrics
+      );
+
+
+      const actions =
+        document.createElement(
+          "div"
+        );
+
+
+      actions.className =
+        "score-actions";
 
 
         const editButton =
@@ -1275,8 +1351,18 @@ async function loadScores() {
           "button";
 
 
-        editButton.textContent =
-          "Edit";
+      editButton.textContent =
+        "Edit";
+
+
+      editButton.className =
+        "score-action-button score-edit-button";
+
+
+      editButton.setAttribute(
+        "aria-label",
+        `Edit ${score.shooter || "shooter"}'s ${score.event || "score"}`
+      );
 
 
         editButton.addEventListener(
@@ -1307,8 +1393,18 @@ async function loadScores() {
           "button";
 
 
-        deleteButton.textContent =
-          "Delete";
+      deleteButton.textContent =
+        "Delete";
+
+
+      deleteButton.className =
+        "score-action-button score-delete-button";
+
+
+      deleteButton.setAttribute(
+        "aria-label",
+        `Delete ${score.shooter || "shooter"}'s ${score.event || "score"}`
+      );
 
 
         deleteButton.addEventListener(
@@ -1323,19 +1419,24 @@ async function loadScores() {
         );
 
 
-        row.appendChild(
-          text
-        );
+      actions.appendChild(
+        editButton
+      );
 
 
-        row.appendChild(
-          editButton
-        );
+      actions.appendChild(
+        deleteButton
+      );
 
 
-        row.appendChild(
-          deleteButton
-        );
+      row.appendChild(
+        details
+      );
+
+
+      row.appendChild(
+        actions
+      );
 
 
         list.appendChild(
